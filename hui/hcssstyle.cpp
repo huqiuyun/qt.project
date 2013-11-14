@@ -9,8 +9,6 @@ HCssObject::HCssObject(const HObjectInfo& objinfo,QObject *parent) :
     QObject(parent),
     mObjinfo(objinfo)
 {
-    mColorizeFlag = qy::kFollowParent;
-    mAlignment = Qt::AlignCenter;
 }
 
 void HCssObject::setStyleId(const QLatin1String& styleid)
@@ -38,39 +36,6 @@ void HCssObject::setData(const QString& id, const QVariant& var)
     mDatas.insert(id,var);
 }
 
-
-void HCssObject::setColorizePolicy(qy::HColorizeFlag flag)
-{
-    mColorizeFlag = flag;
-}
-
-qy::HColorizeFlag HCssObject::colorizePolicy() const
-{
-    return mColorizeFlag;
-}
-
-/** set margins for all child item in layout */
-void HCssObject::setMargins(const QMargins& m)
-{
-    mMargins = m;
-}
-
-QMargins HCssObject::margins() const
-{
-   return mMargins;
-}
-
-/** set alignment in parent layout*/
-Qt::Alignment HCssObject::alignment() const
-{
-    return mAlignment;
-}
-
-void HCssObject::setAlignment(Qt::Alignment align)
-{
-    mAlignment = align;
-}
-
 void HCssObject::copyTo(HCssObject* obj)
 {
     Q_UNUSED(obj);
@@ -81,34 +46,63 @@ IMPLEMENT_OBJECT_STATIC_CREATE(HCssFrame)
 HCssFrame::HCssFrame(const HObjectInfo& objinfo,QObject* parent) :
     HCssObject(objinfo,parent)
 {
-    mFrameStyleCls.mClsName = QLatin1String("HFrameStyle");
-    mFrameStyleCls.mStyleId = QLatin1String("framestyleId");
+    mFrameStyle.mClsName = QLatin1String("HFrameStyle");
+    mFrameStyle.mStyleId = QLatin1String("framestyleId");
 
-    mClientWidgetCls.mClsName = QLatin1String("HGraphicsWidget");
-    mClientWidgetCls.mObjName = QLatin1String("rootWidget");
-    mClientWidgetCls.mStyleId = QLatin1String("clientId");
+    mClientWidget.mClsName = QLatin1String("HGWidget");
+    mClientWidget.mObjName = QLatin1String("rootWidget");
+    mClientWidget.mStyleId = QLatin1String("clientId");
+
+    mAlignment = Qt::AlignCenter;
+    mWinFlags = Qt::Window;
+    mStyleSheet = QLatin1String("QGraphicsView { border-style: none; background: transparent}");
 }
 
-void HCssFrame::setFrameStyleCls(const HClassInfo& cls)
+void HCssFrame::setFrameStyle(const HClassInfo& cls)
 {
-    mFrameStyleCls = cls;
+    mFrameStyle = cls;
 }
 
-HClassInfo HCssFrame::frameStyleCls() const
+HClassInfo HCssFrame::frameStyle() const
 {
-    return mFrameStyleCls;
+    return mFrameStyle;
 }
 
-void HCssFrame::setClientWidgetCls(const HClassInfo& cls)
+void HCssFrame::setClientWidget(const HClassInfo& cls)
 {
-    mClientWidgetCls = cls;
+    mClientWidget = cls;
 }
 
-HClassInfo HCssFrame::clientWidgetCls() const
+HClassInfo HCssFrame::clientWidget() const
 {
-    return mClientWidgetCls;
+    return mClientWidget;
 }
 
+void HCssFrame::setStyleSheet(const QString& sheet)
+{
+    mStyleSheet = sheet;
+}
+
+bool HCssFrame::hasStyleSheet() const
+{
+    return (mStyleSheet.size()>1);
+}
+
+
+QString HCssFrame::styleSheet() const
+{//"QGraphicsView { border-style: none; background: transparent}"
+    return mStyleSheet;
+}
+
+void HCssFrame::setWindowFlags(Qt::WindowFlags flags)
+{
+    mWinFlags = flags;
+}
+
+Qt::WindowFlags HCssFrame::windowFlags() const
+{
+    return mWinFlags;
+}
 
 // next layout functions
 qy::HLayoutType HCssFrame::layoutType() const
@@ -132,6 +126,28 @@ int HCssFrame::spacing() const
     return mSpacing;
 }
 
+/** set margins for all child item in layout */
+void HCssFrame::setMargins(const QMargins& m)
+{
+    mMargins = m;
+}
+
+QMargins HCssFrame::margins() const
+{
+   return mMargins;
+}
+
+/** set alignment in parent layout*/
+Qt::Alignment HCssFrame::alignment() const
+{
+    return mAlignment;
+}
+
+void HCssFrame::setAlignment(Qt::Alignment align)
+{
+    mAlignment = align;
+}
+
 void HCssFrame::copyTo(HCssObject* obj)
 {
     HCssFrame* newcss = static_cast<HCssFrame*>(obj);
@@ -143,8 +159,41 @@ IMPLEMENT_OBJECT_STATIC_CREATE(HCssBackground)
 HCssBackground::HCssBackground(const HObjectInfo& objinfo,QObject* parent) :
     HCssObject(objinfo,parent)
 {
+    mColorizeFlag = qy::kFollowParent;
+    mAlignment = Qt::AlignCenter;
 }
 
+void HCssBackground::setColorizePolicy(qy::HColorizeFlag flag)
+{
+    mColorizeFlag = flag;
+}
+
+qy::HColorizeFlag HCssBackground::colorizePolicy() const
+{
+    return mColorizeFlag;
+}
+
+/** set margins for all child item in layout */
+void HCssBackground::setMargins(const QMargins& m)
+{
+    mMargins = m;
+}
+
+QMargins HCssBackground::margins() const
+{
+   return mMargins;
+}
+
+/** set alignment in parent layout*/
+Qt::Alignment HCssBackground::alignment() const
+{
+    return mAlignment;
+}
+
+void HCssBackground::setAlignment(Qt::Alignment align)
+{
+    mAlignment = align;
+}
 
 void HCssBackground::setImagePath(const QString& path)
 {
@@ -204,63 +253,30 @@ HCssWidget::HCssWidget(const HObjectInfo& objinfo,QObject* parent) :
     mLayoutType = qy::kNone;
     mDragFlag = qy::kDragWindow;
     mSpacing = 0;
-    mFixHeight = -1;
-    mFixWidth = -1;
-    mWidth = -1;
-    mHeight = -1;
-
-    mBackgroundItemCls.mClsName = QLatin1String("HBackgroundItem");
+    mAlignment = Qt::AlignCenter;
+    mBackgroundItem.mClsName = QLatin1String("HBackgroundItem");
 }
 
-int HCssWidget::height() const
+/** set margins for all child item in layout */
+void HCssWidget::setMargins(const QMargins& m)
 {
-   return mHeight;
+    mMargins = m;
 }
 
-void HCssWidget::setHeight(int h)
+QMargins HCssWidget::margins() const
 {
-   mHeight = h;
+   return mMargins;
 }
 
-int HCssWidget::width() const
+/** set alignment in parent layout*/
+Qt::Alignment HCssWidget::alignment() const
 {
-   return mWidth;
+    return mAlignment;
 }
 
-void HCssWidget::setWidth(int w)
+void HCssWidget::setAlignment(Qt::Alignment align)
 {
-    mWidth = w;
-}
-
-void HCssWidget::setFixSize(const QSizeF &s)
-{
-    setFixWidth(s.width());
-    setFixHeight(s.height());
-}
-
-QSizeF HCssWidget::fixSize() const
-{
-    return QSizeF(fixWidth(),fixHeight());
-}
-
-void HCssWidget::setFixHeight(int h)
-{
-    mFixHeight = h;
-}
-
-int HCssWidget::fixHeight() const
-{
-   return mFixHeight;
-}
-
-int HCssWidget::fixWidth() const
-{
-   return mFixWidth;
-}
-
-void HCssWidget::setFixWidth(int w)
-{
-    mFixWidth = w;
+    mAlignment = align;
 }
 
 void HCssWidget::setDragPolicy(qy::HDragFlag flag )
@@ -305,14 +321,29 @@ int HCssWidget::spacing() const
     return mSpacing;
 }
 
-void HCssWidget::setBackgroundItemCls(const HClassInfo& cls)
+void HCssWidget::setBackgroundItem(const HClassInfo& cls)
 {
-    mBackgroundItemCls = cls;
+    mBackgroundItem = cls;
 }
 
-HClassInfo HCssWidget::backgroundItemCls() const
+HClassInfo HCssWidget::backgroundItem() const
 {
-    return mBackgroundItemCls;
+    return mBackgroundItem;
+}
+
+bool HCssWidget::hasStyleSheet() const
+{
+    return (mStyleSheet.size() > 1);
+}
+
+void HCssWidget::setStyleSheet(const QString& sheet)
+{
+    mStyleSheet = sheet;
+}
+
+QString HCssWidget::styleSheet() const
+{
+    return mStyleSheet;
 }
 
 void HCssWidget::copyTo(HCssObject* obj)

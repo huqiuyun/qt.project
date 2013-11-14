@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/layout/main">
+        <file>lt.main.xml</file>
+    </qresource>
+</RCC>

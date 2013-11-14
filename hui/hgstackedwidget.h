@@ -29,25 +29,25 @@ public:
     Q_ENUMS(ChildWidgetSizeMode)
 
 public:
-    DECLARE_GWIDGET_STATIC_CREATE(HGStackedWidget);
+    DECLARE_GITEM_STATIC_CREATE(HGStackedWidget);
     explicit HGStackedWidget( QGraphicsItem *parent = NULL );
     explicit HGStackedWidget(const HObjectInfo& objinfo, QGraphicsItem *parent = NULL );
     ~HGStackedWidget();
 
-    void addWidget( HGWidget* item );
-    int insertWidget(int index, HGWidget *view);
+    void addHGWidget( HGWidget* item );
+    int insertHGWidget(int index, HGWidget *view);
 
-    void removeWidget( HGWidget* item );
+    void removeHGWidget( HGWidget* item );
     void removeAt( int index );
 	void removeAll();
 
 	int currentIndex() const;
 	Q_INVOKABLE void setCurrentIndex(int index);
-    Q_INVOKABLE void setCurrentWidget( const HGWidget *widget );
+    Q_INVOKABLE void setCurrentHGWidget( const HGWidget *widget );
 
-    HGWidget *widgetAt(int index) const;
-    HGWidget *widgetAtByName( const QString& objectName ) const;
-    int widgetIndex( const HGWidget* widget );
+    HGWidget *hgwidgetAt(int index) const;
+    HGWidget *hgwidgetAtByName( const QString& objectName ) const;
+    int hgwidgetIndex( const HGWidget* widget );
 
 	int count() const;
 

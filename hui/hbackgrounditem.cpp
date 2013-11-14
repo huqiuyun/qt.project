@@ -62,7 +62,7 @@ bool HBackgroundItem::setCss(QSharedPointer<HCssObject> obj)
 void HBackgroundItem::setImagePath(const QString& path)
 {
     css()->setImagePath(path);
-    mImage = mResMgr->loadPath(css()->imagePath());
+    mImage = mResMgr->loadPixmap(css()->imagePath());
     emit backgroundChanged(0);
 }
 
@@ -168,7 +168,7 @@ void HBackgroundItem::colorChanged(const QColor& rgb)
     }
     else if (css()->imagePathLength()>0)
     {
-        mImage = mResMgr->loadPath(css()->imagePath());
+        mImage = mResMgr->loadPixmap(css()->imagePath());
         type = 1;
     }
     QColor color = css()->color();

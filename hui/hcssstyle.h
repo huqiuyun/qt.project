@@ -27,17 +27,6 @@ public:
     QVariant data(const QString& id) const;
     void setData(const QString& id, const QVariant& var);
 
-    void setColorizePolicy(qy::HColorizeFlag flag);
-    qy::HColorizeFlag colorizePolicy() const;
-
-    /** set margins for all child item in layout */
-    void setMargins(const QMargins& m);
-    QMargins margins() const;
-
-    /** set alignment in parent layout*/
-    Qt::Alignment alignment() const;
-    void setAlignment(Qt::Alignment align);
-
     virtual void copyTo(HCssObject* obj);
 
 signals:
@@ -46,13 +35,10 @@ signals:
 protected:
     typedef QMap<QString,QVariant> DataMap;
     HObjectInfo       mObjinfo;
-    qy::HColorizeFlag mColorizeFlag;
-    QMargins          mMargins;
-    Qt::Alignment     mAlignment;
     DataMap           mDatas;
 };
 
-// css for HGraphicsView
+// css for HGView
 class H_API HCssFrame : public HCssObject
 {
 public:
@@ -60,11 +46,26 @@ public:
 
     DECLARE_OBJECT_STATIC_CREATE(HCssFrame);
 public:
-    void setFrameStyleCls(const HClassInfo& cls);
-    HClassInfo frameStyleCls() const;
+    void setFrameStyle(const HClassInfo& cls);
+    HClassInfo frameStyle() const;
 
-    void setClientWidgetCls(const HClassInfo& cls);
-    HClassInfo clientWidgetCls() const;
+    void setClientWidget(const HClassInfo& cls);
+    HClassInfo clientWidget() const;
+
+    bool hasStyleSheet() const;
+    void setStyleSheet(const QString& sheet);
+    QString styleSheet() const;
+
+    void setWindowFlags(Qt::WindowFlags flags);
+    Qt::WindowFlags windowFlags() const;
+
+    /** set margins for all child item in layout */
+    void setMargins(const QMargins& m);
+    QMargins margins() const;
+
+    /** set alignment in parent layout*/
+    Qt::Alignment alignment() const;
+    void setAlignment(Qt::Alignment align);
 
     // next layout functions
     qy::HLayoutType layoutType() const;
@@ -76,11 +77,15 @@ public:
 
     virtual void copyTo(HCssObject* obj);
 protected:
-    qy::HLayoutType   mLayoutType;
-    int               mSpacing;
+    qy::HLayoutType mLayoutType;
+    QMargins mMargins;
+    Qt::Alignment mAlignment;
+    Qt::WindowFlags mWinFlags;
+    int mSpacing;
     /** for HGraphicsView to do create HFrameStyle object */
-    HClassInfo        mFrameStyleCls;
-    HClassInfo        mClientWidgetCls;
+    HClassInfo  mFrameStyle;
+    HClassInfo  mClientWidget;
+    QString mStyleSheet;
 };
 
 /** css for HBakcgroundItem object */
@@ -91,6 +96,17 @@ public:
 
     DECLARE_OBJECT_STATIC_CREATE(HCssBackground);
 public:
+    void setColorizePolicy(qy::HColorizeFlag flag);
+    qy::HColorizeFlag colorizePolicy() const;
+
+    /** set margins for all child item in layout */
+    void setMargins(const QMargins& m);
+    QMargins margins() const;
+
+    /** set alignment in parent layout*/
+    Qt::Alignment alignment() const;
+    void setAlignment(Qt::Alignment align);
+
     void setComposeMode(QPainter::CompositionMode composeMode);
     QPainter::CompositionMode composeMode() const;
 
@@ -106,6 +122,9 @@ public:
 
     virtual void copyTo(HCssObject* obj);
 protected:
+    qy::HColorizeFlag mColorizeFlag;
+    QMargins  mMargins;
+    Qt::Alignment mAlignment;
     QPainter::CompositionMode mComposeMode;
     QColor   mColor;
     QColor   mColorized;
@@ -120,25 +139,19 @@ public:
 
     DECLARE_OBJECT_STATIC_CREATE(HCssWidget);
 public:
-    int height() const;
-    void setHeight(int h);
-
-    int width() const;
-    void setWidth(int w);
-
-    void setFixSize(const QSizeF &s);
-    QSizeF fixSize() const;
-
-    void setFixHeight(int h);
-    int fixHeight() const;
-
-    int fixWidth() const;
-    void setFixWidth(int w);
-
     void setDragPolicy(qy::HDragFlag flag );
     qy::HDragFlag dragPolicy() const;
 
     // next layout functions
+
+    /** set margins for all child item in layout */
+    void setMargins(const QMargins& m);
+    QMargins margins() const;
+
+    /** set alignment in parent layout*/
+    Qt::Alignment alignment() const;
+    void setAlignment(Qt::Alignment align);
+
     qy::HLayoutType layoutType() const;
     void setLayout(qy::HLayoutType type);
 
@@ -149,20 +162,23 @@ public:
     void setSpacing(int s);
     int spacing() const;
 
-    void setBackgroundItemCls(const HClassInfo& cls);
-    HClassInfo backgroundItemCls() const;
+    void setBackgroundItem(const HClassInfo& cls);
+    HClassInfo backgroundItem() const;
+
+    bool hasStyleSheet() const;
+    void setStyleSheet(const QString& sheet);
+    QString styleSheet() const;
 
     virtual void copyTo(HCssObject* obj);
 protected:
-    qy::HDragFlag	  mDragFlag;
-    qy::HLayoutType   mLayoutType;
-    HAnchor           mAnchor;
-    int               mSpacing;
-    int               mFixHeight;
-    int               mFixWidth;
-    int               mWidth;
-    int               mHeight;
-    HClassInfo        mBackgroundItemCls;
+    qy::HDragFlag mDragFlag;
+    qy::HLayoutType mLayoutType;
+    QMargins mMargins;
+    Qt::Alignment mAlignment;
+    QString mStyleSheet;
+    HAnchor mAnchor;
+    int mSpacing;
+    HClassInfo mBackgroundItem;
 };
 
 class HCssStylePrivate;

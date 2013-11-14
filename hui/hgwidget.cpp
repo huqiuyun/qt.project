@@ -30,12 +30,12 @@ void HGWidgetPrivate::init()
     q_ptr->setObjectName(name);
 
     long hr = 0;
-    HClassInfo cls = q_ptr->css()->backgroundItemCls();
+    HClassInfo cls = q_ptr->css()->backgroundItem();
     HBackgroundItem* back = static_cast<HBackgroundItem*>(HFACTORY->createObject(cls,q_ptr,HCreateParameter(),&hr));
     mBackground = QSharedPointer<HBackgroundItem>(back);
 }
 
-IMPLEMENT_GWIDGET_STATIC_CREATE(HGWidget)
+IMPLEMENT_GITEM_STATIC_CREATE(HGWidget,HGWidget)
 HGWidget::HGWidget(QGraphicsItem* parent) :
     QGraphicsWidget(parent),
     d_ptr(new HGWidgetPrivate(QLatin1String("widgetId")))
@@ -172,16 +172,6 @@ void HGWidget::setDragPolicy(qy::HDragFlag flag )
 qy::HDragFlag HGWidget::dragPolicy() const
 {
     return css()->dragPolicy();
-}
-
-void HGWidget::setColorizePolicy(qy::HColorizeFlag flag)
-{
-    css()->setColorizePolicy(flag);
-}
-
-qy::HColorizeFlag HGWidget::colorizePolicy() const
-{
-    return css()->colorizePolicy();
 }
 
 void HGWidget::setBackgroundItem(QSharedPointer<HBackgroundItem> background)

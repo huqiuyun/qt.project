@@ -20,17 +20,20 @@ public:
     long coUnRegisterUnknown(const HGuid* clsrid);
     long createInstance(IHUnknown* pUnkOuter, const HGuid& riid, void** ppv);
     //
-    long coRegisterGWidget(const HRegisterGWidget* com);
-    long coUnRegisterGWidget(const char* clsname);
-    HGWidget* createGWidget(const HClassInfo& clsinfo, QGraphicsItem* parent, const HCreateParameter& param,long *hr);
+    bool isGItem(const QLatin1String& clsname);
+    long coRegisterGItem(const HRegisterGItem* com);
+    long coUnRegisterGItem(const QLatin1String& clsname);
+    void* createGItem(const HClassInfo& clsinfo, QGraphicsItem* parent, const HCreateParameter& param,long *hr);
 
     //
+    bool isQWidget(const QLatin1String& clsname);
     long coRegisterQWidget(const HRegisterQWidget* com);
-    long coUnRegisterQWidget(const char* clsname);
+    long coUnRegisterQWidget(const QLatin1String& clsname);
     QWidget* createQWidget(const HClassInfo& clsinfo, QWidget* parent, const HCreateParameter& param,long *hr);
 
+    bool isObject(const QLatin1String& clsname);
     long coRegisterObject(const HRegisterObject* com);
-    long coUnRegisterObject(const char* clsname);
+    long coUnRegisterObject(const QLatin1String& clsname);
     QObject* createObject(const HClassInfo& clsinfo, QObject* parent, const HCreateParameter& param,long *hr);
 private:
     friend class HFactoryPrivate;

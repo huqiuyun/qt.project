@@ -2,13 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <hgview.h>
 
 namespace Ui {
 class MainWindow;
 }
 class HMainTest;
 
-class MainWindow : public QMainWindow
+class MainWindow : public HGView
 {
     Q_OBJECT
 

@@ -30,29 +30,22 @@ HGViewPrivate::~HGViewPrivate()
 void HGViewPrivate::initScene()
 {
     long hr = 0;
-    HClassInfo cls = q_ptr->css()->frameStyleCls();
+    HClassInfo cls = q_ptr->css()->frameStyle();
     mFrameStyle =
             static_cast<HFrameStyle*>(HFACTORY->createObject(cls,q_ptr,HCreateParameter(),&hr));
     mFrameStyle->setView(q_ptr);
     //
-    q_ptr->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    q_ptr->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-    //avoid lots of background redrawin
-    q_ptr->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
 
     //init scene
     mScene = new QGraphicsScene();
     q_ptr->setScene(mScene);
 
     //init content item
-    cls = q_ptr->css()->clientWidgetCls();
-    mWidget = HFACTORY->createGWidget(cls,NULL,HCreateParameter(),&hr);
+    cls = q_ptr->css()->clientWidget();
+    mWidget = static_cast<HGWidget*>(HFACTORY->createGItem(cls,NULL,HCreateParameter(),&hr));
     mWidget->setParent(mScene);
     mScene->addItem(mWidget);
 
-    mWidget->setDragPolicy(qy::kDragWindow);
-    mWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     mWidget->setLayout(qy::kVBox);
 
     //保证每个frame必定有名字
@@ -61,7 +54,7 @@ void HGViewPrivate::initScene()
     q_ptr->setObjectName(name);
 }
 
-IMPLEMENT_GRAPHICSVIEW_STATIC_CREATE(HGView)
+IMPLEMENT_GVIEW_STATIC_CREATE(HGView)
 HGView::HGView(QWidget *parent) :
     QGraphicsView(parent),
     d_ptr(new HGViewPrivate(QLatin1String("frameId")))
@@ -102,7 +95,7 @@ void HGView::setFrameStyle(HFrameStyle *style)
     if (NULL==style)
     {
         long hr = 0;
-        HClassInfo cls = css()->frameStyleCls();
+        HClassInfo cls = css()->frameStyle();
         style =
                 static_cast<HFrameStyle*>(HFACTORY->createObject(cls,this,HCreateParameter(),&hr));
         style->setView(this);
@@ -334,6 +327,8 @@ void HGView::resizeEvent(QResizeEvent *event)
     emit resized();
 }
 
-#if defined(WIN32)
-#include "HGView_win32.cpp"
-#endif //
+bool HGView::nativeEvent(const QByteArray & eventType, void * message, long * result)
+{
+    return d_func()->mFrameStyle->nativeEvent(eventType,message,result);
+}
+

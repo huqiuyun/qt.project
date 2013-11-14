@@ -21,13 +21,13 @@ public:
     explicit HGWidget(const HObjectInfo& objinfo, QGraphicsItem* parent = NULL);
     ~HGWidget();
 
-    DECLARE_GWIDGET_STATIC_CREATE(HGWidget);
+    DECLARE_GITEM_STATIC_CREATE(HGWidget);
 public:
     /** for css */
+    bool setCss(QSharedPointer<HCssObject> obj);
+
     void setStyleId(const QLatin1String& id);
     QLatin1String styleId() const;
-
-    bool setCss(QSharedPointer<HCssObject> obj);
 
     int height() const;
     void setHeight(int h);
@@ -46,9 +46,6 @@ public:
 
     void setDragPolicy(qy::HDragFlag flag );
     qy::HDragFlag dragPolicy() const;
-
-    virtual void setColorizePolicy(qy::HColorizeFlag flag);
-    qy::HColorizeFlag colorizePolicy() const;
 
     void setBackgroundItem(QSharedPointer<HBackgroundItem> background);
     QSharedPointer<HBackgroundItem> backgroundItem() const;
@@ -83,6 +80,7 @@ public:
     // end layout functions
 protected:
     HCssWidget* css()  const;
+
 protected:
     void doConstruct();
     virtual void construct(){}

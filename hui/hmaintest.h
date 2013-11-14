@@ -12,6 +12,8 @@
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QCheckBox>
 #include <Qtwidgets/QBoxLayout>
 #include <Qtwidgets/QStackedLayout>
 #include <Qtwidgets/QGridLayout>
@@ -20,12 +22,13 @@
 #include <hbackgrounditem.h>
 #include <hfactory.h>
 #include <hcore.h>
+#include <hgstackedwidget.h>
 
 class HMainTest
 {
 public:
 
-    void setupUi(QMainWindow *MainWindow)
+    void setupUi(HGView *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
@@ -33,13 +36,11 @@ public:
 
         // xml 展显出下面的结构出来.
 
-        HGView *centralWidget = new HGView(MainWindow);
-        centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        centralWidget->setLayout(qy::kVBox);
+        MainWindow->setLayout(qy::kVBox);
 
         HGView *graphicsView = 0;
         {
-            graphicsView = new HGView(centralWidget);
+            graphicsView = new HGView(MainWindow);
             graphicsView->setObjectName(QStringLiteral("graphicsView"));
 
             HGWidget* clientWidget = graphicsView->clientWidget();
@@ -47,20 +48,66 @@ public:
 
             long hr = 0;
             {//1
-                HGView* widget1 = new HGView();
+                HGView* widget = new HGView();
 
-                widget1->setLayout(qy::kGrid);
-                QGridLayout* layout = static_cast<QGridLayout*>(widget1->layout());
-                for( int i = 0; i < 10 ; i++)
+                widget->setLayout(qy::kGrid);
+                QGridLayout* layout = static_cast<QGridLayout*>(widget->layout());
+                for( int i = 0; i < 6 ; i++)
                 {
                     QPushButton* button =
-                            static_cast<QPushButton*>(HFACTORY->createQWidget(HClassInfo("QPushButton","",""),widget1,HCreateParameter(false,QString("button%1").arg(i)),&hr));
+                            static_cast<QPushButton*>(HFACTORY->createQWidget(HClassInfo("QPushButton","",""),widget,HCreateParameter(false,QString("button%1").arg(i)),&hr));
                     button->setFixedSize(80,48);
-                    layout->addWidget(button,i%4,i/4);
+                    layout->addWidget(button,i%3,i/3);
                 }
-                clientWidget->addWidget(widget1);
+                widget->setFixedSize(400,200);
+                clientWidget->addWidget(widget);
 
-                widget1->clientWidget()->backgroundItem()->setColor(QColor(100,100,100));
+                widget->clientWidget()->backgroundItem()->setColor(QColor(100,100,100));
+            }
+            {
+                HGView* widget = new HGView();
+
+                widget->setLayout(qy::kHBox);
+                QHBoxLayout* layout = static_cast<QHBoxLayout*>(widget->layout());
+                for( int i = 0; i < 4 ; i++)
+                {
+                    QCheckBox* button =
+                            static_cast<QCheckBox*>(HFACTORY->createQWidget(HClassInfo("QCheckBox","",""),widget,HCreateParameter(false,QString("button%1").arg(i)),&hr));
+                    layout->addWidget(button);
+                }
+                widget->setFixedHeight(40);
+                clientWidget->addWidget(widget);
+                widget->clientWidget()->backgroundItem()->setColor(QColor(100,110,100));
+            }
+            {
+                HGView* widget = new HGView();
+
+                widget->setLayout(qy::kHBox);
+                QHBoxLayout* layout = static_cast<QHBoxLayout*>(widget->layout());
+                for( int i = 0; i < 4 ; i++)
+                {
+                    QRadioButton* button =
+                            static_cast<QRadioButton*>(HFACTORY->createQWidget(HClassInfo("QRadioButton","",""),widget,HCreateParameter(false,QString("button%1").arg(i)),&hr));
+                    layout->addWidget(button);
+                }
+                widget->setFixedHeight(40);
+                clientWidget->addWidget(widget);
+                widget->clientWidget()->backgroundItem()->setColor(QColor(100,120,100));
+            }
+            {
+                HGView* widget = new HGView();
+
+                widget->setLayout(qy::kHBox);
+                QHBoxLayout* layout = static_cast<QHBoxLayout*>(widget->layout());
+                for( int i = 0; i < 4 ; i++)
+                {
+                    QRadioButton* button =
+                            static_cast<QRadioButton*>(HFACTORY->createQWidget(HClassInfo("QRadioButton","",""),widget,HCreateParameter(false,QString("button%1").arg(i)),&hr));
+                    layout->addWidget(button);
+                }
+                widget->setFixedHeight(40);
+                clientWidget->addWidget(widget);
+                widget->clientWidget()->backgroundItem()->setColor(QColor(100,150,100));
             }
             {//2
                 HGWidget* grwidget2 = new HGWidget(clientWidget);
@@ -68,30 +115,31 @@ public:
                 grwidget2->backgroundItem()->setColor(QColor(150,150,50));
                 {
                     grwidget2->setLayout(qy::kHBox);
-                    HGWidget* grwidget2_1 = new HGWidget(grwidget2);
+                    HGStackedWidget* grwidget2_1 = new HGStackedWidget(grwidget2);
                     grwidget2->addItem(grwidget2_1);
-                    grwidget2_1->backgroundItem()->setColor(QColor(150,50,50));
+                   // grwidget2_1->backgroundItem()->setColor(QColor(150,50,50));
 
-                    HGWidget* grwidget2_2 = new HGWidget(grwidget2);
-                    grwidget2->addItem(grwidget2_2);
+                    HGWidget* grwidget2_2 = new HGWidget(grwidget2_1);
+                    grwidget2_1->addHGWidget(grwidget2_2);
+                    grwidget2_1->setCurrentIndex(0);
                     grwidget2_2->backgroundItem()->setColor(QColor(150,50,250));
                 }
             }
+           // for(int i = 0; i<8;i++)
             {//3
                 HGWidget* grwidget3 = new HGWidget(clientWidget);
                 clientWidget->addItem(grwidget3);
                 grwidget3->backgroundItem()->setColor(QColor(50,250,50));
             }
-            centralWidget->layout()->addWidget(graphicsView);
+            MainWindow->layout()->addWidget(graphicsView);
         }
-        MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
-    void retranslateUi(QMainWindow *MainWindow)
+    void retranslateUi(HGView *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
     } // retranslateUi

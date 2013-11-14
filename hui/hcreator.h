@@ -27,6 +27,15 @@
 #include <QTableWidget>
 #include <QTableView>
 #include <QSplitter>
+#include <QSlider>
+#include <QGraphicsEllipseItem>
+#include <QGraphicsLineItem>
+#include <QGraphicsPathItem>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsPolygonItem>
+#include <QGraphicsRectItem>
+#include <QGraphicsSimpleTextItem>
+#include <QGraphicsTextItem>
 
 const HRegisterObject s_objs[] =
 {
@@ -42,18 +51,9 @@ const HRegisterObject s_objs[] =
     {NULL,NULL}
 };
 
-const HRegisterGWidget s_gwidgets[] =
-{
-    // css object
-    {"HGWidget"             , (HCreateGWidgetInstanceCB)&HGWidget::create},
-    {"HGStackedWidget"      , (HCreateGWidgetInstanceCB)&HGStackedWidget::create},
-    {NULL,NULL}
-};
-
 class HQCreator
 {
 public:
-    HQCreator();
 
     DECLARE_QWIDGET_STATIC_CREATE(QWidget);
     DECLARE_QWIDGET_STATIC_CREATE(QPushButton);
@@ -73,6 +73,38 @@ public:
     DECLARE_QWIDGET_STATIC_CREATE(QTableWidget);
     DECLARE_QWIDGET_STATIC_CREATE(QTableView);
     DECLARE_QWIDGET_STATIC_CREATE(QSplitter);
+    DECLARE_QWIDGET_STATIC_CREATE(QSlider);
+
+    //graphicsitem
+    DECLARE_GITEM_STATIC_CREATE(QGraphicsEllipseItem);
+    DECLARE_GITEM_STATIC_CREATE(QGraphicsLineItem);
+    DECLARE_GITEM_STATIC_CREATE(QGraphicsPathItem);
+    DECLARE_GITEM_STATIC_CREATE(QGraphicsPixmapItem);
+    DECLARE_GITEM_STATIC_CREATE(QGraphicsPolygonItem);
+    DECLARE_GITEM_STATIC_CREATE(QGraphicsRectItem);
+    DECLARE_GITEM_STATIC_CREATE(QGraphicsSimpleTextItem);
+    DECLARE_GITEM_STATIC_CREATE(QGraphicsTextItem);
+};
+
+#define REG_GITEM_EX(CLSSTR,CLSNAME)   \
+    REG_GITEM(CLSSTR,CLSNAME,HQCreator)
+
+// QGraphicsItem
+const HRegisterGItem s_gitems[] =
+{
+    // css object
+    REG_GITEM("HGWidget"                  , HGWidget, HGWidget),
+    REG_GITEM("HGStackedWidget"           , HGStackedWidget, HGStackedWidget),
+    //
+    REG_GITEM_EX("QGraphicsEllipseItem"   , QGraphicsEllipseItem),
+    REG_GITEM_EX("QGraphicsLineItem"      , QGraphicsLineItem),
+    REG_GITEM_EX("QGraphicsPathItem"      , QGraphicsPathItem),
+    REG_GITEM_EX("QGraphicsPixmapItem"    , QGraphicsPixmapItem),
+    REG_GITEM_EX("QGraphicsPolygonItem"   , QGraphicsPolygonItem),
+    REG_GITEM_EX("QGraphicsRectItem"      , QGraphicsRectItem),
+    REG_GITEM_EX("QGraphicsSimpleTextItem", QGraphicsSimpleTextItem),
+    REG_GITEM_EX("QGraphicsTextItem"      , QGraphicsTextItem),
+    {NULL,NULL}
 };
 
 #define REG_QWIDGET_EX(CLSSTR,CLSNAME)       \
@@ -95,9 +127,11 @@ const HRegisterQWidget s_qwidgets[] =
     REG_QWIDGET_EX("QLabel"          , QLabel),
     REG_QWIDGET_EX("QLineEdit"       , QLineEdit),
     REG_QWIDGET_EX("QTabBar"         , QTabBar),
+    REG_QWIDGET_EX("QStackedWidget"  , QStackedWidget),
     REG_QWIDGET_EX("QTableWidget"    , QTableWidget),
     REG_QWIDGET_EX("QTableView"      , QTableView),
-    REG_QWIDGET_EX("QStackedWidget"  , QStackedWidget),
+    REG_QWIDGET_EX("QSplitter"       , QSplitter),
+    REG_QWIDGET_EX("QSlider"         , QSlider),
     {NULL,NULL}
 };
 

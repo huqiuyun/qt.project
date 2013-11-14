@@ -21,7 +21,7 @@ public:
     explicit HGView(const HObjectInfo& objinfo, QWidget *parent = 0);
     ~HGView();
 
-    DECLARE_GRAPHICSVIEW_STATIC_CREATE(HGView);
+    DECLARE_GVIEW_STATIC_CREATE(HGView);
 public:
     bool setCss(QSharedPointer<HCssObject> obj);
 
@@ -44,6 +44,7 @@ public:
 
     /** set per child item space in owner layout */
     void setSpacing(int s);
+
 protected:
     HCssFrame* css()  const;
 
@@ -54,15 +55,14 @@ protected:
 protected:
     virtual void construct(){}
     virtual void resizeEvent(QResizeEvent *event);
-#if defined(WIN32)
-    virtual bool winEvent(MSG *message, long *result);
-#endif //WIN32
+    virtual bool nativeEvent(const QByteArray & eventType, void * message, long * result);
 signals:
     void resized();
 
 public slots:
 
 private:
+    friend class HFrameStyle;
     template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
     HGViewPrivate* d_ptr;
 };

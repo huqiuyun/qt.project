@@ -3,7 +3,7 @@
 #include "hmaintest.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+    HGView(parent),
     ui(NULL),
     mainTest(NULL)
 {

@@ -1,9 +1,5 @@
 #include "hcreator.h"
 
-HQCreator::HQCreator()
-{
-}
-
 IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QWidget,HQCreator)
 {
     Q_UNUSED(objinfo);
@@ -28,7 +24,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QCheckBox,HQCreator)
     Q_UNUSED(parent);
     Q_UNUSED(param);
     Q_UNUSED(hr);
-    return hSetObjectT<QCheckBox>(objinfo,new QCheckBox(parent));
+    return hSetObjectT<QCheckBox>(objinfo,new QCheckBox(param.mVar0.toString(),parent));
 }
 
 
@@ -38,7 +34,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QRadioButton,HQCreator)
     Q_UNUSED(parent);
     Q_UNUSED(param);
     Q_UNUSED(hr);
-    return hSetObjectT<QRadioButton>(objinfo,new QRadioButton(parent));
+    return hSetObjectT<QRadioButton>(objinfo,new QRadioButton(param.mVar0.toString(),parent));
 }
 
 IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QComboBox,HQCreator)
@@ -158,5 +154,86 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QSplitter,HQCreator)
     Q_UNUSED(param);
     Q_UNUSED(hr);
     return hSetObjectT<QSplitter>(objinfo,new QSplitter((Qt::Orientation)param.mVar0.toUInt(),parent));
+}
+
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QSlider,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+    Q_UNUSED(param);
+    Q_UNUSED(hr);
+    return hSetObjectT<QSlider>(objinfo,new QSlider((Qt::Orientation)param.mVar0.toUInt(),parent));
+}
+
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsEllipseItem,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+    Q_UNUSED(param);
+    Q_UNUSED(hr);
+    return new QGraphicsEllipseItem(parent);
+}
+
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsLineItem,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+    Q_UNUSED(param);
+    Q_UNUSED(hr);
+    return new QGraphicsLineItem(parent);
+}
+
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPathItem,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+    Q_UNUSED(param);
+    Q_UNUSED(hr);
+    return new QGraphicsPathItem(parent);
+}
+
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPixmapItem,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+    Q_UNUSED(param);
+    Q_UNUSED(hr);
+    return new QGraphicsPixmapItem(parent);
+}
+
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPolygonItem,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+    Q_UNUSED(param);
+    Q_UNUSED(hr);
+    return new QGraphicsPolygonItem(parent);
+}
+
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsRectItem,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+    Q_UNUSED(param);
+    Q_UNUSED(hr);
+    return new QGraphicsRectItem(parent);
+}
+
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsSimpleTextItem,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+    Q_UNUSED(param);
+    Q_UNUSED(hr);
+    return new QGraphicsSimpleTextItem(parent);
+}
+
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsTextItem,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+    Q_UNUSED(param);
+    Q_UNUSED(hr);
+    return new QGraphicsTextItem(parent);
 }
 

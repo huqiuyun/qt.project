@@ -6,6 +6,7 @@
 
 class QResizeEvent;
 class HGView;
+class HCssFrame;
 
 class H_API HFrameStyle : public QObject, public HObject
 {
@@ -18,11 +19,14 @@ public:
 
     DECLARE_OBJECT_STATIC_CREATE(HFrameStyle);
 public:
-
-    void setView(HGView* view);
-
     void setStyleId(const QLatin1String& id);
     QLatin1String styleId() const;
+
+protected:
+    HCssFrame* css() const;
+
+private:
+    void setView(HGView* view);
 
 public:
     virtual qreal opacity() const;
@@ -30,12 +34,10 @@ public:
     virtual void  resizeEvent(QResizeEvent *event);
     virtual QRect calcClientRect(const QRect &frameRect) const;
     virtual bool  isAnimationEnabled() const;
-
-#if defined(WIN32)
-    virtual bool winEvent( MSG *message, long *result );
-#endif //WIN32
-
+    virtual bool  nativeEvent(const QByteArray & eventType, void * message, long * result);
 protected:
+    friend class HGView;
+    friend class HGViewPrivate;
     QLatin1String  mStyleId;
     HGView  *mView;
 };

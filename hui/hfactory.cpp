@@ -3,7 +3,7 @@
 #include <QMap>
 
 typedef QMap<HGuid,const HRegisterUnknown*> UnkMap;
-typedef QMap<QLatin1String,const HRegisterGWidget*> GWidgetMap;
+typedef QMap<QLatin1String,const HRegisterGItem*> GItemMap;
 typedef QMap<QLatin1String,const HRegisterQWidget*> QWidgetMap;
 typedef QMap<QLatin1String,const HRegisterObject*> ObjectMap;
 
@@ -20,7 +20,7 @@ private:
     friend class HFactory;
 
     UnkMap mUnks;
-    GWidgetMap mWidgets;
+    GItemMap mWidgets;
     QWidgetMap mQWidgets;
     ObjectMap mObjects;
     bool   mInit;
@@ -134,7 +134,18 @@ long HFactory::createInstance(IHUnknown *pUnk, const HGuid& riid, void **ppv)
 }
 
 //
-long HFactory::coRegisterGWidget(const HRegisterGWidget* com)
+bool HFactory::isGItem(const QLatin1String& clsname)
+{
+    H_D(HFactory);
+    GItemMap::iterator iter = d->mWidgets.find(clsname);
+    if (iter != d->mWidgets.end())
+    {
+        return true;
+    }
+    return false;
+}
+
+long HFactory::coRegisterGItem(const HRegisterGItem* com)
 {
     H_D(HFactory);
     if (!d->isInit())
@@ -147,8 +158,7 @@ long HFactory::coRegisterGWidget(const HRegisterGWidget* com)
         return qy::kHPointer;
     }
     QLatin1String id = QLatin1String(com->clsname);
-    GWidgetMap::iterator iter = d->mWidgets.find(id);
-    if (iter != d->mWidgets.end())
+    if (isGItem(id))
     {
         return qy::kHExisted;
     }
@@ -156,14 +166,14 @@ long HFactory::coRegisterGWidget(const HRegisterGWidget* com)
     return qy::kHOk;
 }
 
-long HFactory::coUnRegisterGWidget(const char* clsname)
+long HFactory::coUnRegisterGItem(const QLatin1String& clsname)
 {
     H_D(HFactory);
     if (!d->isInit())
     {
         return qy::kHNotInit;
     }
-    GWidgetMap::iterator iter = d->mWidgets.find(QLatin1String(clsname));
+    GItemMap::iterator iter = d->mWidgets.find(clsname);
     if (iter != d->mWidgets.end())
     {
        d->mWidgets.erase(iter);
@@ -171,7 +181,7 @@ long HFactory::coUnRegisterGWidget(const char* clsname)
     return qy::kHOk;
 }
 
-HGWidget* HFactory::createGWidget(const HClassInfo& clsinfo, QGraphicsItem* parent, const HCreateParameter& param, long *hr)
+void* HFactory::createGItem(const HClassInfo& clsinfo, QGraphicsItem* parent, const HCreateParameter& param, long *hr)
 {
     H_D(HFactory);
     if (!d->isInit())
@@ -179,14 +189,14 @@ HGWidget* HFactory::createGWidget(const HClassInfo& clsinfo, QGraphicsItem* pare
         *hr = qy::kHNotInit;
         return NULL;
     }
-    GWidgetMap::iterator iter = d->mWidgets.find(clsinfo.mClsName);
+    GItemMap::iterator iter = d->mWidgets.find(clsinfo.mClsName);
     if (iter == d->mWidgets.end() || !iter.value())
     {
         *hr = qy::kHNoInterface;
         return NULL;
     }
-    const HRegisterGWidget* unk = iter.value();
-    HGWidget *obj = unk->fnCreate?unk->fnCreate(clsinfo, parent, param, hr) : NULL;
+    const HRegisterGItem* unk = iter.value();
+    void *obj = unk->fnCreate?unk->fnCreate(clsinfo, parent, param, hr) : NULL;
     if (!obj)
     {
         *hr = qy::kHFailure;
@@ -195,6 +205,17 @@ HGWidget* HFactory::createGWidget(const HClassInfo& clsinfo, QGraphicsItem* pare
 }
 
 //
+bool HFactory::isQWidget(const QLatin1String &clsname)
+{
+    H_D(HFactory);
+    QWidgetMap::iterator iter = d->mQWidgets.find(clsname);
+    if (iter != d->mQWidgets.end())
+    {
+        return true;
+    }
+    return false;
+}
+
 long HFactory::coRegisterQWidget(const HRegisterQWidget* com)
 {
     H_D(HFactory);
@@ -207,8 +228,7 @@ long HFactory::coRegisterQWidget(const HRegisterQWidget* com)
         return qy::kHPointer;
     }
     QLatin1String id = QLatin1String(com->clsname);
-    QWidgetMap::iterator iter = d->mQWidgets.find(id);
-    if (iter != d->mQWidgets.end())
+    if (isQWidget(id))
     {
         return qy::kHExisted;
     }
@@ -216,14 +236,14 @@ long HFactory::coRegisterQWidget(const HRegisterQWidget* com)
     return qy::kHOk;
 }
 
-long HFactory::coUnRegisterQWidget(const char* clsname)
+long HFactory::coUnRegisterQWidget(const QLatin1String& clsname)
 {
     H_D(HFactory);
     if (!d->isInit())
     {
         return qy::kHNotInit;
     }
-    QWidgetMap::iterator iter = d->mQWidgets.find(QLatin1String(clsname));
+    QWidgetMap::iterator iter = d->mQWidgets.find(clsname);
     if (iter != d->mQWidgets.end())
     {
        d->mQWidgets.erase(iter);
@@ -254,6 +274,17 @@ QWidget* HFactory::createQWidget(const HClassInfo& clsinfo,QWidget* parent, cons
     return obj;
 }
 
+//
+bool HFactory::isObject(const QLatin1String &clsname)
+{
+    H_D(HFactory);
+    ObjectMap::iterator iter = d->mObjects.find(clsname);
+    if (iter != d->mObjects.end())
+    {
+        return true;
+    }
+    return false;
+}
 
 long HFactory::coRegisterObject(const HRegisterObject* com)
 {
@@ -263,8 +294,7 @@ long HFactory::coRegisterObject(const HRegisterObject* com)
         return qy::kHNotInit;
     }
     QLatin1String id = QLatin1String(com->clsname);
-    ObjectMap::iterator iter = d->mObjects.find(id);
-    if (iter != d->mObjects.end())
+    if (isObject(id))
     {
         return qy::kHExisted;
     }
@@ -272,14 +302,14 @@ long HFactory::coRegisterObject(const HRegisterObject* com)
     return qy::kHOk;
 }
 
-long HFactory::coUnRegisterObject(const char* clsname)
+long HFactory::coUnRegisterObject(const QLatin1String& clsname)
 {
     H_D(HFactory);
     if (!d->isInit())
     {
         return qy::kHNotInit;
     }
-    ObjectMap::iterator iter = d->mObjects.find(QLatin1String(clsname));
+    ObjectMap::iterator iter = d->mObjects.find(clsname);
     if (iter != d->mObjects.end())
     {
        d->mObjects.erase(iter);

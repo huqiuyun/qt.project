@@ -33,7 +33,7 @@ HGStackedWidgetPrivate::~HGStackedWidgetPrivate()
 {
 }
 
-IMPLEMENT_GWIDGET_STATIC_CREATE(HGStackedWidget)
+IMPLEMENT_GITEM_STATIC_CREATE(HGStackedWidget,HGStackedWidget)
 HGStackedWidget::HGStackedWidget(QGraphicsItem *parent) :
     HGWidget(*(new HGStackedWidgetPrivate(QLatin1String("stackedwidgetId"))), parent)
 {
@@ -50,7 +50,7 @@ HGStackedWidget::~HGStackedWidget()
 {
 }
 
-int HGStackedWidget::insertWidget(int index, HGWidget *widget)
+int HGStackedWidget::insertHGWidget(int index, HGWidget *widget)
 {
     Q_D( HGStackedWidget );
 
@@ -121,12 +121,12 @@ void HGStackedWidget::setCurrentIndex( int index )
                 SIGNAL(stateChanged (QAbstractAnimation::State, QAbstractAnimation::State)),
                 SLOT(onAnimationStateChanged(QAbstractAnimation::State, QAbstractAnimation::State)));
 
-        QPropertyAnimation *slideIn = new QPropertyAnimation(widgetAt(index), "geometry", d->m_animGroup);
+        QPropertyAnimation *slideIn = new QPropertyAnimation(hgwidgetAt(index), "geometry", d->m_animGroup);
         slideIn->setDuration(300);
         slideIn->setEasingCurve(QEasingCurve::OutQuart);
         d->m_animGroup->addAnimation(slideIn);
 
-        QPropertyAnimation *slideOut = new QPropertyAnimation(widgetAt(d->m_currentIndex), "geometry", d->m_animGroup);
+        QPropertyAnimation *slideOut = new QPropertyAnimation(hgwidgetAt(d->m_currentIndex), "geometry", d->m_animGroup);
         slideOut->setDuration(300);
         slideOut->setEasingCurve(QEasingCurve::OutQuart);
         d->m_animGroup->addAnimation(slideOut);
@@ -152,11 +152,11 @@ void HGStackedWidget::setCurrentIndex( int index )
         d->m_animGroup->start(QAbstractAnimation::DeleteWhenStopped);
 
         d->m_currentIndex = index;
-        widgetAt(d->m_currentIndex)->show();
+        hgwidgetAt(d->m_currentIndex)->show();
     }
 }
 
-HGWidget *HGStackedWidget::widgetAt(int index) const
+HGWidget *HGStackedWidget::hgwidgetAt(int index) const
 {
     if (index < 0 || index >= d_func()->m_widgetList.count())
     {
@@ -165,7 +165,7 @@ HGWidget *HGStackedWidget::widgetAt(int index) const
     return d_func()->m_widgetList.at(index);
 }
 
-HGWidget* HGStackedWidget::widgetAtByName( const QString& objectName ) const
+HGWidget* HGStackedWidget::hgwidgetAtByName( const QString& objectName ) const
 {
     Q_D( const HGStackedWidget );
 
@@ -191,9 +191,9 @@ void HGStackedWidget::resizeEvent(QGraphicsSceneResizeEvent *event)
     }
 }
 
-void HGStackedWidget::addWidget(HGWidget* item)
+void HGStackedWidget::addHGWidget(HGWidget* item)
 {
-    insertWidget(d_func()->m_widgetList.size(), item);
+    insertHGWidget(d_func()->m_widgetList.size(), item);
 }
 
 int HGStackedWidget::count() const
@@ -208,9 +208,9 @@ void HGStackedWidget::construct()
     setFlag( QGraphicsItem::ItemClipsChildrenToShape );
 }
 
-void HGStackedWidget::removeWidget( HGWidget* item )
+void HGStackedWidget::removeHGWidget( HGWidget* item )
 {
-    int index = widgetIndex( item );
+    int index = hgwidgetIndex( item );
     removeAt( index );
 }
 
@@ -241,7 +241,7 @@ void HGStackedWidget::removeAll( )
     d_func()-> m_currentIndex = -1;
 }
 
-int HGStackedWidget::widgetIndex( const HGWidget* widget )
+int HGStackedWidget::hgwidgetIndex( const HGWidget* widget )
 {
     Q_D(HGStackedWidget);
 
@@ -255,9 +255,9 @@ int HGStackedWidget::widgetIndex( const HGWidget* widget )
     return -1;
 }
 
-void HGStackedWidget::setCurrentWidget( const HGWidget *widget )
+void HGStackedWidget::setCurrentHGWidget( const HGWidget *widget )
 {
-    int index = widgetIndex( widget );
+    int index = hgwidgetIndex( widget );
     if ( index != -1 )
     {
         setCurrentIndex( index );
@@ -296,13 +296,13 @@ void HGStackedWidget::_resetLayout()
         {
             if ( d->m_childWidgetSizeMode == HGStackedWidget::adjustMode )
             {
-                setFixSize( QSizeF(widgetAt(i)->width(), widgetAt(i)->height()) );
+                setFixSize( QSizeF(hgwidgetAt(i)->width(), hgwidgetAt(i)->height()) );
             }
-            widgetAt(i)->show();
+            hgwidgetAt(i)->show();
         }
         else
         {
-            widgetAt(i)->hide();
+            hgwidgetAt(i)->hide();
         }
     }
 }

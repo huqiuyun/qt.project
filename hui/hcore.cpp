@@ -5,6 +5,7 @@
 #include "hsystem.h"
 #include "private/hcore_p.h"
 #include "hcreator.h"
+
 HCorePrivate::HCorePrivate() :
     q_ptr(NULL),
     mCss(NULL),
@@ -56,9 +57,9 @@ HFactory* HCore::factory()
             d->mFactory->coRegisterObject(&s_objs[i]);
         }}
 
-        {for (uint i = 0; i < sizeof(s_gwidgets)/sizeof(s_gwidgets[0]); i++)
+        {for (uint i = 0; i < sizeof(s_gitems)/sizeof(s_gitems[0]); i++)
         {
-            d->mFactory->coRegisterGWidget(&s_gwidgets[i]);
+            d->mFactory->coRegisterGItem(&s_gitems[i]);
         }}
 
         {for (uint i = 0; i < sizeof(s_qwidgets)/sizeof(s_qwidgets[0]); i++)

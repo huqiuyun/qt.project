@@ -24,6 +24,7 @@
  *   <css>
  *     <obj clsname="" id="${styleid}" />
  *   </css>
+ *   <property key=value key=value />
  *   <widget clsname="" name="" styleid="${styleid}"/>
  *   <widget clsname="" name="" styleid="${styleid}"/>
  *

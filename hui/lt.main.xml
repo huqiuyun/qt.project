@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="1.0">
+ <!-- css for public <!-->
+ <css>
+    <!-- css for main client background <!-->
+    <obj clsname="HCssBackground" name="" styleid="main.client.background">
+       <property id="colorizePolicy"></property>
+       <property id="composeMode"></property>
+       <property id="alignment"></property>
+       <property id="margins"></property>
+       <property id="imagePath"></property>
+       <property id="color"></property>
+    </obj>
+    <!-- css for main client widget <!-->
+    <obj clsname="HCssWidget" name="" styleid="main.clientId">
+       <property id="styleSheet"></property>
+       <property id="alignment"></property>
+       <property id="margins"></property>
+       <property id="layoutType"></property>
+       <property id="spacing"></property>
+       <property id="dragPolicy"></property>
+       <property id="backgroundItem" clsname="HBackgroundItem" name="" styleid="main.client.background"/>
+    </obj>
+    <!--css for default frame <!-->
+    <obj clsname="HCssFrame" name="" styleid="framewindowId">
+       <property id="frameStyle" clsname="HFrameStyle" name="" styleid="framestyleId"/>
+       <property id="clientWidget" clsname="HGWidget" name="rootWidget" styleid="clientId"/>
+       <property id="winFlags"></property>
+       <property id="styleSheet"></property>
+       <property id="alignment"></property>
+       <property id="margins"></property>
+       <property id="layoutType"></property>
+       <property id="spacing"></property>
+     </obj>
+ </css>
+
+ <!-- main view <!-->
+ <widget clsname="HGView" name="main" styleid="main.styleid">
+    <!-- css for private <!-->
+    <css>
+      <obj clsname="HCssFrame" name="" id="main.styleid">
+          <property id="frameStyle" clsname="HFrameStyle" name="" styleid="main.framestyleId"/>
+          <property id="clientWidget" clsname="HGWidget" name="rootWidget" styleid="main.clientId"/>
+          <property id="winFlags">window|frameless</property>
+          <property id="styleSheet"></property>
+          <property id="alignment"></property>
+          <property id="margins"></property>
+          <property id="layoutType"></property>
+          <property id="spacing"></property>
+      </obj>
+    </css>
+    <property id="fixWidth">0,0</property>
+    <property id="fixHeight">0,0</property>
+    <property id="fixSize">0,0</property>
+    <property id="height">0</property>
+    <property id="width">0</property>
+    <property id="size">0,0</property>
+    <property id="geometry">0,0,0,0</property>
+ </widget>
+</ui>

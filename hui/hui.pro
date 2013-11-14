@@ -29,15 +29,14 @@ SOURCES += main.cpp\
     hsystem.cpp \
     hcreator.cpp \
     hgwidget.cpp \
-    hgview_win32.cpp \
     hgview.cpp \
-    hgstackedwidget.cpp
+    hgstackedwidget.cpp \
+    hresourcehandler.cpp
 
 
 
 win32:{
-SOURCES += \
-    hframestyle_win32.cpp
+SOURCES +=
 }
 
 HEADERS  += mainwindow.h \
@@ -66,6 +65,12 @@ HEADERS  += mainwindow.h \
     hgwidget.h \
     private/hgview_p.h \
     hgview.h \
-    hgstackedwidget.h
+    hgstackedwidget.h \
+    hresourcehandler.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    hmaintest.qrc
+
+OTHER_FILES +=
