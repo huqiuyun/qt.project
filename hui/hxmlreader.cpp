@@ -19,6 +19,24 @@ public:
         hDelete(mXmlReader);
     }
 
+    void read(const QString& data)
+    {
+        hDelete(mXmlReader);
+        mXmlReader = new QXmlStreamReader(data);
+    }
+
+    void read(const char* data)
+    {
+        hDelete(mXmlReader);
+        mXmlReader = new QXmlStreamReader(data);
+    }
+
+    void read(const QByteArray& bytes)
+    {
+        hDelete(mXmlReader);
+        mXmlReader = new QXmlStreamReader(bytes);
+    }
+
     bool has() const
     {
         return (mXmlReader != NULL);
@@ -34,22 +52,25 @@ HXmlReader::HXmlReader()
 
 HXmlReader::~HXmlReader()
 {
-
+    delete d_ptr;
 }
 
-void HXmlReader::readWithFile(const QString& xmlFile)
-{
-    Q_UNUSED(xmlFile);
-}
-
-void HXmlReader::readWithData(const QString& data)
+void HXmlReader::readWithString(const QString& data)
 {
     Q_UNUSED(data);
+    d_func()->read(data);
 }
 
 void HXmlReader::readWithData(const char* data)
 {
     Q_UNUSED(data);
+    d_func()->read(data);
+}
+
+void HXmlReader::readWithBytes(const QByteArray& bytes)
+{
+    Q_UNUSED(bytes);
+    d_func()->read(bytes);
 }
 
 bool HXmlReader::atEnd() const

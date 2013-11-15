@@ -45,7 +45,7 @@
           <property id="styleSheet"></property>
           <property id="alignment"></property>
           <property id="margins"></property>
-          <property id="layoutType"></property>
+          <property id="layoutType">VBox</property>
           <property id="spacing"></property>
       </obj>
     </css>

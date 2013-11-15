@@ -48,9 +48,9 @@ public:
     ~HXmlReader();
 
 public:
-    void readWithFile(const QString& xmlFile);
-    void readWithData(const QString& data);
+    void readWithString(const QString& data);
     void readWithData(const char* data);
+    void readWithBytes(const QByteArray& bytes);
 
     bool atEnd() const;
     TokenType readNext();

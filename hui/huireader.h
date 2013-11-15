@@ -2,8 +2,7 @@
 #define HUIREADER_H
 
 #include "hconfig.h"
-#include <QObject>
-
+#include <QString>
 /** .xml
  * <?xml version="1.0" encoding="UTF-8"?>
  * <ui version="1.0">
@@ -39,22 +38,24 @@ class HGView;
 class QGraphicsItem;
 class QWidget;
 
-class H_API HUIReader : public QObject
+class H_API HUIReader
 {
-    Q_OBJECT
 public:
-    explicit HUIReader(QObject *parent = 0);
+    HUIReader();
 
 public:
-    HGWidget* createGWidget(const QString& xml, const QString& xmlpath, QGraphicsItem *parent);
+    HGWidget* createGWidget(const QString& xml, QGraphicsItem *parent, const QString& xmlpath=QString());
     HGWidget* createGWidgetFromData(const char* data, QGraphicsItem *parent);
+    bool createChildWithGWidget(const QString& xml,HGWidget* parent,const QString& xmlpath=QString());
+    bool createChildWithGWidgetFromData(const char* data, HGView *parent);
 
-    HGView* createGView(const QString& xml,const QString& xmlpath, QWidget *parent);
+    HGView* createGView(const QString& xml, QWidget *parent,const QString& xmlpath=QString());
     HGView* createGViewFromData(const char* data, QWidget *parent);
-signals:
+    bool createChildWithGView(const QString& xml, HGView *parent,const QString& xmlpath=QString());
+    bool createChildWithGViewFromData(const char* data, HGView *parent);
 
-public slots:
-
+private:
+    bool loadXml(QByteArray& bytes, const QString& xml,const QString& xmlpath);
 };
 
 #endif // HUIREADER_H
