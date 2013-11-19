@@ -136,7 +136,7 @@ long HFactory::createInstance(IHUnknown *pUnk, const HGuid& riid, void **ppv)
 }
 
 //
-bool HFactory::isGItem(const QLatin1String& clsname)
+bool HFactory::isGItem(const char* clsname)
 {
     H_D(HFactory);
     GItemMap::iterator iter = d->mWidgets.find(clsname);
@@ -159,16 +159,15 @@ long HFactory::coRegisterGItem(const HRegisterGItem* com)
     {
         return qy::kHPointer;
     }
-    QLatin1String id = QLatin1String(com->clsname);
-    if (isGItem(id))
+    if (isGItem(com->clsname))
     {
         return qy::kHExisted;
     }
-    d->mWidgets.insert(id,com);
+    d->mWidgets.insert(com->clsname,com);
     return qy::kHOk;
 }
 
-long HFactory::coUnRegisterGItem(const QLatin1String& clsname)
+long HFactory::coUnRegisterGItem(const char* clsname)
 {
     H_D(HFactory);
     if (!d->isInit())
@@ -207,7 +206,7 @@ void* HFactory::createGItem(const HClassInfo& clsinfo, QGraphicsItem* parent, co
 }
 
 //
-bool HFactory::isQWidget(const QLatin1String &clsname)
+bool HFactory::isQWidget(const char* clsname)
 {
     H_D(HFactory);
     QWidgetMap::iterator iter = d->mQWidgets.find(clsname);
@@ -229,16 +228,15 @@ long HFactory::coRegisterQWidget(const HRegisterQWidget* com)
     {
         return qy::kHPointer;
     }
-    QLatin1String id = QLatin1String(com->clsname);
-    if (isQWidget(id))
+    if (isQWidget(com->clsname))
     {
         return qy::kHExisted;
     }
-    d->mQWidgets.insert(id,com);
+    d->mQWidgets.insert(com->clsname,com);
     return qy::kHOk;
 }
 
-long HFactory::coUnRegisterQWidget(const QLatin1String& clsname)
+long HFactory::coUnRegisterQWidget(const char* clsname)
 {
     H_D(HFactory);
     if (!d->isInit())
@@ -277,7 +275,7 @@ QWidget* HFactory::createQWidget(const HClassInfo& clsinfo,QWidget* parent, cons
 }
 
 //
-bool HFactory::isObject(const QLatin1String &clsname)
+bool HFactory::isObject(const char* clsname)
 {
     H_D(HFactory);
     ObjectMap::iterator iter = d->mObjects.find(clsname);
@@ -295,16 +293,15 @@ long HFactory::coRegisterObject(const HRegisterObject* com)
     {
         return qy::kHNotInit;
     }
-    QLatin1String id = QLatin1String(com->clsname);
-    if (isObject(id))
+    if (isObject(com->clsname))
     {
         return qy::kHExisted;
     }
-    d->mObjects.insert(id,com);
+    d->mObjects.insert(com->clsname,com);
     return qy::kHOk;
 }
 
-long HFactory::coUnRegisterObject(const QLatin1String& clsname)
+long HFactory::coUnRegisterObject(const char* clsname)
 {
     H_D(HFactory);
     if (!d->isInit())

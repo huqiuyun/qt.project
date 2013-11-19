@@ -2,6 +2,8 @@
 #define HLAYOUTSTYLE_H
 
 #include "hbasestyle.h"
+class QGraphicsLayoutItem;
+class QWidget;
 
 class H_API HLayoutStyle : public HBaseStyle
 {
@@ -17,7 +19,6 @@ public:
     explicit HLayoutStyle(QObject *parent = 0);
     explicit HLayoutStyle(const HObjectInfo& objinfo, QObject *parent = 0);
 
-    DECLARE_OBJECT_STATIC_CREATE(HLayoutStyle);
 public:
     HEnums::HLayoutType layoutType() const;
     virtual void setLayoutType(HEnums::HLayoutType type);
@@ -37,9 +38,18 @@ public:
     virtual void setSpacing(int s);
     virtual int spacing() const;
 
+    /** add item to owner layout */
+    virtual bool addItem(QGraphicsLayoutItem* item) = 0;
+    virtual bool insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& layIndex) = 0;
+    virtual bool removeItem(QGraphicsLayoutItem* item) = 0;
+
+    /** add widget to owner layout */
+    virtual bool addWidget(QWidget* widget) = 0;
+    virtual bool insertWidget(QWidget* widget ,const HLayoutIndex& layIndex) = 0;
+    virtual bool removeWidget(QWidget* widget) = 0;
+
     void doConstruct();
 protected:
-    virtual HBaseStyle* clone();
     void copyTo(HBaseStyle* obj);
 
 protected:

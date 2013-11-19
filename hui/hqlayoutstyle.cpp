@@ -134,6 +134,25 @@ void HQLayoutStyle::setLayoutType(HEnums::HLayoutType type)
     setSpacing(0);
 }
 
+bool HQLayoutStyle::addWidget(QWidget* widget)
+{
+    Q_UNUSED(widget);
+    return false;
+}
+
+bool HQLayoutStyle::insertWidget(QWidget* widget ,const HLayoutIndex& layIndex)
+{
+    Q_UNUSED(widget);
+    Q_UNUSED(layIndex);
+    return false;
+}
+
+bool HQLayoutStyle::removeWidget(QWidget* widget)
+{
+    Q_UNUSED(widget);
+    return false;
+}
+
 HBaseStyle* HQLayoutStyle::clone()
 {
     HQLayoutStyle* style = new HQLayoutStyle(mObjinfo,parent());

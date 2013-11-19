@@ -16,6 +16,8 @@ class H_API HGView : public QGraphicsView, public HObject
     Q_OBJECT
     Q_DECLARE_PRIVATE( HGView )
     Q_DISABLE_COPY( HGView )
+    Q_PROPERTY( bool supportScene READ supportScene)
+    Q_PROPERTY( bool supportLayout READ supportLayout)
 public:
     explicit HGView(QWidget *parent = 0);
     explicit HGView(const HObjectInfo& objinfo, QWidget *parent = 0);
@@ -23,6 +25,9 @@ public:
 
     DECLARE_GVIEW_STATIC_CREATE(HGView);
 public:
+    bool supportScene() const;
+    bool supportLayout() const;
+
     void setFrameStyle(QSharedPointer<HFrameStyle> style/*new object*/);
     QSharedPointer<HFrameStyle> frameStyle() const;
 

@@ -2,7 +2,6 @@
 #include <QGraphicsView>
 
 //HLayoutStyle
-IMPLEMENT_OBJECT_STATIC_CREATE(HLayoutStyle)
 
 HLayoutStyle::HLayoutStyle(QObject* parent) :
     HBaseStyle(parent)
@@ -86,15 +85,6 @@ void HLayoutStyle::copyTo(HBaseStyle* obj)
     style->setSpacing(spacing());
     HBaseStyle::copyTo(obj);
 }
-
-HBaseStyle* HLayoutStyle::clone()
-{
-    HLayoutStyle* style = new HLayoutStyle(mObjinfo,parent());
-    copyTo(style);
-
-    return style;
-}
-
 
 void HLayoutStyle::doConstruct()
 {

@@ -4,34 +4,7 @@
 #include "hbasestyle.h"
 
 /** .xml
- * <?xml version="1.0" encoding="UTF-8"?>
- * <ui version="1.0">
- * <css>
- *    <obj clsname="HCssBackground" name="" styleid=" " />
- *    <obj clsname="HCssWidget" name="" styleid="" />
- *    <obj clsname="HCssFrame" name="" styleid="">
- *      <property id=""></property>
- *      <property id=""></property>
- *    </obj>
- *    <obj clsname="HCssObject" name="" styleid="">
- *      <property id=""></property>
- *      <property id=""></property>
- *    </obj>
- * </css>
- *
- * <widget clsname="" name="" styleid="${styleid}">
- *   <css>
- *     <obj clsname="" id="${styleid}" />
- *   </css>
- *   <property key=value key=value />
- *   <widget clsname="" name="" styleid="${styleid}"/>
- *   <widget clsname="" name="" styleid="${styleid}"/>
- *
- *   <object clsname="" name="" styleid="${styleid}"/>
- *   <object clsname="" name="" styleid="${styleid}"/>
- * </widget>
- *
- * </ui>
+ *@see lt.main.xml
 */
 class HGWidget;
 class HGView;
@@ -59,14 +32,25 @@ public:
 private:
     bool loadXml(QByteArray& bytes, const QString& xml,const QString& xmlpath);
 
+    /** for widget xml */
     void createWidgetWithXmlReader(QXmlStreamReader* reader, long* hr);
 
     /** for style xml */
     HStyleMap createStyleWithXmlReader(QXmlStreamReader* reader, long* hr);
 
+    bool readerWithXmlReader(QXmlStreamReader* reader);
+    void readContextWithXmlReader(QXmlStreamReader* reader, long *hr);
+    void readSceneWithXmlReader(QXmlStreamReader* reader, long *hr);
+    void readLayoutWithXmlReader(QXmlStreamReader* reader, long *hr);
+
     void readProperty(QXmlStreamReader* reader, const QString& id, QObject* item);
     void readClassInfo(QXmlStreamReader* reader, const QString& id, QObject* item);
     void setProperty(QObject* item, const QString& id, const QString& attr);
+
+    int findFunc(const char* clsname);
+    QObject* createObject(const HClassInfo& clsinfo, QObject* parent,long *hr);
+    void* createGItem(const HClassInfo& clsinfo, QGraphicsItem* parent,long *hr);
+    QWidget* createQWidget(const HClassInfo& clsinfo, QWidget* parent,long *hr);
 
     friend class HStyle;
 };

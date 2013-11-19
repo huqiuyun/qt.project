@@ -254,12 +254,12 @@ bool HGLayoutStyle::removeItem(QGraphicsLayoutItem *item)
     return true;
 }
 
-bool HGLayoutStyle::addItem(QWidget* widget)
+bool HGLayoutStyle::addWidget(QWidget* widget)
 {
-    return insertItem(widget,HLayoutIndex());
+    return insertWidget(widget,HLayoutIndex());
 }
 
-bool HGLayoutStyle::insertItem(QWidget* widget ,const HLayoutIndex& layIndex)
+bool HGLayoutStyle::insertWidget(QWidget* widget ,const HLayoutIndex& layIndex)
 {
     QGraphicsProxyWidget* proxy = widget->graphicsProxyWidget();
     if (!proxy)
@@ -278,7 +278,7 @@ bool HGLayoutStyle::insertItem(QWidget* widget ,const HLayoutIndex& layIndex)
     return true;
 }
 
-bool HGLayoutStyle::removeItem(QWidget* widget)
+bool HGLayoutStyle::removeWidget(QWidget* widget)
 {
     QGraphicsProxyWidget* proxy = widget->graphicsProxyWidget();
     if (!proxy)

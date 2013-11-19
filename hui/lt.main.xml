@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="1.0">
+<hui version="1.0">
  <!-- css for public <!-->
  <style>
     <obj clsname="HGSceneStyle" name="" styleid="sceneId">
@@ -103,4 +103,42 @@
     <property id="width">0</property>
     <property id="size">0,0</property>
  </widget>
-</ui>
+
+ <!-- only support based QWidget , for qwidget type layout <!-->
+ <layout>
+   <widget clsname="QWidget" name="" styleid="undefined">
+         <property />
+   </widget>
+   <widget clsname="QPushButton" name="" styleid="undefined">
+         <property id="text"/>
+         <property id="icon"/>
+         <property id=""/>
+   </widget>
+   <widget clsname="QRadioButton" name="" styleid="undefined">
+         <property />
+   </widget>
+ </layout>
+
+ <!-- only support based QGraphicsView <!-->
+ <scene layout="true">
+   <widget clsname="HGWidget" name="" styleid="gwidgetId">
+         <property id="fixWidth">0,0</property>
+         <property id="fixHeight">0,0</property>
+         <property id="fixSize">0,0</property>
+         <property id="height">0</property>
+         <property id="width">0</property>
+         <property id="size">0,0</property>
+   </widget>
+   <widget clsname="HGWidget" name="" styleid="gwidgetId">
+          <widget clsname="QWidget" name="" styleid="undefined" />
+          <widget clsname="QWidget" name="" styleid="undefined" />
+   </widget>
+   <widget clsname="HGStackedWidget" name="" styleid="undefined">
+          <widget clsname=""></widget>
+          <widget clsname=""></widget>
+          <widget clsname=""></widget>
+          <property id="currentIndex">0</property>
+   </widget>
+ </scene>
+
+</hui>

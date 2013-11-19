@@ -58,20 +58,20 @@ struct  IHFactory
     virtual long createInstance(IHUnknown* pUnkOuter , const HGuid& riid , void** ppv) = 0;
 
     //
-    virtual bool isGItem(const QLatin1String& clsname) = 0;
+    virtual bool isGItem(const char* clsname) = 0;
     virtual long coRegisterGItem(const HRegisterGItem* com) = 0;
-    virtual long coUnRegisterGItem(const QLatin1String& clsname) = 0;
+    virtual long coUnRegisterGItem(const char* clsname) = 0;
     virtual void* createGItem(const HClassInfo& clsinfo, QGraphicsItem* parent, const HCreateParameter& param,long *hr) = 0;
     //
-    virtual bool isQWidget(const QLatin1String& clsname) = 0;
+    virtual bool isQWidget(const char* clsname) = 0;
     virtual long coRegisterQWidget(const HRegisterQWidget* com) = 0;
-    virtual long coUnRegisterQWidget(const QLatin1String& clsname) = 0;
+    virtual long coUnRegisterQWidget(const char* clsname) = 0;
     virtual QWidget* createQWidget(const HClassInfo& clsinfo, QWidget* parent, const HCreateParameter& param,long *hr) = 0;
 
     //
-    virtual bool isObject(const QLatin1String& clsname) = 0;
+    virtual bool isObject(const char* clsname) = 0;
     virtual long coRegisterObject(const HRegisterObject* com) = 0;
-    virtual long coUnRegisterObject(const QLatin1String& clsname) = 0;
+    virtual long coUnRegisterObject(const char* clsname) = 0;
     virtual QObject* createObject(const HClassInfo& clsinfo, QObject* parent, const HCreateParameter& param,long *hr) = 0;
     //
     virtual bool isConvert(CONVERT_ID_PTR id) = 0;

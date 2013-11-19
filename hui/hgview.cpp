@@ -103,6 +103,16 @@ void HGView::doConstruct()
     construct();
 }
 
+bool HGView::supportScene() const
+{
+    return (scene() != NULL);
+}
+
+bool HGView::supportLayout() const
+{
+    return (layout() != NULL);
+}
+
 void HGView::setFrameStyle(QSharedPointer<HFrameStyle> style)
 {
     Q_D(HGView);

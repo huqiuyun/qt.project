@@ -20,20 +20,20 @@ public:
     long coUnRegisterUnknown(const HGuid* clsrid);
     long createInstance(IHUnknown* pUnkOuter, const HGuid& riid, void** ppv);
     //
-    bool isGItem(const QLatin1String& clsname);
+    bool isGItem(const char* clsname);
     long coRegisterGItem(const HRegisterGItem* com);
-    long coUnRegisterGItem(const QLatin1String& clsname);
+    long coUnRegisterGItem(const char* clsname);
     void* createGItem(const HClassInfo& clsinfo, QGraphicsItem* parent, const HCreateParameter& param,long *hr);
 
     //
-    bool isQWidget(const QLatin1String& clsname);
+    bool isQWidget(const char* clsname);
     long coRegisterQWidget(const HRegisterQWidget* com);
-    long coUnRegisterQWidget(const QLatin1String& clsname);
+    long coUnRegisterQWidget(const char* clsname);
     QWidget* createQWidget(const HClassInfo& clsinfo, QWidget* parent, const HCreateParameter& param,long *hr);
 
-    bool isObject(const QLatin1String& clsname);
+    bool isObject(const char* clsname);
     long coRegisterObject(const HRegisterObject* com);
-    long coUnRegisterObject(const QLatin1String& clsname);
+    long coUnRegisterObject(const char* clsname);
     QObject* createObject(const HClassInfo& clsinfo, QObject* parent, const HCreateParameter& param,long *hr);
     //
     bool isConvert(CONVERT_ID_PTR id);

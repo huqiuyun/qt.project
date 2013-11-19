@@ -35,12 +35,13 @@ QSharedPointer<HBaseStyle> HStyle::create(const char* styleid,const char* clsnam
     {
         return QSharedPointer<HBaseStyle>(NULL);
     }
+    const char* prex = "private.";
     std::string findid;
-    pos = cls.mStyleId.mId.find("private.");
+    pos = cls.mStyleId.mId.find(prex);
     bool pri = (pos==0);
     if (pri)
     {
-        findid = cls.mStyleId.mId.substr(sizeof(char)*8);
+        findid = cls.mStyleId.mId.substr(sizeof(char)*sizeof(prex));
     }
     else
     {
@@ -100,7 +101,7 @@ HStyleMap HStyle::_createWitXmlReader(QXmlStreamReader* reader)
             continue;
         }
 
-        if (reader->name() == QLatin1String("ui"))
+        if (reader->name() == QLatin1String("hui"))
         { //
             QXmlStreamAttributes attri = reader->attributes();
             if (!attri.hasAttribute("version"))

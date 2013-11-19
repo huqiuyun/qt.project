@@ -42,9 +42,9 @@ public:
     bool removeItem(QGraphicsLayoutItem* item);
 
     /** add widget to owner layout */
-    bool addItem(QWidget* widget);
-    bool insertItem(QWidget* widget ,const HLayoutIndex& layIndex);
-    bool removeItem(QWidget* widget);
+    bool addWidget(QWidget* widget);
+    bool insertWidget(QWidget* widget ,const HLayoutIndex& layIndex);
+    bool removeWidget(QWidget* widget);
 
     virtual HBaseStyle* clone();
 protected:
