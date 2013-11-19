@@ -1,5 +1,5 @@
 #include "hcore.h"
-#include "hcssstyle.h"
+#include "HStyle.h"
 #include "hresourcemgr.h"
 #include "hfactory.h"
 #include "hsystem.h"
@@ -8,7 +8,7 @@
 
 HCorePrivate::HCorePrivate() :
     q_ptr(NULL),
-    mCss(NULL),
+    mStyle(NULL),
     mResMgr(NULL),
     mFactory(NULL),
     mSystem(NULL)
@@ -17,7 +17,7 @@ HCorePrivate::HCorePrivate() :
 
 HCorePrivate::~HCorePrivate()
 {
-    hDelete(mCss);
+    hDelete(mStyle);
     hDelete(mResMgr);
     hDelete(mFactory);
     hDelete(mSystem);
@@ -51,6 +51,11 @@ HFactory* HCore::factory()
     {
         d->mFactory = new HFactory();
         d->mFactory->coInitialize();
+
+        {for (uint i = 0; i < sizeof(s_converts)/sizeof(s_converts[0]); i++)
+        {
+            d->mFactory->coRegisterConvert(&s_converts[i]);
+        }}
         // register object
         {for (uint i = 0; i < sizeof(s_objs)/sizeof(s_objs[0]); i++)
         {
@@ -80,14 +85,14 @@ HResourceMgr* HCore::resMgr()
     return d->mResMgr;
 }
 
-HCssStyle* HCore::cssStyle()
+HStyle* HCore::style()
 {
     Q_D(HCore);
-    if (!d->mCss)
+    if (!d->mStyle)
     {
-        d->mCss = new HCssStyle(this);
+        d->mStyle = new HStyle(this);
     }
-    return d->mCss;
+    return d->mStyle;
 }
 
 HSystem* HCore::system()

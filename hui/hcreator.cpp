@@ -237,3 +237,214 @@ IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsTextItem,HQCreator)
     return new QGraphicsTextItem(parent);
 }
 
+/// convert function
+
+IMPLEMENT_HCONVERT_QSTRING(QString)
+{
+    *hr = 0;
+    return val.value<QString>();
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QString)
+{
+    *hr = 0;
+    return QVariant(val);
+}
+
+//QMargins
+IMPLEMENT_HCONVERT_QSTRING(QMargins)
+{
+    *hr = 0;
+    QMargins ret = val.value<QMargins>();
+    return QString("%1,%2,%3,%4").arg(ret.left()).arg(ret.top()).arg(ret.right()).arg(ret.bottom());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QMargins)
+{
+    QStringList s = val.split(",");
+    if (s.size() >= 4)
+    {
+        *hr = 0;
+        QMargins ret(s.at(0).toFloat(), s.at(1).toFloat(), s.at(2).toFloat(), s.at(3).toFloat());
+        return qVariantFromValue(ret);
+    }
+    else
+    {
+        return qVariantFromValue(QMargins());
+    }
+}
+
+//QColor
+IMPLEMENT_HCONVERT_QSTRING(QColor)
+{
+    *hr = 0;
+    QColor ret = val.value<QColor>();
+    return QString("%1,%2,%3,%4").arg(ret.red()).arg(ret.green()).arg(ret.blue()).arg(ret.alpha());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QColor)
+{
+    QColor ret;
+    QStringList s = val.split(",");
+    if (s.size() >= 3)
+    {
+        *hr = 0;
+        int red = s[0].toInt();
+        int green = s[1].toInt();
+        int blue = s[2].toInt();
+        int alpha = 255;
+        if (s.size() >= 4)
+        {
+            alpha = s[3].toInt();
+        }
+        ret.setRgb(red, green, blue, alpha);
+    }
+    return ret;
+}
+
+//QRectF
+IMPLEMENT_HCONVERT_QSTRING(QRectF)
+{
+    *hr = 0;
+    QRectF ret = val.value<QRectF>();
+    return QString("%1,%2,%3,%4").arg(ret.x()).arg(ret.y()).arg(ret.width()).arg(ret.height());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QRectF)
+{
+    QRectF ret;
+    QStringList s = val.split(",");
+    if (s.size() >= 4)
+    {
+        *hr = 0;
+        ret.setX(s.at(0).toFloat());
+        ret.setY(s.at(1).toFloat());
+        ret.setWidth(s.at(2).toFloat());
+        ret.setHeight(s.at(3).toFloat());
+    }
+    return ret;
+}
+
+IMPLEMENT_HCONVERT_QSTRING(QRect)
+{
+    *hr = 0;
+    QRect ret = val.value<QRect>();
+    return QString("%1,%2,%3,%4").arg(ret.x()).arg(ret.y()).arg(ret.width()).arg(ret.height());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QRect)
+{
+    return convertQVariant_QRectF(val,hr).toRect();
+}
+
+// QSizeF
+IMPLEMENT_HCONVERT_QSTRING(QSizeF)
+{
+    *hr = 0;
+    QSizeF ret = val.value<QSizeF>();
+    return QString("%1,%2").arg(ret.width()).arg(ret.height());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QSizeF)
+{
+    QSizeF ret;
+    QStringList s = val.split(",");
+    if (s.size() >= 2)
+    {
+        *hr = 0;
+        ret.setWidth(s.at(0).toFloat());
+        ret.setHeight(s.at(1).toFloat());
+    }
+    return ret;
+}
+
+IMPLEMENT_HCONVERT_QSTRING(QSize)
+{
+    *hr = 0;
+    QSize ret = val.value<QSize>();
+    return QString("%1,%2").arg(ret.width()).arg(ret.height());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QSize)
+{
+    return convertQVariant_QSizeF(val,hr).toSize();
+}
+
+// QPointF
+IMPLEMENT_HCONVERT_QSTRING(QPointF)
+{
+    *hr = 0;
+    QPointF ret = val.value<QPointF>();
+    return QString("%1,%2").arg(ret.x()).arg(ret.y());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QPointF)
+{
+    QStringList s = val.split(",");
+    QPointF ret;
+    if (s.size() >= 2)
+    {
+        *hr = 0;
+        ret.setX(s.at(0).toFloat());
+        ret.setY(s.at(1).toFloat());
+    }
+    return ret;
+}
+
+IMPLEMENT_HCONVERT_QSTRING(QPoint)
+{
+    *hr = 0;
+    QPoint ret = val.value<QPoint>();
+    return QString("%1,%2").arg(ret.x()).arg(ret.y());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QPoint)
+{
+    return convertQVariant_QPointF(val,hr).toPoint();
+}
+
+//HAnchor
+IMPLEMENT_HCONVERT_QSTRING(HAnchor)
+{
+    Q_UNUSED(val);
+    Q_UNUSED(hr);
+    return QString();
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(HAnchor)
+{
+    Q_UNUSED(val);
+    Q_UNUSED(hr);
+    return QVariant();
+}
+
+//QBrush
+IMPLEMENT_HCONVERT_QSTRING(QBrush)
+{
+    Q_UNUSED(val);
+    Q_UNUSED(hr);
+    return QString();
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QBrush)
+{
+    Q_UNUSED(val);
+    Q_UNUSED(hr);
+    return QVariant();
+}
+
+//QFont
+IMPLEMENT_HCONVERT_QSTRING(QFont)
+{
+    Q_UNUSED(val);
+    Q_UNUSED(hr);
+    return QString();
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(QFont)
+{
+    Q_UNUSED(val);
+    Q_UNUSED(hr);
+    return QVariant();
+}
+

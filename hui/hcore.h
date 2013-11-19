@@ -5,7 +5,7 @@
 #include <QObject>
 
 class HResourceMgr;
-class HCssStyle;
+class HStyle;
 class HFactory;
 class HSystem;
 class HCorePrivate;
@@ -25,7 +25,7 @@ public:
     static void initHCore(HCore* core);
 
 public:
-    virtual HCssStyle* cssStyle();
+    virtual HStyle* style();
     virtual HFactory*  factory();
     virtual HResourceMgr* resMgr();
     virtual HSystem* system();
@@ -40,7 +40,7 @@ private:
 
 #define HCORE       HCore::core()
 #define HFACTORY    HCore::core()->factory()
-#define HCSSSTYLE   HCore::core()->cssStyle()
+#define HSTYLE      HCore::core()->style()
 #define HRESMGR     HCore::core()->resMgr()
 #define HSYSTEM     HCore::core()->system()
 

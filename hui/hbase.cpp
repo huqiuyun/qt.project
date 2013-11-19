@@ -1,4 +1,5 @@
 #include "hbase.h"
+#include <QMargins>
 
 HAnchor::HAnchor()
 {

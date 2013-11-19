@@ -1,62 +1,125 @@
 #include "hframestyle.h"
-#include "HGView.h"
-#include "hcssstyle.h"
+#include <QWidget>
 
 IMPLEMENT_OBJECT_STATIC_CREATE(HFrameStyle)
 HFrameStyle::HFrameStyle(QObject *parent) :
-    QObject(parent),
-    mStyleId("framestyleId"),
-    mView(NULL)
+    HBaseStyle(parent),
+    mWindow(NULL)
 {
+    mWinFlags = Qt::Window;
 }
 
 HFrameStyle::HFrameStyle(const HObjectInfo& objinfo, QObject *parent) :
-    QObject(parent),
-    mStyleId(objinfo.mStyleId),
-    mView(NULL)
+    HBaseStyle(objinfo,parent),
+    mWindow(NULL)
 {
-    if (objinfo.mObjName.size()) setObjectName(objinfo.mObjName);
+    mWinFlags = Qt::Window;
 }
 
 HFrameStyle::~HFrameStyle()
 {
-
 }
 
-void HFrameStyle::setView(HGView* view)
+void HFrameStyle::setWindow(QWidget* window)
 {
-    mView = view;
+    mWindow = window;
 }
 
-void HFrameStyle::setStyleId(const QLatin1String& id)
+void HFrameStyle::setWindowFlags(Qt::WindowFlags flags)
 {
-    mStyleId = id;
+    mWinFlags = flags;
 }
 
-QLatin1String HFrameStyle::styleId() const
+Qt::WindowFlags HFrameStyle::windowFlags() const
 {
-    return mStyleId;
+    return mWinFlags;
 }
 
-HCssFrame* HFrameStyle::css() const
+bool HFrameStyle::hasStyleSheet() const
 {
-    return mView->css();
+    return (mStyleSheet.size() > 1);
 }
 
-qreal HFrameStyle::opacity() const
+void HFrameStyle::setStyleSheet(const QString& sheet)
 {
-    return 0.0;
+    mStyleSheet = sheet;
+}
+
+QString HFrameStyle::styleSheet() const
+{
+    return mStyleSheet;
+}
+
+bool HFrameStyle::hasBackgroundStyle() const
+{
+    return (mBackgroundStyle.mClsName.size() > 1 && mBackgroundStyle.mStyleId.size()>1);
+}
+void HFrameStyle::setBackgroundStyle(const HClassInfo& cls)
+{
+    mBackgroundStyle = cls;
+}
+
+HClassInfo HFrameStyle::backgroundStyle() const
+{
+    return mBackgroundStyle;
+}
+
+bool HFrameStyle::hasLayoutStyle() const
+{
+    return (mLayoutStyle.mClsName.size() > 1 && mLayoutStyle.mStyleId.size()>1);
+}
+void HFrameStyle::setLayoutStyle(const HClassInfo& cls)
+{
+    mLayoutStyle = cls;
+}
+
+HClassInfo HFrameStyle::layoutStyle() const
+{
+    return mLayoutStyle;
+}
+
+bool HFrameStyle::hasSceneStyle() const
+{
+    return (mSceneStyle.mClsName.size() > 1 && mSceneStyle.mStyleId.size()>1);
+}
+
+void HFrameStyle::setSceneStyle(const HClassInfo& cls)
+{
+    mSceneStyle = cls;
+}
+
+HClassInfo HFrameStyle::sceneStyle() const
+{
+    return mSceneStyle;
+}
+
+void HFrameStyle::copyTo(HBaseStyle* obj)
+{
+    HFrameStyle* style = static_cast<HFrameStyle*>(obj);
+    if (!style) return ;
+
+    style->setWindowFlags(windowFlags());
+    style->setStyleSheet(styleSheet());
+    HBaseStyle::copyTo(obj);
+}
+
+HBaseStyle* HFrameStyle::clone()
+{
+    HFrameStyle* style = new HFrameStyle(mObjinfo,parent());
+    copyTo(style);
+
+    return style;
 }
 
 void  HFrameStyle::init()
 {
-    mView->setWindowFlags(css()->windowFlags());
+    mWindow->setWindowFlags(windowFlags());
 
-    if (css()->hasStyleSheet())
+    if (hasStyleSheet())
     {
-        mView->setStyleSheet(css()->styleSheet());
+        mWindow->setStyleSheet(styleSheet());
     }
-    mView->setAttribute(Qt::WA_TranslucentBackground, true);
+    mWindow->setAttribute(Qt::WA_TranslucentBackground, true);
 }
 
 void  HFrameStyle::resizeEvent(QResizeEvent *event)
@@ -69,11 +132,6 @@ QRect HFrameStyle::calcClientRect(const QRect &frameRect) const
     Q_UNUSED(frameRect);
 
     return frameRect;
-}
-
-bool  HFrameStyle::isAnimationEnabled() const
-{
-    return false;
 }
 
 bool  HFrameStyle::nativeEvent(const QByteArray & eventType, void * message, long * result)

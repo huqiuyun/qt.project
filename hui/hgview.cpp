@@ -1,75 +1,91 @@
-#include "HGView.h"
-#include "HGWidget.h"
+#include "hgview.h"
+#include "hgwidget.h"
 #include "hframestyle.h"
-#include "hbackgrounditem.h"
+#include "HbackgroundStyle.h"
+#include "hqlayoutstyle.h"
+#include "hgscenestyle.h"
 #include "hcore.h"
-#include "hcssstyle.h"
+#include "hstyle.h"
 #include "hfactory.h"
-#include "private/HGView_p.h"
+#include "private/hgview_p.h"
 #include <QGraphicsScene>
-#include <QBoxLayout>
-#include <QStackedLayout>
-#include <QGridLayout>
 
-HGViewPrivate::HGViewPrivate(const QLatin1String& styleid) :
+HGViewPrivate::HGViewPrivate(const char* styleid) :
     q_ptr(NULL),
-    mScene(NULL),
-    mWidget(NULL),
-    mFrameStyle(NULL),
     mStyleId(styleid)
 {
-    mCss =
-            QSharedPointer<HCssObject>(HCSSSTYLE->create(HCssStyle::idCheck(styleid,QLatin1String("framewindowId")),"HCssFrame"));
 }
 
 HGViewPrivate::~HGViewPrivate()
 {
-    hDelete(mScene);
+
 }
 
-void HGViewPrivate::initScene()
+void HGViewPrivate::init()
 {
-    long hr = 0;
-    HClassInfo cls = q_ptr->css()->frameStyle();
-    mFrameStyle =
-            static_cast<HFrameStyle*>(HFACTORY->createObject(cls,q_ptr,HCreateParameter(),&hr));
-    mFrameStyle->setView(q_ptr);
-    //
-
-    //init scene
-    mScene = new QGraphicsScene();
-    q_ptr->setScene(mScene);
-
-    //init content item
-    cls = q_ptr->css()->clientWidget();
-    mWidget = static_cast<HGWidget*>(HFACTORY->createGItem(cls,NULL,HCreateParameter(),&hr));
-    mWidget->setParent(mScene);
-    mScene->addItem(mWidget);
-
-    mWidget->setLayout(qy::kVBox);
-
     //保证每个frame必定有名字
     static int s_index = 0;
     QString name = "NoNameFrame" + QString::number(s_index++);
     q_ptr->setObjectName(name);
+
+    HFrameStyle* style = static_cast<HFrameStyle*>(HSTYLE->itemAt(mStyleId.data()).data());
+    if (style)
+    {
+        mFrameStyle = QSharedPointer<HFrameStyle>(static_cast<HFrameStyle*>(style->clone()));
+
+        initStyle(style);
+    }
+}
+
+void HGViewPrivate::initStyle(HFrameStyle* style)
+{
+    if (!style)
+    {
+        return;
+    }
+    style->setWindow(q_ptr);
+
+    long hr = 0;
+    if (style->hasBackgroundStyle())
+    {
+        HClassInfo cls = style->backgroundStyle();
+        HBackgroundStyle* back = static_cast<HBackgroundStyle*>(HFACTORY->createObject(cls,q_ptr,HCreateParameter(),&hr));
+        mBackgroundStyle = QSharedPointer<HBackgroundStyle>(back);
+    }
+
+    if (style->hasLayoutStyle())
+    {
+        HClassInfo cls = style->layoutStyle();
+        HQLayoutStyle* layout = static_cast<HQLayoutStyle*>(HFACTORY->createObject(cls,q_ptr,HCreateParameter(),&hr));
+        mLayoutStyle = QSharedPointer<HQLayoutStyle>(layout);
+        mLayoutStyle->setWindow(q_ptr);
+    }
+
+    if (style->hasSceneStyle())
+    {
+        HClassInfo cls = style->sceneStyle();
+        HGSceneStyle* scene = static_cast<HGSceneStyle*>(HFACTORY->createObject(cls,q_ptr,HCreateParameter(),&hr));
+        mSceneStyle = QSharedPointer<HGSceneStyle>(scene);
+        mSceneStyle->setGView(q_ptr);
+    }
 }
 
 IMPLEMENT_GVIEW_STATIC_CREATE(HGView)
 HGView::HGView(QWidget *parent) :
     QGraphicsView(parent),
-    d_ptr(new HGViewPrivate(QLatin1String("frameId")))
+    d_ptr(new HGViewPrivate(""))
 {
     d_ptr->q_ptr = this;
-    d_ptr->initScene();
+    d_ptr->init();
 }
 
 HGView::HGView(const HObjectInfo& objinfo, QWidget *parent) :
     QGraphicsView(parent),
-    d_ptr(new HGViewPrivate(objinfo.mStyleId))
+    d_ptr(new HGViewPrivate(objinfo.mStyleId.data()))
 {
     d_ptr->q_ptr = this;
-    d_ptr->initScene();
-    if (objinfo.mObjName.size()>1) setObjectName(objinfo.mObjName);
+    d_ptr->init();
+    if (objinfo.mObjName.size()>1) setObjectName(objinfo.objName());
 }
 
 HGView::~HGView()
@@ -79,256 +95,101 @@ HGView::~HGView()
 
 void HGView::doConstruct()
 {
-    //
-    frameStyle()->init();
-    //
+    Q_D(HGView);
+    if (d->mFrameStyle)
+    {
+       d->mFrameStyle->init();
+    }
     construct();
 }
 
-void HGView::setFrameStyle(HFrameStyle *style)
+void HGView::setFrameStyle(QSharedPointer<HFrameStyle> style)
 {
     Q_D(HGView);
-    HFrameStyle* oldStyle =frameStyle();
+
+   QSharedPointer<HFrameStyle> oldStyle = frameStyle();
     if (oldStyle == style)
         return ;
 
-    if (NULL==style)
-    {
-        long hr = 0;
-        HClassInfo cls = css()->frameStyle();
-        style =
-                static_cast<HFrameStyle*>(HFACTORY->createObject(cls,this,HCreateParameter(),&hr));
-        style->setView(this);
-    }
     d->mFrameStyle = style;
-    delete oldStyle;
+
+    d->initStyle(style.data());
 }
 
-HFrameStyle* HGView::frameStyle() const
+QSharedPointer<HFrameStyle> HGView::frameStyle() const
 {
     return d_func()->mFrameStyle;
 }
 
-HCssFrame* HGView::css()  const
+void HGView::setSceneStyle(QSharedPointer<HGSceneStyle> style)
 {
-    return static_cast<HCssFrame*>(d_func()->mCss.data());
+    Q_D(HGView);
+    d->mSceneStyle = style;
 }
 
-bool HGView::setCss(QSharedPointer<HCssObject> obj)
+QSharedPointer<HGSceneStyle> HGView::sceneStyle() const
 {
-    HCssFrame* css = static_cast<HCssFrame*>(obj.data());
-    if (!css)
-    {
-        return false;
-    }
-    d_func()->mCss = obj;
-    return true;
+    return d_func()->mSceneStyle;
 }
 
-HGWidget* HGView::clientWidget() const
+void HGView::setBackgroundStyle(QSharedPointer<HBackgroundStyle> style)
 {
-    return d_func()->mWidget;
+    Q_D(HGView);
+    d->mBackgroundStyle = style;
 }
 
-void HGView::setSpacing(int s)
+QSharedPointer<HBackgroundStyle> HGView::backgroundStyle() const
 {
-    css()->setSpacing(s);
-    QLayout* l = static_cast<QLayout*>(layout());
-    if (!l) return ;
-
-    switch (layoutType())
-    {
-    case qy::kVBox:
-    case qy::kHBox:
-    case qy::kVBoxBottomTop:
-    case qy::kVBoxTopBottom:
-    case qy::kHBoxLeftRight:
-    case qy::kHBoxRightLeft:
-    {
-        static_cast<QBoxLayout*>(l)->setSpacing(s);
-        break;
-    }
-    case qy::kGrid:
-    {
-        static_cast<QGridLayout*>(l)->setSpacing(s);
-        break;
-    }
-    case qy::kStacked:
-    {
-        static_cast<QStackedLayout*>(l)->setSpacing(s);
-        break;
-    }
-    default:
-        break;
-    }
+    return d_func()->mBackgroundStyle;
 }
 
-QMargins HGView::margins() const
+void HGView::setLayoutStyle(QSharedPointer<HQLayoutStyle> style)
 {
-    if (layout())
-    {
-        int left = 0;
-        int top = 0;
-        int right = 0;
-        int bottom = 0;
-        layout()->getContentsMargins(&left, &top, &right, &bottom);
-        return QMargins(left, top, right, bottom);
-    }
-    return QMargins();
+    Q_D(HGView);
+    d->mLayoutStyle = style;
 }
 
-void HGView::setMargins(const QMargins& m)
+QSharedPointer<HQLayoutStyle> HGView::layoutStyle() const
 {
-    if (layout())
-    {
-        layout()->setContentsMargins(m.left(), m.top(), m.right(), m.bottom());
-    }
+    return d_func()->mLayoutStyle;
 }
 
-Qt::Alignment HGView::alignment() const
+HEnums::HLayoutType HGView::layoutType() const
 {
-    HGView* p = static_cast<HGView*>(parent());
-    if (p != NULL && p->layout() != NULL)
-    {
-        switch (p->layoutType())
-        {
-        case qy::kHBox:
-        {
-            QHBoxLayout* l = static_cast<QHBoxLayout*>(p->layout());
-            return l->alignment();
-        }
-        case qy::kVBox:
-        {
-            QVBoxLayout* l = static_cast<QVBoxLayout*>(p->layout());
-            return l->alignment();
-        }
-        case qy::kVBoxBottomTop:
-        case qy::kVBoxTopBottom:
-        case qy::kHBoxLeftRight:
-        case qy::kHBoxRightLeft:
-        {
-            QBoxLayout* l = static_cast<QBoxLayout*>(p->layout());
-            return l->alignment();
-        }
-        case qy::kGrid:
-        {
-            QGridLayout* l = static_cast<QGridLayout*>(p->layout());
-            return l->alignment();
-        }
-        case qy::kStacked:
-        {
-            QStackedLayout* l = static_cast<QStackedLayout*>(p->layout());
-            return l->alignment();
-        }
-        default:
-            break;
-        }
-    }
-    return Qt::AlignCenter;
-}
-
-void HGView::setAlignment(Qt::Alignment align)
-{
-    HGView* p = static_cast<HGView*>(parent());
-    if (p != NULL && p->layout() != NULL)
-    {
-        switch (p->layoutType())
-        {
-        case qy::kHBox:
-        {
-            break;
-        }
-        case qy::kVBox:
-        {
-            break;
-        }
-        case qy::kVBoxBottomTop:
-        case qy::kVBoxTopBottom:
-        case qy::kHBoxLeftRight:
-        case qy::kHBoxRightLeft:
-        {
-            QBoxLayout* l = static_cast<QBoxLayout*>(p->layout());
-            l->setAlignment(this,align);
-            break;
-        }
-        case qy::kGrid:
-        {
-            QGridLayout* l = static_cast<QGridLayout*>(p->layout());
-            l->setAlignment(this,align);
-            break;
-        }
-        case qy::kStacked:
-        {
-            QStackedLayout* l = static_cast<QStackedLayout*>(p->layout());
-            l->setAlignment(this,align);
-            break;
-        }
-        default:
-            break;
-        }
-    }
-}
-
-qy::HLayoutType HGView::layoutType() const
-{
-    return css()->layoutType();
-}
-
-void HGView::setLayout(qy::HLayoutType type)
-{
-    QLayout *layout = NULL;
-    switch (type)
-    {
-    case qy::kVBox:
-        layout = new QVBoxLayout(this);
-        break;
-    case qy::kHBox:
-        layout = new QHBoxLayout(this);
-        break;
-    case qy::kVBoxBottomTop:
-        layout = new QBoxLayout(QBoxLayout::BottomToTop,this);
-        break;
-    case qy::kVBoxTopBottom:
-        layout = new QBoxLayout(QBoxLayout::TopToBottom,this);
-        break;
-    case qy::kHBoxLeftRight:
-        layout = new QBoxLayout(QBoxLayout::LeftToRight,this);
-        break;
-    case qy::kHBoxRightLeft:
-        layout = new QBoxLayout(QBoxLayout::RightToLeft,this);
-        break;
-    case qy::kGrid:
-        layout = new QGridLayout(this);
-        break;
-    case qy::kStacked:
-        layout = new QStackedLayout(this);
-        break;
-    default:
-        return ;
-    }
-    css()->setLayout(type);
-    QGraphicsView::setLayout(layout);
-    setMargins(QMargins(0,0,0,0));
-    setSpacing(0);
+    Q_D(const HGView);
+    return d->mLayoutStyle?d->mLayoutStyle->layoutType():HEnums::kNone;
 }
 
 void HGView::resizeEvent(QResizeEvent *event)
 {
     Q_D(HGView);
+    if (d->mFrameStyle)
+    {
     d->mFrameStyle->resizeEvent(event);
-
+}
     QRect rect(QPoint(0, 0), event->size());
-    setSceneRect(rect);
-
-    QRect contentRect = d->mFrameStyle->calcClientRect(rect);
-    d->mWidget->setGeometry(contentRect);
-
-    QGraphicsView::resizeEvent(event);
+    if (d->mSceneStyle)
+    {
+        d->mSceneStyle->reSize(rect);
+    }
     emit resized();
 }
 
 bool HGView::nativeEvent(const QByteArray & eventType, void * message, long * result)
 {
     return d_func()->mFrameStyle->nativeEvent(eventType,message,result);
+}
+
+void HGView::drawBackground(QPainter *painter, const QRectF &rect)
+{
+    Q_D(HGView);
+    if (d->mBackgroundStyle)
+    {
+        d->mBackgroundStyle->draw(painter,rect.toRect());
+    }
+    else
+    {
+        QGraphicsView::drawBackground(painter,rect);
+    }
 }
 

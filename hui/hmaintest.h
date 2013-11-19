@@ -19,14 +19,16 @@
 #include <Qtwidgets/QGridLayout>
 #include <hgview.h>
 #include <hgwidget.h>
-#include <hbackgrounditem.h>
 #include <hfactory.h>
 #include <hcore.h>
 #include <hgstackedwidget.h>
-
+#include <huireader.h>
 class HMainTest
 {
 public:
+    HMainTest()
+    {
+    }
 
     void setupUi(HGView *MainWindow)
     {
@@ -35,22 +37,23 @@ public:
         MainWindow->resize(800, 600);
 
         // xml 展显出下面的结构出来.
-
-        MainWindow->setLayout(qy::kVBox);
+       HUIReader uiReader;
+       uiReader.createChildWithGView(":/layout/main/lt.main.xml",MainWindow);
+/*
+        MainWindow->setLayoutType(HEnums::kVBox);
 
         HGView *graphicsView = 0;
         {
             graphicsView = new HGView(MainWindow);
-            graphicsView->setObjectName(QStringLiteral("graphicsView"));
 
             HGWidget* clientWidget = graphicsView->clientWidget();
-            clientWidget->backgroundItem()->setColor(QColor(250,250,250));
 
             long hr = 0;
+            if (1)
             {//1
                 HGView* widget = new HGView();
 
-                widget->setLayout(qy::kGrid);
+                widget->setLayoutType(HEnums::kGrid);
                 QGridLayout* layout = static_cast<QGridLayout*>(widget->layout());
                 for( int i = 0; i < 6 ; i++)
                 {
@@ -62,12 +65,12 @@ public:
                 widget->setFixedSize(400,200);
                 clientWidget->addWidget(widget);
 
-                widget->clientWidget()->backgroundItem()->setColor(QColor(100,100,100));
             }
+            if (1)
             {
                 HGView* widget = new HGView();
 
-                widget->setLayout(qy::kHBox);
+                widget->setLayoutType(HEnums::kHBox);
                 QHBoxLayout* layout = static_cast<QHBoxLayout*>(widget->layout());
                 for( int i = 0; i < 4 ; i++)
                 {
@@ -77,12 +80,12 @@ public:
                 }
                 widget->setFixedHeight(40);
                 clientWidget->addWidget(widget);
-                widget->clientWidget()->backgroundItem()->setColor(QColor(100,110,100));
             }
+            if (1)
             {
                 HGView* widget = new HGView();
 
-                widget->setLayout(qy::kHBox);
+                widget->setLayoutType(HEnums::kHBox);
                 QHBoxLayout* layout = static_cast<QHBoxLayout*>(widget->layout());
                 for( int i = 0; i < 4 ; i++)
                 {
@@ -92,12 +95,12 @@ public:
                 }
                 widget->setFixedHeight(40);
                 clientWidget->addWidget(widget);
-                widget->clientWidget()->backgroundItem()->setColor(QColor(100,120,100));
             }
+            if (1)
             {
-                HGView* widget = new HGView();
+                HGView* widget = static_cast<HGView*>(HFACTORY->createQWidget(HClassInfo("HGView","framewindowId",""),NULL,HCreateParameter(),&hr));
 
-                widget->setLayout(qy::kHBox);
+                widget->setLayoutType(HEnums::kHBox);
                 QHBoxLayout* layout = static_cast<QHBoxLayout*>(widget->layout());
                 for( int i = 0; i < 4 ; i++)
                 {
@@ -107,33 +110,29 @@ public:
                 }
                 widget->setFixedHeight(40);
                 clientWidget->addWidget(widget);
-                widget->clientWidget()->backgroundItem()->setColor(QColor(100,150,100));
             }
+            if (1)
             {//2
                 HGWidget* grwidget2 = new HGWidget(clientWidget);
                 clientWidget->addItem(grwidget2);
-                grwidget2->backgroundItem()->setColor(QColor(150,150,50));
                 {
-                    grwidget2->setLayout(qy::kHBox);
+                    grwidget2->setLayoutType(HEnums::kHBox);
                     HGStackedWidget* grwidget2_1 = new HGStackedWidget(grwidget2);
                     grwidget2->addItem(grwidget2_1);
-                   // grwidget2_1->backgroundItem()->setColor(QColor(150,50,50));
 
                     HGWidget* grwidget2_2 = new HGWidget(grwidget2_1);
                     grwidget2_1->addHGWidget(grwidget2_2);
                     grwidget2_1->setCurrentIndex(0);
-                    grwidget2_2->backgroundItem()->setColor(QColor(150,50,250));
                 }
             }
-           // for(int i = 0; i<8;i++)
+            for(int i = 0; i<8;i++)
             {//3
                 HGWidget* grwidget3 = new HGWidget(clientWidget);
                 clientWidget->addItem(grwidget3);
-                grwidget3->backgroundItem()->setColor(QColor(50,250,50));
             }
             MainWindow->layout()->addWidget(graphicsView);
         }
-
+*/
         retranslateUi(MainWindow);
 
         QMetaObject::connectSlotsByName(MainWindow);

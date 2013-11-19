@@ -2,25 +2,28 @@
 #define HGWIDGET_P_H
 
 #include "hbase.h"
-#include "hcssstyle.h"
-
+#include "hbackgroundstyle.h"
+#include "hglayoutstyle.h"
+#include "hgwidgetstyle.h"
 class HGWidget;
-class HBackgroundItem;
 
 class H_API HGWidgetPrivate
 {
 public:
-    explicit HGWidgetPrivate(const QLatin1String& styleid);
+    explicit HGWidgetPrivate(const char* styleid);
     virtual ~HGWidgetPrivate();
 
 private:
     void init();
+    void initStyle(HGWidgetStyle* style);
+
 protected:
     friend class HGWidget;
-    HGWidget* q_ptr;
-    QSharedPointer<HBackgroundItem> mBackground;
-    QSharedPointer<HCssObject>  mCss;
-    QLatin1String  mStyleId;
+    HGWidget  *q_ptr;
+    QSharedPointer<HGWidgetStyle>    mGWidgetStyle;
+    QSharedPointer<HBackgroundStyle> mBackgroundStyle;
+    QSharedPointer<HGLayoutStyle>    mLayoutStyle;
+    HString  mStyleId;
 };
 
 #endif // HGWIDGET_P_H

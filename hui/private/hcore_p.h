@@ -3,7 +3,7 @@
 
 #include "hconfig.h"
 class HResourceMgr;
-class HCssStyle;
+class HStyle;
 class HFactory;
 class HSystem;
 
@@ -16,7 +16,7 @@ public:
 protected:
     friend class HCore;
     HCore *q_ptr;
-    HCssStyle *mCss;
+    HStyle *mStyle;
     HResourceMgr *mResMgr;
     HFactory *mFactory;
     HSystem *mSystem;

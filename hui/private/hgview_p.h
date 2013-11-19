@@ -1,34 +1,33 @@
 #ifndef HGView_P_H
 #define HGView_P_H
 
-#include "hconfig.h"
+#include "hbase.h"
 #include <QGraphicsView>
 
-class QGraphicsScene;
 class HGView;
-class HGWidget;
 class HFrameStyle;
-class HBackgroundItem;
-class HCssObject;
+class HBackgroundStyle;
+class HQLayoutStyle;
+class HGSceneStyle;
 
 class H_API HGViewPrivate
 {
     Q_DECLARE_PUBLIC(HGView)
 public:
-    HGViewPrivate(const QLatin1String& styleid);
+    HGViewPrivate(const char* styleid);
     virtual ~HGViewPrivate();
 
 private:
-    void initScene();
-
+    void init();
+    void initStyle(HFrameStyle* style);
 protected:
     friend class HGView;
     HGView            *q_ptr;
-    QGraphicsScene    *mScene;
-    HGWidget          *mWidget; // for client regin
-    HFrameStyle       *mFrameStyle;
-    QSharedPointer<HCssObject> mCss;
-    QLatin1String mStyleId;
+    QSharedPointer<HFrameStyle>      mFrameStyle;
+    QSharedPointer<HGSceneStyle>     mSceneStyle;
+    QSharedPointer<HBackgroundStyle> mBackgroundStyle;
+    QSharedPointer<HQLayoutStyle> mLayoutStyle;
+    HString            mStyleId;
 };
 
 #endif // HGView_P_H

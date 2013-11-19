@@ -10,7 +10,7 @@ class HGStackedWidgetPrivate : public HGWidgetPrivate
     Q_DECLARE_PUBLIC( HGStackedWidget )
 
 public:
-    HGStackedWidgetPrivate(const QLatin1String& styleid);
+    HGStackedWidgetPrivate(const char* styleid);
     ~HGStackedWidgetPrivate();
 
     int m_currentIndex;
@@ -21,7 +21,7 @@ public:
     HGStackedWidget::ChildWidgetSizeMode m_childWidgetSizeMode;
 };
 
-HGStackedWidgetPrivate::HGStackedWidgetPrivate(const QLatin1String& styleid):
+HGStackedWidgetPrivate::HGStackedWidgetPrivate(const char* styleid):
     HGWidgetPrivate(styleid),
     m_currentIndex( -1 ),
     m_effectType(HGStackedWidget::NullEffect),
@@ -35,13 +35,13 @@ HGStackedWidgetPrivate::~HGStackedWidgetPrivate()
 
 IMPLEMENT_GITEM_STATIC_CREATE(HGStackedWidget,HGStackedWidget)
 HGStackedWidget::HGStackedWidget(QGraphicsItem *parent) :
-    HGWidget(*(new HGStackedWidgetPrivate(QLatin1String("stackedwidgetId"))), parent)
+    HGWidget(*(new HGStackedWidgetPrivate("stackedwidgetId")), parent)
 {
     setFlag(QGraphicsItem::ItemHasNoContents, true);
 }
 
 HGStackedWidget::HGStackedWidget(const HObjectInfo &objinfo, QGraphicsItem *parent) :
-    HGWidget(*(new HGStackedWidgetPrivate(objinfo.mStyleId)), objinfo, parent)
+    HGWidget(*(new HGStackedWidgetPrivate(objinfo.mStyleId.data())), objinfo, parent)
 {
     setFlag(QGraphicsItem::ItemHasNoContents, true);
 }

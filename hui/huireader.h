@@ -1,19 +1,19 @@
 #ifndef HUIREADER_H
 #define HUIREADER_H
 
-#include "hconfig.h"
-#include <QString>
+#include "hbasestyle.h"
+
 /** .xml
  * <?xml version="1.0" encoding="UTF-8"?>
  * <ui version="1.0">
  * <css>
- *    <obj clsname="HCssBackground" id=" " />
- *    <obj clsname="HCssWidget" id="" />
- *    <obj clsname="HCssFrame" id="">
+ *    <obj clsname="HCssBackground" name="" styleid=" " />
+ *    <obj clsname="HCssWidget" name="" styleid="" />
+ *    <obj clsname="HCssFrame" name="" styleid="">
  *      <property id=""></property>
  *      <property id=""></property>
  *    </obj>
- *    <obj clsname="HCssObject" id="">
+ *    <obj clsname="HCssObject" name="" styleid="">
  *      <property id=""></property>
  *      <property id=""></property>
  *    </obj>
@@ -35,8 +35,10 @@
 */
 class HGWidget;
 class HGView;
+class QXmlStreamReader;
 class QGraphicsItem;
 class QWidget;
+class HStyle;
 
 class H_API HUIReader
 {
@@ -56,6 +58,17 @@ public:
 
 private:
     bool loadXml(QByteArray& bytes, const QString& xml,const QString& xmlpath);
+
+    void createWidgetWithXmlReader(QXmlStreamReader* reader, long* hr);
+
+    /** for style xml */
+    HStyleMap createStyleWithXmlReader(QXmlStreamReader* reader, long* hr);
+
+    void readProperty(QXmlStreamReader* reader, const QString& id, QObject* item);
+    void readClassInfo(QXmlStreamReader* reader, const QString& id, QObject* item);
+    void setProperty(QObject* item, const QString& id, const QString& attr);
+
+    friend class HStyle;
 };
 
 #endif // HUIREADER_H

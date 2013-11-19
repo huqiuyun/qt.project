@@ -2,14 +2,14 @@
 #define HGView_H
 
 #include "hbase.h"
+#include "henums.h"
 #include <QGraphicsView>
 
 class HGViewPrivate;
 class HFrameStyle;
-class HGWidget;
-class HCssFrame;
-class HCssObject;
-class HBackgroundItem;
+class HGSceneStyle;
+class HBackgroundStyle;
+class HQLayoutStyle;
 
 class H_API HGView : public QGraphicsView, public HObject
 {
@@ -23,30 +23,20 @@ public:
 
     DECLARE_GVIEW_STATIC_CREATE(HGView);
 public:
-    bool setCss(QSharedPointer<HCssObject> obj);
+    void setFrameStyle(QSharedPointer<HFrameStyle> style/*new object*/);
+    QSharedPointer<HFrameStyle> frameStyle() const;
 
-    void setFrameStyle(HFrameStyle* style/*new object*/);
-    HFrameStyle* frameStyle() const;
+    void setSceneStyle(QSharedPointer<HGSceneStyle> style);
+    QSharedPointer<HGSceneStyle> sceneStyle() const;
 
-    HGWidget* clientWidget() const;
+    void setBackgroundStyle(QSharedPointer<HBackgroundStyle> style);
+    QSharedPointer<HBackgroundStyle> backgroundStyle() const;
+
+    void setLayoutStyle(QSharedPointer<HQLayoutStyle> style);
+    QSharedPointer<HQLayoutStyle> layoutStyle() const;
 
     // next layout functions
-    qy::HLayoutType layoutType() const;
-    void setLayout(qy::HLayoutType type);
-
-    /** set margins for all child item in layout */
-    void setMargins(const QMargins& m);
-    QMargins margins() const;
-
-    /** set alignment in parent layout*/
-    Qt::Alignment alignment() const;
-    void setAlignment(Qt::Alignment align);
-
-    /** set per child item space in owner layout */
-    void setSpacing(int s);
-
-protected:
-    HCssFrame* css()  const;
+    HEnums::HLayoutType layoutType() const;
 
     //HObject
 protected:
@@ -56,6 +46,7 @@ protected:
     virtual void construct(){}
     virtual void resizeEvent(QResizeEvent *event);
     virtual bool nativeEvent(const QByteArray & eventType, void * message, long * result);
+    virtual void drawBackground(QPainter *painter, const QRectF &rect);
 signals:
     void resized();
 

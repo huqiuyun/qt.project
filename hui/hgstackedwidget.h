@@ -20,6 +20,7 @@ public:
 	};
 	Q_ENUMS(EffectType)
 	Q_PROPERTY( EffectType effectType READ effectType WRITE setEffectType )
+    Q_PROPERTY( int currentIndex READ currentIndex WRITE setCurrentIndex )
 
 	enum ChildWidgetSizeMode
 	{

@@ -5,6 +5,20 @@
 #include <QByteArray>
 #include <QLatin1String>
 #include <QVariant>
+#include <QMetaType>
+
+
+class H_API HObject
+{
+public:
+
+    HObject(){}
+    virtual ~HObject(){}
+
+protected:
+    template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
+    virtual void doConstruct(){}
+};
 
 typedef struct tagHAnchorItem
 {
@@ -29,6 +43,7 @@ public:
 private:
     HAnchorItem_t mItems[4];
 };
+Q_DECLARE_METATYPE(HAnchor);
 
 class H_API HLayoutIndex
 {
@@ -63,40 +78,161 @@ private:
     int mRow; // for grid box
     int mColumn;
 };
+Q_DECLARE_METATYPE(HLayoutIndex);
+
+/** stylid , objectname, classname */
+class HString
+{
+  public:
+    HString(){}
+
+    HString(const char* id ) :
+        mId(id?id:""){}
+
+    HString(const std::string& id) :
+        mId(id){}
+
+    HString(const HString& id):
+        mId(id.mId){}
+
+    HString(const QLatin1String& id) :
+        mId(id.size()>1?id.data():""){}
+
+    HString(const QString& id) :
+        mId(id.toStdString()){}
+
+public:
+    QString toString() const { return QString::fromStdString(mId); }
+    QLatin1String latin1() const { return QLatin1String(mId.c_str(),mId.length());}
+    const char* data() const { return mId.data();}
+    const char* data(const char* def) { return size()>1?data():def; }
+    int size() const { return (int)mId.size(); }
+
+    inline bool operator==(const HString &s) const
+    {
+        return (latin1() == s.latin1());
+    }
+    inline bool operator!=(const HString &s) const
+    {
+        return (latin1() != s.latin1());
+    }
+    inline bool operator>(const HString &s) const
+    {
+        return (latin1() > s.latin1());
+    }
+    inline bool operator<(const HString &s) const
+    {
+        return (latin1()<s.latin1());
+    }
+    inline bool operator>=(const HString &s) const
+    {
+        return (latin1()>=s.latin1());
+    }
+    inline bool operator<=(const HString &s) const
+    {
+        return (latin1()<=s.latin1());
+    }
+
+    std::string mId;
+};
 
 /** if create object class , need clsname AND styleid */
 class HObjectInfo
 {
 public:
     HObjectInfo() :
-        mStyleId("undefined"),
+        mStyleId(""),
+        mObjName(""){}
+
+    HObjectInfo(const HObjectInfo& info):
+        mStyleId(""),
         mObjName("")
     {
+        *this = info;
     }
 
-    HObjectInfo(const char* id, const char* name) :
-        mStyleId(id),
-        mObjName(name)
+    HObjectInfo& operator=(const HObjectInfo& info)
     {
+        mStyleId = info.mStyleId;
+        mObjName = info.mObjName;
+        return *this;
     }
-    QLatin1String mStyleId;
-    QLatin1String mObjName;
+
+    HObjectInfo(const char* stylid, const char* name) :
+        mStyleId(stylid),
+        mObjName(name) {}
+
+    HObjectInfo(const HString& stylid,const HString& name):
+        mStyleId(stylid.latin1()),
+        mObjName(name.latin1()){}
+
+    HObjectInfo(const QLatin1String& stylid,const QLatin1String& name):
+        mStyleId(stylid),
+        mObjName(name){}
+
+    const char* objName() const { return mObjName.data();}
+
+    HString mStyleId;
+    HString mObjName;
 };
 
 class HClassInfo : public HObjectInfo
 {
 public:
     HClassInfo() :
-        mClsName("undefined")
+        mClsName("")
     {
     }
-    HClassInfo(const char* cls, const char* id,const char* name) :
-        HObjectInfo(id,name),
-        mClsName(cls)
+    HClassInfo(const HClassInfo& info):
+        mClsName("")
     {
+        *this = info;
     }
-    QLatin1String mClsName;
+
+    HClassInfo& operator=(const HClassInfo& info)
+    {
+        this->mClsName = info.mClsName;
+        this->mStyleId = info.mStyleId;
+        this->mObjName = info.mObjName;
+        return *this;
+    }
+
+    HClassInfo(const char* cls, const char* styleid,const char* name) :
+        HObjectInfo(styleid,name),
+        mClsName(cls){}
+
+    HClassInfo(const HString& cls,const HString& styleid,const HString& name):
+        HObjectInfo(styleid,name),
+        mClsName(cls.latin1()){}
+
+    HClassInfo(const QLatin1String& cls,const QLatin1String& stylid,const QLatin1String& name):
+        HObjectInfo(stylid,name),
+        mClsName(cls){}
+
+    bool isValid() const
+    {
+        return (mClsName.size()>1 && mStyleId.size()>1);
+    }
+
+    HString mClsName;
 };
+
+Q_DECLARE_METATYPE(HClassInfo);
+Q_DECLARE_METATYPE(HObjectInfo);
+
+inline QVariant classInfo2QVariant(const HClassInfo& info)
+{
+    QVariant v;
+    v.setValue(info);
+    return v;
+}
+
+inline QVariant objectInfo2QVariant(const HObjectInfo& info)
+{
+    QVariant v;
+    v.setValue(info);
+    return v;
+}
 
 template<class OBJ>
 inline OBJ* hDoConstructT(OBJ* obj)
@@ -108,19 +244,9 @@ inline OBJ* hDoConstructT(OBJ* obj)
 template<class OBJ>
 inline OBJ* hSetObjectT(const HObjectInfo& objinfo, OBJ* obj)
 {
-    if (objinfo.mObjName.size()>1) obj->setObjectName(objinfo.mObjName);
+    if (objinfo.mObjName.size()>1) obj->setObjectName(objinfo.objName());
     return obj;
 }
-
-class H_API HObject
-{
-public:
-    HObject(){}
-    virtual ~HObject(){}
-protected:
-    template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
-    virtual void doConstruct(){}
-};
 
 class HCreateParameter
 {
@@ -161,10 +287,10 @@ public:
 
 // QObject
 #define DECLARE_OBJECT_STATIC_CREATE(CLSNAME)    \
-    DECLARE_STATIC_CREATE_FUNC(CLSNAME,create,QObject)
+    DECLARE_STATIC_CREATE_FUNC(CLSNAME,create##CLSNAME,QObject)
 
 #define IMPLEMENT_OBJECT_STATIC_CREATE(CLSNAME)  \
-    IMPLEMENT_STATIC_CREATE_FUNC(CLSNAME,CLSNAME,create,QObject)
+    IMPLEMENT_STATIC_CREATE_FUNC(CLSNAME,CLSNAME,create##CLSNAME,QObject)
 
 // QGraphicsItem
 #define DECLARE_GITEM_STATIC_CREATE(CLSNAME)      \
@@ -193,10 +319,22 @@ public:
 #define IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(NEWOBJ,CLSNAME)  \
     IMPLEMENT_STATIC_CREATE_FUNC_DEFINED(NEWOBJ,CLSNAME,create##NEWOBJ,QWidget)
 
-#define REG_QWIDGET(CLSSTR,CLSNAME,CREATOR)   \
-    {CLSSTR,(HCreateQWidgetInstanceCB)&CREATOR::create##CLSNAME}
+#define REG_QWIDGET(CLSNAME,CREATOR)   \
+   {#CLSNAME,(HCreateQWidgetInstanceCB)&CREATOR::create##CLSNAME}
 
-#define REG_GITEM(CLSSTR,CLSNAME,CREATOR)     \
-{CLSSTR,(HCreateGItemInstanceCB)&CREATOR::create##CLSNAME}
+#define REG_GITEM(CLSNAME,CREATOR)     \
+   {#CLSNAME,(HCreateGItemInstanceCB)&CREATOR::create##CLSNAME}
+
+#define REG_OBJECT(CLSNAME,CREATOR)    \
+   {#CLSNAME,(HCreateObjectInstanceCB)&CREATOR::create##CLSNAME}
+//
+#define DECLARE_STATIC_CONVERT_FUNC(RETVAL,PARAM,TYPE)    \
+    static RETVAL convert##TYPE(const PARAM& val, long *hr)
+
+#define IMPLEMENT_STATIC_CONVERT_FUNC(CLSNAME,RETVAL,PARAM,TYPE)  \
+    RETVAL CLSNAME::convert##TYPE(const PARAM& val, long *hr)
+
+#define REG_CONVERT(ID,TYPE,CREATOR)     \
+    {ID, (HConvertString2QvariantCB)&CREATOR::convertQVariant_##TYPE,(HConvertQvariant2StringCB)&CREATOR::convertQString_##TYPE}
 
 #endif // HBASE_H

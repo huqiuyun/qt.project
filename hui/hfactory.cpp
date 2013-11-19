@@ -3,9 +3,10 @@
 #include <QMap>
 
 typedef QMap<HGuid,const HRegisterUnknown*> UnkMap;
-typedef QMap<QLatin1String,const HRegisterGItem*> GItemMap;
-typedef QMap<QLatin1String,const HRegisterQWidget*> QWidgetMap;
-typedef QMap<QLatin1String,const HRegisterObject*> ObjectMap;
+typedef QMap<HString,const HRegisterGItem*> GItemMap;
+typedef QMap<HString,const HRegisterQWidget*> QWidgetMap;
+typedef QMap<HString,const HRegisterObject*> ObjectMap;
+typedef QMap<CONVERT_ID   ,const HRegisterConvert*> ConvertMap;
 
 class HFactoryPrivate
 {
@@ -23,6 +24,7 @@ private:
     GItemMap mWidgets;
     QWidgetMap mQWidgets;
     ObjectMap mObjects;
+    ConvertMap mConverts;
     bool   mInit;
 };
 
@@ -338,4 +340,81 @@ QObject* HFactory::createObject(const HClassInfo& clsinfo, QObject *parent, cons
         *hr = qy::kHFailure;
     }
     return obj;
+}
+
+bool HFactory::isConvert(CONVERT_ID_PTR id)
+{
+    H_D(HFactory);
+    ConvertMap::iterator iter = d->mConverts.find(id);
+    if (iter != d->mConverts.end())
+    {
+        return true;
+    }
+    return false;
+}
+
+long HFactory::coRegisterConvert(const HRegisterConvert* com)
+{
+    H_D(HFactory);
+    if (!d->isInit())
+    {
+        return qy::kHNotInit;
+    }
+    if (isConvert(com->id))
+    {
+        return qy::kHExisted;
+    }
+    d->mConverts.insert(com->id,com);
+    return qy::kHOk;
+}
+
+long HFactory::coUnRegisterConvert(CONVERT_ID_PTR id)
+{
+    H_D(HFactory);
+    if (!d->isInit())
+    {
+        return qy::kHNotInit;
+    }
+    ConvertMap::iterator iter = d->mConverts.find(id);
+    if (iter != d->mConverts.end())
+    {
+       d->mConverts.erase(iter);
+    }
+    return qy::kHOk;
+}
+
+QVariant HFactory::convertString(CONVERT_ID_PTR id,const QString& var,long *hr)
+{
+    H_D(HFactory);
+    if (!d->isInit())
+    {
+        *hr = qy::kHNotInit;
+        return QVariant();
+    }
+    ConvertMap::iterator iter = d->mConverts.find(id);
+    if (iter == d->mConverts.end() || !iter.value())
+    {
+        *hr = qy::kHNoInterface;
+        return QVariant();
+    }
+    const HRegisterConvert* unk = iter.value();
+    return unk->fnString2Qvar?unk->fnString2Qvar(var, hr) : QVariant();
+}
+
+QString  HFactory::convertQVariant(CONVERT_ID_PTR id,const QVariant& var, long *hr)
+{
+    H_D(HFactory);
+    if (!d->isInit())
+    {
+        *hr = qy::kHNotInit;
+        return QString();
+    }
+    ConvertMap::iterator iter = d->mConverts.find(id);
+    if (iter == d->mConverts.end() || !iter.value())
+    {
+        *hr = qy::kHNoInterface;
+        return QString();
+    }
+    const HRegisterConvert* unk = iter.value();
+    return unk->fnQvar2String?unk->fnQvar2String(var, hr) : QString();
 }

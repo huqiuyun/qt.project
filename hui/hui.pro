@@ -15,23 +15,27 @@ DEFINES += BUILD_HFW
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    hbackgrounditem.cpp \
     hcore.cpp \
     hbase.cpp \
-    hcssstyle.cpp \
     hfactory.cpp \
     hunknown.cpp \
     hresourcemgr.cpp \
     hframestyle.cpp \
     huireader.cpp \
-    hxmlreader.cpp \
-    hxmlattributes.cpp \
     hsystem.cpp \
     hcreator.cpp \
     hgwidget.cpp \
     hgview.cpp \
     hgstackedwidget.cpp \
-    hresourcehandler.cpp
+    hresourcehandler.cpp \
+    hbackgroundstyle.cpp \
+    hlayoutstyle.cpp \
+    hgscenestyle.cpp \
+    hbasestyle.cpp \
+    hqlayoutstyle.cpp \
+    hglayoutstyle.cpp \
+    hgwidgetstyle.cpp \
+    hstyle.cpp
 
 
 
@@ -40,11 +44,9 @@ SOURCES +=
 }
 
 HEADERS  += mainwindow.h \
-    hbackgrounditem.h \
     hconfig.h \
     hcore.h \
     hbase.h \
-    hcssstyle.h \
     private/hcore_p.h \
     hfactory.h \
     hfactory_i.h \
@@ -56,8 +58,6 @@ HEADERS  += mainwindow.h \
     hresourcemgr.h \
     hframestyle.h \
     huireader.h \
-    hxmlreader.h \
-    hxmlattributes.h \
     hsystem.h \
     hmaintest.h \
     hcreator.h \
@@ -66,7 +66,17 @@ HEADERS  += mainwindow.h \
     private/hgview_p.h \
     hgview.h \
     hgstackedwidget.h \
-    hresourcehandler.h
+    hresourcehandler.h \
+    henums.h \
+    hbackgroundstyle.h \
+    hlayoutstyle.h \
+    hgscenestyle.h \
+    private/hbackgroundstyle_p.h \
+    hbasestyle.h \
+    hqlayoutstyle.h \
+    hglayoutstyle.h \
+    hgwidgetstyle.h \
+    hstyle.h
 
 FORMS    += mainwindow.ui
 

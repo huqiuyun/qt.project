@@ -1,21 +1,27 @@
-#ifndef HGWidget_H
-#define HGWidget_H
+#ifndef HGWIDGET_H
+#define HGWIDGET_H
 
 #include "hbase.h"
+#include "henums.h"
 #include <QMargins>
 #include <QGraphicsWidget>
 
-class QWidget;
 class HGWidgetPrivate;
-class HBackgroundItem;
-class HCssWidget;
-class HCssObject;
+class HBackgroundStyle;
+class HGLayoutStyle;
+class HGWidgetStyle;
 
 class H_API HGWidget : public QGraphicsWidget, public HObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(HGWidget)
     Q_DECLARE_PRIVATE(HGWidget)
+    Q_PROPERTY( int height READ height WRITE setHeight )
+    Q_PROPERTY( int width READ width WRITE setWidth )
+    Q_PROPERTY( QSizeF fixSize READ fixSize WRITE setFixSize )
+    Q_PROPERTY( int fixHeight READ fixHeight WRITE setFixHeight )
+    Q_PROPERTY( int fixWidth READ fixWidth WRITE setFixWidth )
+
 public:
     explicit HGWidget(QGraphicsItem* parent = NULL);
     explicit HGWidget(const HObjectInfo& objinfo, QGraphicsItem* parent = NULL);
@@ -23,12 +29,18 @@ public:
 
     DECLARE_GITEM_STATIC_CREATE(HGWidget);
 public:
-    /** for css */
-    bool setCss(QSharedPointer<HCssObject> obj);
+    void setGWidgetStyle(QSharedPointer<HGWidgetStyle> style);
+    QSharedPointer<HGWidgetStyle> gwidgetStyle() const;
 
-    void setStyleId(const QLatin1String& id);
-    QLatin1String styleId() const;
+    void setBackgroundStyle(QSharedPointer<HBackgroundStyle> style);
+    QSharedPointer<HBackgroundStyle> backgroundStyle() const;
 
+    void setLayoutStyle(QSharedPointer<HGLayoutStyle> style);
+    QSharedPointer<HGLayoutStyle> layoutStyle() const;
+
+    HEnums::HLayoutType layoutType() const;
+    // property
+public:
     int height() const;
     void setHeight(int h);
 
@@ -44,50 +56,10 @@ public:
     int fixWidth() const;
     void setFixWidth(int w);
 
-    void setDragPolicy(qy::HDragFlag flag );
-    qy::HDragFlag dragPolicy() const;
-
-    void setBackgroundItem(QSharedPointer<HBackgroundItem> background);
-    QSharedPointer<HBackgroundItem> backgroundItem() const;
-
-    // next layout functions
-    qy::HLayoutType layoutType() const;
-    void setLayout(qy::HLayoutType type);
-
-    /** set margins for all child item in layout */
-    void setMargins(const QMargins& m);
-    QMargins margins() const;
-
-    /** set alignment in parent layout*/
-    Qt::Alignment alignment() const;
-    void setAlignment(Qt::Alignment align);
-
-    HAnchor anchor() const;
-    void setAnchor(const HAnchor& a);
-
-    /** set per child item space in owner layout */
-    void setSpacing(int s);
-
-    /** add item to owner layout */
-    bool addItem(QGraphicsLayoutItem* item);
-    bool insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& layIndex);
-    bool removeItem(QGraphicsLayoutItem* item);
-
-    /** add widget to owner layout */
-    bool addWidget(QWidget* widget);
-    bool insertWidget(QWidget* widget ,const HLayoutIndex& layIndex);
-    bool removeWidget(QWidget* widget);
-    // end layout functions
-protected:
-    HCssWidget* css()  const;
-
 protected:
     void doConstruct();
     virtual void construct(){}
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-
-private slots:
-    void on_cssStyle_changed(const QString&id);
 
 protected:
     template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
@@ -96,4 +68,4 @@ protected:
     HGWidgetPrivate* d_ptr;
 };
 
-#endif // HGWidget_H
+#endif // HGWIDGET_H

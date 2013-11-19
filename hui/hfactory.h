@@ -35,6 +35,12 @@ public:
     long coRegisterObject(const HRegisterObject* com);
     long coUnRegisterObject(const QLatin1String& clsname);
     QObject* createObject(const HClassInfo& clsinfo, QObject* parent, const HCreateParameter& param,long *hr);
+    //
+    bool isConvert(CONVERT_ID_PTR id);
+    long coRegisterConvert(const HRegisterConvert* com);
+    long coUnRegisterConvert(CONVERT_ID_PTR id);
+    QVariant convertString(CONVERT_ID_PTR id,const QString& var,long *hr);
+    QString  convertQVariant(CONVERT_ID_PTR id,const QVariant& var,long *hr);
 private:
     friend class HFactoryPrivate;
     HFactoryPrivate*  d_ptr;

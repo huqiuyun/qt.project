@@ -89,6 +89,7 @@ QPixmap HResourceMgr::loadPixmap(const QString &path)
         {
             break;
         }
+        ++iter;
     }
     return pixmap;
 }
@@ -106,6 +107,7 @@ QByteArray HResourceMgr::loadData(const QString& path)
         {
             break;
         }
+        ++iter;
     }
     return bytes;
 }
