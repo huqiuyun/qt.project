@@ -39,7 +39,7 @@
        <property id="layoutType">kGrid</property>
        <property id="alignment"></property>
        <property id="margins">4,4,4,4</property>
-       <property id="spacing">1</property>
+       <property id="spacing">6</property>
     </obj>
    </style>
 

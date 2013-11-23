@@ -172,8 +172,6 @@ void HGLayoutStyle::setLayoutType(HEnums::HLayoutType type)
         return ;
     }
     mWidget->setLayout(layout);
-    setMargins(QMargins(0,0,0,0));
-    setSpacing(0);
 }
 
 int HGLayoutStyle::addItem(QGraphicsLayoutItem* item)
