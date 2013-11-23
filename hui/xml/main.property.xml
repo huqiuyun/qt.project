@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
  <hui version="1.0">
   <property id="resize">400,600</property>
-  <!-- proxy:method  :parent execute to do invoke method
-       proxy:skip:method : skip the layout,and parent execute to do invoke method
-       skip:method : skip the layout, and owner execute to do invoke method
+  <!-- proxy:method  :skip the layout, And parent execute to do invoke method
+       skip:method   :skip the layout, And owner execute to do invoke method
   <!-->
   <property id="skip:resize">400,600</property>
   <invoke method="proxy:fun">

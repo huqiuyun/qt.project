@@ -85,8 +85,8 @@ private:
         return (mFlags.isScene&&mFlags.isXmlScene);
     }
 
-    inline bool canQWidget() const {// when entry flag is scene,then not create qwidget,only create QGrahicsItem object
-        return ( (mFlags.isQWidget||mFlags.isQLayout||mFlags.isGLayout) && ~(mFlags.isXmlScene));
+    inline bool canQWidget() const {// when flag is xmlscene,then not create qwidget,only create QGrahicsItem object
+        return ( (mFlags.isQWidget||mFlags.isQLayout||mFlags.isGLayout) && (0==mFlags.isXmlScene));
     }
 
     inline bool canQObject() const {
@@ -163,7 +163,7 @@ private:
     HuiTask *mParent;
     HuiTask *mChild;
     HStyle  *mStyle;
-    QString mXmlPath;
+    QString  mXmlPath;
 
     QList<QWidget*> mWidgets;
     QList<HIdValue> mPropertys;

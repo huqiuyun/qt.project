@@ -1,12 +1,9 @@
-#ifndef HuiReader_H
-#define HuiReader_H
+#ifndef HUIREADER_H
+#define HUIREADER_H
 
 #include "hbasestyle.h"
 #include <QList>
 
-/** .xml
- *@see main.xml
-*/
 class QXmlStreamReader;
 class QGraphicsItem;
 class QWidget;
@@ -22,7 +19,6 @@ class H_API HuiReader
 public:
     HuiReader();
 
-public:
     bool createStyle(const QString& xml, const QString& xmlpath, HStyle* style );
     bool createStyle(const char* data, HStyle* style );
 
@@ -84,4 +80,4 @@ private:
     friend class HStyle;
 };
 
-#endif // HuiReader_H
+#endif // HUIREADER_H

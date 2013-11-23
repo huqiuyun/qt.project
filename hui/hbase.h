@@ -97,11 +97,15 @@ class HIdValue
 public:
     QString mId;
     QVariant mVal;
+    bool mProxy;
 
-    HIdValue(){}
-    HIdValue(const QString& id,const QString& val):
+    HIdValue():
+        mProxy(false){}
+
+    HIdValue(const QString& id,const QString& val,bool proxy=false):
         mId(id),
-        mVal(val){}
+        mVal(val),
+        mProxy(proxy){}
 };
 
 typedef struct tagHAnchorItem

@@ -1,4 +1,4 @@
-#include "HuiReader.h"
+#include "huiReader.h"
 #include "hgwidget.h"
 #include "hgview.h"
 #include "hcore.h"
@@ -327,7 +327,7 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
         }
         break;
     }
-    default: {
+    default: {// other QObject not support
         break;
     }
     }
@@ -542,8 +542,6 @@ void HuiReader::createStyleWithXmlReader(HuiTask* task,QXmlStreamReader* reader,
                 styleobj = QSharedPointer<HBaseStyle>(NULL);
                 //next obj node
             }
-            else {//end property
-            }
         }
         reader->readNext();
 
@@ -584,13 +582,20 @@ void HuiReader::readProperty(QXmlStreamReader* reader, QObject* obj,QList<HIdVal
         }
         else if (token == QXmlStreamReader::Characters) {// id , text = isWhitespace() or isCDATA()
             if (!reader->isWhitespace()) {
-                QString val = reader->text().toString();
-                if (id.startsWith(kPrexSkip)) {
-                    propertys.append(HIdValue(id.mid(kPrexSkip.size()),val));
+
+                bool skip = false;
+                bool proxy = false;
+                if ((skip = id.startsWith(kPrexSkip))) {
+                    id = id.mid(kPrexSkip.size());
                 }
-                else {
-                    HuiTask::setProperty(obj,id,val,isUseProperty());
+                else if((proxy = id.startsWith(kPrexProxy))) {
+                    id = id.mid(kPrexProxy.size());
                 }
+
+                if (skip||proxy)
+                    propertys.append(HIdValue(id,reader->text().toString(),proxy));
+                else
+                    HuiTask::setProperty(obj,id,reader->text().toString(),isUseProperty());
             }
         }
         else {// other token skipping,not need
