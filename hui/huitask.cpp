@@ -29,7 +29,6 @@ HuiTask::~HuiTask()
 
 void HuiTask::generateStyle()
 {
-    Q_ASSERT(mStyle==NULL);
     if (!mStyle) {
         mStyle = new HStyle();
         mFlags.isNewStyle = true;
@@ -102,7 +101,6 @@ void HuiTask::installStyle()
     if (!mStyle) return;
     if (mStyle->size()<=0)
     {
-        deleteStyle();
         return;
     }
 
@@ -116,7 +114,6 @@ void HuiTask::installStyle()
         QMetaObject::invokeMethod(widget,"installStyle",Qt::DirectConnection,Q_ARG(const HStyle*, mStyle));
         setFlagsWithHGWidget(widget);
     }
-    deleteStyle();
     return;
 }
 
@@ -156,7 +153,7 @@ void HuiTask::addScene(bool& main)
     deleteChild();
 }
 
-void HuiTask::addWidget()
+void HuiTask::addWidget(bool isUse)
 {
     if (!mChild) {
         return ;
@@ -192,6 +189,16 @@ void HuiTask::addWidget()
             if (mFlags.isXmlLayout)
                 widget->addGWidget(mChild->objCast<QGraphicsWidget>());
         }
+    }
+
+    if (QObject* obj = mChild->qObject())
+    {// set property
+        QList<HIdValue>::iterator iter = mChild->mPropertys.begin();
+        if (iter != mChild->mPropertys.end()) {
+            setProperty(obj, iter->mId, iter->mVal.toString(),isUse);
+            ++iter;
+        }
+        mChild->mPropertys.clear();
     }
     deleteChild();
 }
@@ -259,6 +266,8 @@ void HuiTask::setFlagsWithHGWidget(QGraphicsWidget* parent)
 
     if (parent->layout())
         mFlags.isGLayout = 1;
+    else if (hasProperty(parent,"isGLayout"))
+        mFlags.isGLayout = 1;
 
     if (hasProperty(parent,"isHGWidget")) {
         mFlags.isObjHGWidget = 1;
@@ -278,3 +287,29 @@ void HuiTask::setFlagsWithHGItem(QGraphicsItem* parent)
     }
 }
 
+
+void HuiTask::setProperty(QObject* obj, const QString& id, const QString& attr,bool isUse)
+{
+    if (!obj) return;
+
+    QByteArray cid = id.toLatin1();
+    int idx = obj->metaObject()->indexOfProperty(cid.constData());
+    if(-1 != idx) {
+        QMetaProperty prop = obj->metaObject()->property(idx);
+        int type_id = prop.type();
+        if(type_id == QVariant::UserType) {
+            type_id = prop.userType();
+        }
+        long hr = -1;
+        QVariant var = HFACTORY->convertString(type_id, attr, &hr);
+        if (0==hr) {
+            obj->setProperty(cid,var);
+        }
+        else {
+            obj->setProperty(cid,HFACTORY->convertString(0, attr, &hr));
+        }
+        return;
+    }
+    if(isUse)
+        obj->setProperty(cid,attr);
+}

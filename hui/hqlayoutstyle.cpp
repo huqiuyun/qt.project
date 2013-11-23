@@ -91,13 +91,28 @@ void HQLayoutStyle::setMargins(const QMargins& m)
     HLayoutStyle::setMargins(m);
 }
 
+Qt::Alignment HQLayoutStyle::alignment() const
+{
+    return HLayoutStyle::alignment();
+}
+
+void HQLayoutStyle::setAlignment(Qt::Alignment align)
+{
+    HLayoutStyle::setAlignment(align);
+
+    QLayout *l = layout();
+    if (!l) return ;
+    for (int i = 0; i < l->count(); i++)
+        l->setAlignment(l->itemAt(i)->widget(),alignment());
+}
+
 void HQLayoutStyle::setLayoutType(HEnums::HLayoutType type)
 {
     HLayoutStyle::setLayoutType(type);
 
-    if (!mWindow) {
+    if (!mWindow)
         return ;
-    }
+
     QLayout *layout = NULL;
     switch (type) {
     case HEnums::kVBox:
@@ -142,6 +157,7 @@ int HQLayoutStyle::insertWidget(QWidget* widget ,const HLayoutIndex& index)
     Q_UNUSED(index);
     if (layout()) {
         layout()->addWidget(widget);
+        layout()->setAlignment(widget,alignment());
         return 0;
     }
     return -1;

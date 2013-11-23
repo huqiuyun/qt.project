@@ -68,7 +68,7 @@ void HGLayoutStyle::setSpacing(int s)
 
 int HGLayoutStyle::spacing() const
 {
-    return 0;
+    return HLayoutStyle::spacing();
 }
 
 QMargins HGLayoutStyle::margins() const
@@ -92,60 +92,53 @@ void HGLayoutStyle::setMargins(const QMargins& m)
     HLayoutStyle::setMargins(m);
 }
 
-void HGLayoutStyle::setAnchor(const HAnchor& a)
-{
-    HLayoutStyle::setAnchor(a);
-    if (HEnums::kAnchor != layoutType()) return ;
-}
-
 Qt::Alignment HGLayoutStyle::alignment() const
 {
-    if (!mWidget) {
-        return HLayoutStyle::alignment();
-    }
-    HGWidget* parent = static_cast<HGWidget*>(mWidget->parent());
-    if (parent != NULL) {
-        QGraphicsLayout* ll = parent->layout();
-        if (ll) {
-            HEnums::HLayoutType type = parent->layoutType() ;
-            if (type == HEnums::kHBox ||
-                    type == HEnums::kVBox) {
-                QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(ll);
-                return l->alignment((QGraphicsLayoutItem*)mWidget);
-            }
-            else if(type == HEnums::kGrid) {
-                QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(ll);
-                return l->alignment((QGraphicsLayoutItem*)mWidget);
-            }
-        }
-    }
     return HLayoutStyle::alignment();
 }
 
 void HGLayoutStyle::setAlignment(Qt::Alignment align)
 {
-    if (!mWidget) {
-        HLayoutStyle::setAlignment(align);
-        return;
-    }
+    HLayoutStyle::setAlignment(align);
 
-    HGWidget* parent = static_cast<HGWidget*>(mWidget->parent());
-    if (parent != NULL) {
-        QGraphicsLayout* ll = parent->layout();
-        if (ll) {
-            HEnums::HLayoutType type = parent->layoutType() ;
-            if (type == HEnums::kHBox ||
-                type == HEnums::kVBox) {
-                QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(ll);
-                l->setAlignment(mWidget, align);
-            }
-            else if(type == HEnums::kGrid) {
-                QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(ll);
-                l->setAlignment(mWidget,align);
-            }
+    if (!layout()) return ;
+
+    QGraphicsLayout* l = layout();
+    if (!l) return ;
+
+    for (int i = 0; i <l->count(); i++)
+        setAlignment(l->itemAt(i), align);
+}
+
+void HGLayoutStyle::setAlignment(QGraphicsLayoutItem* item, Qt::Alignment align)
+{
+    QGraphicsLayout* ll = layout();
+    if (!ll)  return ;
+
+    HEnums::HLayoutType type = layoutType() ;
+    if (type == HEnums::kHBox || type == HEnums::kVBox) {
+        QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(ll);
+        l->setAlignment(item, align);
+    }
+    else if(type == HEnums::kGrid) {
+        QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(ll);
+        l->setAlignment(item,align);
+    }
+}
+
+Qt::Alignment HGLayoutStyle::alignment(QGraphicsLayoutItem* item) const
+{
+    QGraphicsLayout* ll = layout();
+    if (ll) {
+        HEnums::HLayoutType type = layoutType() ;
+        if (type == HEnums::kHBox || type == HEnums::kVBox) {
+            return static_cast<QGraphicsLinearLayout*>(ll)->alignment(item);
+        }
+        else if(type == HEnums::kGrid) {
+            return static_cast<QGraphicsGridLayout*>(ll)->alignment(item);
         }
     }
-    HLayoutStyle::setAlignment(align);
+    return alignment();
 }
 
 void HGLayoutStyle::setLayoutType(HEnums::HLayoutType type)
@@ -188,11 +181,12 @@ int HGLayoutStyle::insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& ind
     case HEnums::kHBox: {
         QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(layout());
         l->insertItem(index.pos(),item);
+        l->setAlignment(item,alignment());
         break;
     }
     case HEnums::kGrid: {
         QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(layout());
-        l->addItem(item,index.pos(),index.column());
+        l->addItem(item,index.pos(),index.column(),alignment());
         break;
     }
     case HEnums::kAnchor: {

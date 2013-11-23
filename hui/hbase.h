@@ -9,9 +9,6 @@
 #include <QMetaType>
 #include <QSharedPointer>
 
-class QWidget;
-typedef QList<QWidget*> HQWidgetList;
-
 /** stylid , objectname, classname */
 class HString
 {
@@ -95,6 +92,18 @@ protected:
     HString  mStyleId;
 };
 
+class HIdValue
+{
+public:
+    QString mId;
+    QVariant mVal;
+
+    HIdValue(){}
+    HIdValue(const QString& id,const QString& val):
+        mId(id),
+        mVal(val){}
+};
+
 typedef struct tagHAnchorItem
 {
     Qt::AnchorPoint first;
@@ -154,6 +163,9 @@ Q_DECLARE_METATYPE(HLayoutIndex);
 class HObjectInfo
 {
 public:
+    HString mStyleId;
+    HString mObjName;
+
     HObjectInfo(){}
 
     HObjectInfo(const HObjectInfo& info)
@@ -182,13 +194,19 @@ public:
 
     const char* objName() const { return mObjName.data();}
 
-    HString mStyleId;
-    HString mObjName;
+    QVariant toQVariant() const
+    {
+        QVariant v;
+        v.setValue(*this);
+        return v;
+    }
 };
 
 class HClassInfo : public HObjectInfo
 {
 public:
+    HString mClsName;
+
     HClassInfo()
     {
     }
@@ -221,26 +239,16 @@ public:
     {
         return (mClsName.size()>1 && mStyleId.size()>1);
     }
-
-    HString mClsName;
+    QVariant toQVariant() const
+    {
+        QVariant v;
+        v.setValue(*this);
+        return v;
+    }
 };
 
 Q_DECLARE_METATYPE(HClassInfo);
 Q_DECLARE_METATYPE(HObjectInfo);
-
-inline QVariant classInfo2QVariant(const HClassInfo& info)
-{
-    QVariant v;
-    v.setValue(info);
-    return v;
-}
-
-inline QVariant objectInfo2QVariant(const HObjectInfo& info)
-{
-    QVariant v;
-    v.setValue(info);
-    return v;
-}
 
 template<class OBJ>
 inline OBJ* hDoConstructT(OBJ* obj)

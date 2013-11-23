@@ -54,16 +54,6 @@ void HLayoutStyle::setAlignment(Qt::Alignment align)
     mAlignment = align;
 }
 
-HAnchor HLayoutStyle::anchor() const
-{
-    return mAnchor;
-}
-
-void HLayoutStyle::setAnchor(const HAnchor& a)
-{
-    mAnchor = a;
-}
-
 /** set per child item space in owner layout */
 void HLayoutStyle::setSpacing(int s)
 {
@@ -83,7 +73,6 @@ void HLayoutStyle::copyTo(HBaseStyle* obj)
     style->setLayoutType(layoutType());
     style->setMargins(margins());
     style->setAlignment(alignment());
-    style->setAnchor(anchor());
     style->setSpacing(spacing());
     HBaseStyle::copyTo(obj);
 }

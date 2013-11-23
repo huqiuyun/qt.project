@@ -23,6 +23,10 @@ public:
     void setMargins(const QMargins& m);
     QMargins margins() const;
 
+    /** set alignment all child item in layout*/
+    Qt::Alignment alignment() const;
+    void setAlignment(Qt::Alignment align);
+
     /** set per child item space in owner layout */
     int spacing() const;
     void setSpacing(int s);

@@ -23,6 +23,7 @@ public:
 	Q_PROPERTY( EffectType effectType READ effectType WRITE setEffectType )
     Q_PROPERTY( int currentIndex READ currentIndex WRITE setCurrentIndex )
     Q_PROPERTY( int count READ count)
+    Q_PROPERTY( bool isGLayout READ isGLayout)
 
 	enum ChildWidgetSizeMode
 	{
@@ -38,6 +39,7 @@ public:
     ~HGStackedWidget();
 
 public:
+    virtual bool isGLayout() { return true;}
     int  addGWidget(QGraphicsWidget* item);
     int  insertGWidget(QGraphicsWidget* item, const HLayoutIndex& index);
     bool removeGWidget(QGraphicsWidget* item);

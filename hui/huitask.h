@@ -133,7 +133,7 @@ private:
     void installStyle();
     void deleteStyle();
     void addScene(bool& main);
-    void addWidget();
+    void addWidget(bool isUse);
     void addWidgetToList();
 
     int  findFunc(const char* clsname);
@@ -141,6 +141,7 @@ private:
     void setFlagsWithQWidget(QWidget* parent);
     void setFlagsWithHGWidget(QGraphicsWidget* parent);
     void setFlagsWithHGItem(QGraphicsItem* parent);
+    static void setProperty(QObject* obj, const QString& id, const QString& attr,bool isUse);
 
     template<class OBJ>
     inline OBJ* objCast() {
@@ -161,7 +162,9 @@ private:
     HuiTask *mChild;
     HStyle  *mStyle;
     QString mXmlPath;
-    HQWidgetList mWidgets;
+
+    QList<QWidget*> mWidgets;
+    QList<HIdValue> mPropertys;
 };
 
 #endif // HUITASK_H

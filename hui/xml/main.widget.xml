@@ -8,10 +8,10 @@
          <property id="windowFlags">Qt::Window</property>
          <property id="styleSheet"></property>
          <property id="layoutStyle">
-            <classinfo clsname="HQLayoutStyle" name="layoutStyle" styleid="my.qhbox.layoutId"/>
+            <class clsname="HQLayoutStyle" name="layoutStyle" styleid="my.qhbox.layoutId"/>
          </property>
          <property id="sceneStyle">
-            <classinfo clsname="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
+            <class clsname="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
          </property>
        </obj>
        <obj clsname="HQLayoutStyle" name="" styleid="my.qhbox.layoutId">
@@ -22,7 +22,7 @@
        </obj>
    </style>
    <property id="resize">400,600</property>
-   <property id="windowTitle">test1</property>
+   <property id="windowTitle">test1-hgview</property>
    <layout file=":/xml/main.qlayout.xml"/>
  </widget>
 
@@ -32,7 +32,7 @@
        <property id="windowFlags">Qt::Window</property>
        <property id="styleSheet"></property>
        <property id="layoutStyle">
-          <classinfo clsname="HQLayoutStyle" name="layoutStyle" styleid="my.qgrid.layoutId"/>
+          <class clsname="HQLayoutStyle" name="layoutStyle" styleid="my.qgrid.layoutId"/>
        </property>
     </obj>
     <obj clsname="HQLayoutStyle" name="" styleid="my.qgrid.layoutId">
@@ -44,7 +44,7 @@
    </style>
 
    <property id="resize">600,400</property>
-   <property id="windowTitle">test2</property>
+   <property id="windowTitle">test2-hqwidget</property>
    <layout file=":/xml/main.qlayout.xml"/>
  </widget>
 

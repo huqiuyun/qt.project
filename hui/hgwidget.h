@@ -27,7 +27,7 @@ public:
     Q_PROPERTY( int fixedHeight READ fixedHeight WRITE setFixedHeight )
     Q_PROPERTY( int fixedWidth READ fixedWidth WRITE setFixedWidth )
     Q_PROPERTY( bool isHGWidget READ isHGWidget)
-
+    Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
     Q_PROPERTY( QString imagePath WRITE setImagePath )
     Q_PROPERTY( QColor color WRITE setColor )
     Q_PROPERTY( QBrush backgroundBrush WRITE setBackgroundBrush )
@@ -86,6 +86,10 @@ public:
     void setImagePath(const QString& path);
     void setColor(const QColor& rgb);
     void setBackgroundBrush(const QBrush& brush);
+
+    /** the object is alignment in parent layout */
+    Qt::Alignment alignment() const;
+    void setAlignment(Qt::Alignment align);
 protected:
     void doConstruct();
     virtual void construct(){}

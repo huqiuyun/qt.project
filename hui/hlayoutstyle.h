@@ -10,7 +10,6 @@ class H_API HLayoutStyle : public HBaseStyle
     Q_OBJECT
 
     Q_PROPERTY( HEnums::HLayoutType layoutType READ layoutType WRITE setLayoutType )
-    Q_PROPERTY( HAnchor anchor READ anchor WRITE setAnchor )
     Q_PROPERTY( QMargins margins READ margins WRITE setMargins )
     Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
     Q_PROPERTY( int spacing READ spacing WRITE setSpacing )
@@ -31,9 +30,6 @@ public:
     virtual Qt::Alignment alignment() const;
     virtual void setAlignment(Qt::Alignment align);
 
-    virtual HAnchor anchor() const;
-    virtual void setAnchor(const HAnchor& a);
-
     /** set per child item space in owner layout */
     virtual void setSpacing(int s);
     virtual int spacing() const;
@@ -46,7 +42,6 @@ protected:
     HEnums::HLayoutType mLayoutType;
     QMargins      mMargins;
     Qt::Alignment mAlignment;
-    HAnchor       mAnchor;
     int           mSpacing;
 };
 

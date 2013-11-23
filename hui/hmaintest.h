@@ -44,7 +44,7 @@ public:
 
 
        // xml for native window
-      HQWidgetList qwlist = uiReader.createWidget(":/xml/main.widget.xml",QString(),MainWindow);
+       QList<QWidget*> qwlist = uiReader.createWidget(":/xml/main.widget.xml",QString(),MainWindow);
        for (int i = 0; i< qwlist.size();i++) {
            QWidget* first = qwlist.at(i);
            first->show();

@@ -26,15 +26,16 @@ public:
     void setMargins(const QMargins& m);
     QMargins margins() const;
 
-    /** set alignment in parent layout*/
+    /** set alignment all child item in layout*/
     Qt::Alignment alignment() const;
     void setAlignment(Qt::Alignment align);
-
-    void setAnchor(const HAnchor& a);
 
     /** set per child item space in owner layout */
     int spacing() const;
     void setSpacing(int s);
+
+    void setAlignment(QGraphicsLayoutItem* item, Qt::Alignment align);
+    Qt::Alignment alignment(QGraphicsLayoutItem* item) const;
 
     /** add item to owner layout */
     virtual int  addItem(QGraphicsLayoutItem* item);

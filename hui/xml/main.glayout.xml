@@ -6,31 +6,55 @@
    if parent is HGWidget,then layout items are  based QWidget Or based QGrahicsWidget
  <!-->
  <layout>
+
+   <style>
+     <obj clsname="HBackgroundStyle" name="" styleid="backgroundId2">
+       <property id="color">200,200,200</property>
+     </obj>
+
+     <obj clsname="HGWidgetStyle" name="" styleid="gwidgetId2">
+       <property id="styleSheet"></property>
+       <property id="backgroundStyle">
+         <class clsname="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
+       </property>
+     </obj>
+   </style>
+
    <widget clsname="HGWidget" name="" styleid="gwidgetId2">
-      <property id="color">200,20,200</property>
+      <style/>
+      <property id="color">200,0,200</property>
+      <property id="fixedWidth">80</property>
+      <property id="parent:alignment">Qt::AlignRight</property>
    </widget>
 
    <widget clsname="HGWidget" name="" styleid="gwidgetId2">
+      <style/>
       <property id="color">100,40,200</property>
    </widget>
 
    <widget clsname="HGWidget" name="" styleid="gwidgetId2">
+     <style/>
      <property id="color">101,101,101</property>
    </widget>
 
    <widget clsname="HQWidget" name="" styleid="private.framewindowId">
-     <property id="fixedHeight">110</property>
+     <style/>
+     <property id="fixedSize">80,120</property>
      <property id="margins">10,10,10,10</property>
      <layout file=":xml/main.qlayout.xml" />
   </widget>
 
   <widget clsname="HGStackedWidget" name="" styleid="gwidgetId2">
-    <property id="fixedHeight">40</property>
+    <style/>
+    <property id="color">0,255,0</property>
+    <property id="fixedHeight">60</property>
     <layout>
        <widget clsname="HGWidget" name="" styleid="gwidgetId2">
+          <style/>
           <property id="color">255,0,0</property>
        </widget>
        <widget clsname="HGWidget" name="" styleid="gwidgetId2">
+          <style/>
           <property id="color">0,255,0</property>
        </widget>
     </layout>

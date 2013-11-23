@@ -196,7 +196,6 @@ void HGWidget::setColor(const QColor& rgb)
     Q_D(HGWidget);
     if (d->mBackgroundStyle)
         d->mBackgroundStyle->setColor(rgb);
-    else Q_ASSERT(0);
 }
 
 void HGWidget::setBackgroundBrush(const QBrush& brush)
@@ -313,6 +312,20 @@ bool HGWidget::removeWidget(QWidget* widget)
         return false;
 
     return removeGWidget(proxy);
+}
+
+/** the object is alignment in parent layout */
+Qt::Alignment HGWidget::alignment() const
+{
+    HGWidget* p = static_cast<HGWidget*>(parent());
+    return (p == NULL) ? Qt::AlignCenter : p->layoutStyle()->alignment((QGraphicsLayoutItem*)(this));
+}
+
+void HGWidget::setAlignment(Qt::Alignment align)
+{
+    HGWidget* p = static_cast<HGWidget*>(parent());
+    if (p == NULL) return ;
+    p->layoutStyle()->setAlignment(this,align);
 }
 
 void HGWidget::doConstruct()

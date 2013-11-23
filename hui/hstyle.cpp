@@ -16,7 +16,6 @@ HStyle::~HStyle()
 {
 }
 
-
 bool HStyle::isPrivate(const char* styleid)
 {
     const char* prex = "private.";

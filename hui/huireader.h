@@ -16,19 +16,18 @@ class HQWidget;
 class HStyle;
 class HLayoutStyle;
 class HuiTask;
-class HAttributeProxy;
 
 class H_API HuiReader
 {
 public:
-    HuiReader(HAttributeProxy* attriProxy = NULL);
+    HuiReader();
 
 public:
     bool createStyle(const QString& xml, const QString& xmlpath, HStyle* style );
     bool createStyle(const char* data, HStyle* style );
 
-    HQWidgetList createWidget(const QString& xml, const QString& xmlpath, QWidget *parent);
-    HQWidgetList createWidget(const char* data, QWidget *parent);
+    QList<QWidget*> createWidget(const QString& xml, const QString& xmlpath, QWidget *parent);
+    QList<QWidget*> createWidget(const char* data, QWidget *parent);
     //
     bool createChild(const QString& xml, const QString& xmlpath,HGWidget* parent);
     bool createChild(const char* data, HGWidget *parent);
@@ -51,18 +50,18 @@ private:
     bool createWidget(HuiTask* HuiTask,const HClassInfo& clsinfo, long *hr);
 
     /** for style xml <style></style>*/
+    void styleFileLink(HuiTask* task,QXmlStreamReader* reader);
     void createStyleWithXmlReader(HuiTask *task, QXmlStreamReader* reader, long* hr);
 
     void createSceneWithXmlReader(HuiTask* HuiTask,QXmlStreamReader* reader, long *hr);
+
+    void layoutFileLink(HuiTask* task, QXmlStreamReader* reader);
     void createLayoutWithXmlReader(HuiTask* HuiTask,QXmlStreamReader* reader, long *hr);
 
-    void readProperty(QXmlStreamReader* reader,QObject* obj, int objType);
-    void readClassInfo(QXmlStreamReader* reader, const QString& id, QObject* obj);
-    void setProperty(QObject* obj, int objType, const QString& id, const QString& attr);
+    void readProperty(QXmlStreamReader* reader,QObject* obj,QList<HIdValue>& propertys);
 
     inline bool isUseProperty() const { return mUseProperty;}
 private:
-    HAttributeProxy* mAttriProxy;
     bool mUseProperty;
     const QLatin1String kXmlHui;
     const QLatin1String kXmlVersion;
@@ -72,7 +71,7 @@ private:
     const QLatin1String kXmlStyle;
     const QLatin1String kXmlProperty;
     const QLatin1String kXmlObj;
-    const QLatin1String kXmlClassinfo;
+    const QLatin1String kXmlClass;
     const QString kXmlId;
     const QString kXmlClsname;
     const QString kXmlName;
@@ -80,6 +79,7 @@ private:
     const QString kXmlLayoutIndex;
     const QString kXmlFile;
     const QString kXmlMain;
+    const QString kPrexParent;
     friend class HStyle;
 };
 
