@@ -103,7 +103,14 @@ void HQLayoutStyle::setAlignment(Qt::Alignment align)
     QLayout *l = layout();
     if (!l) return ;
     for (int i = 0; i < l->count(); i++)
-        l->setAlignment(l->itemAt(i)->widget(),alignment());
+        setAlignment(l->itemAt(i)->widget(),alignment());
+}
+
+void HQLayoutStyle::setAlignment(QWidget* w, Qt::Alignment align)
+{
+    QLayout *l = layout();
+    if (l)
+        l->setAlignment(w,align);
 }
 
 void HQLayoutStyle::setLayoutType(HEnums::HLayoutType type)

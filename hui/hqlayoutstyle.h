@@ -31,6 +31,7 @@ public:
     int spacing() const;
     void setSpacing(int s);
 
+    void setAlignment(QWidget* w, Qt::Alignment align);
     /** add widget to owner layout */
     virtual int  addWidget(QWidget* widget);
     virtual int  insertWidget(QWidget* widget ,const HLayoutIndex& index);

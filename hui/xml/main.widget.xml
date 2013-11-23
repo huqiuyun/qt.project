@@ -1,8 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <hui version="1.0">
 
- <!-- main view <!-->
+<!--
+    1. This definition is only parent and child .
+
+    2. If parent is QWidget , then child only is based QWidget.
+       @exmaple, create failure:
+       <widget clsname="HQWidget" styleid="undefined">
+         <widget clsname="HGWidget" name="" styleid="gwidgetId"/>
+       </widget>
+
+    3. If parent is QGraphicWidget,then child only is based GraphicsWidget.
+     @exmaple,create failure:
+     <widget clsname="HGWidget" styleid="undefined">
+       <widget clsname="HQWidget" name="" styleid="gwidgetId"/>
+     </widget>
+
+     @exmaple, create success, it can be in the <layout>, but parent need be layout style:
+     <widget clsname="HGWidget" name="" styleid="gwidgetId">
+        <style>
+            @see main.style.xml , HGWidgetStyle
+        </style>
+        <layout>
+          <widget clsname="HQWidget" name="" styleid="undefined"/>
+        </layout>
+     </widget>
+<!-->
+
  <widget clsname="HGView" name="main" styleid="my.framewindow.test1">
+   <!-- style is private <!-->
    <style>
       <obj clsname="HFrameStyle" name="" styleid="my.framewindow.test1">
          <property id="windowFlags">Qt::Window</property>

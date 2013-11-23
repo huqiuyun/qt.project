@@ -6,7 +6,7 @@
     <obj clsname="HGSceneStyle" name="" styleid="sceneId">
        <property id="alignment"></property>
        <property id="sizePolicy">QSizePolicy::Fixed</property>
-       <property id="sceneRect">0,0,400,300</property>
+       <property id="foregroundBrush">color|100,100,100,200</property>
     </obj>
 
     <!-- <!-->
@@ -22,8 +22,7 @@
        <property id="layoutType">kVBox</property>
        <property id="alignment"></property>
        <property id="margins">0,0,0,0</property>
-       <property id="spacing">1</property>
-       <property id="anchor"></property>
+       <property id="spacing">6</property>
     </obj>
 
     <!-- <!-->

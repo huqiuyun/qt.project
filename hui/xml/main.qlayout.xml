@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <hui version="1.0">
 
- <!-- support based QWidget layout OR HGWidget
+ <!-- This definition support based QWidget layout OR HGWidget
    if parent is QWidget,then all layout items are based QWidget object
    if parent is HGWidget,then layout items are  based QWidget Or based QGrahicsWidget
  <!-->

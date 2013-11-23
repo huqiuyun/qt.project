@@ -10,6 +10,7 @@ class HFrameStyle;
 class HBackgroundStyle;
 class HQLayoutStyle;
 class HStyle;
+class HGWidget;
 
 class H_API HQWidget : public QWidget, public HObject
 {
@@ -20,6 +21,8 @@ class H_API HQWidget : public QWidget, public HObject
     Q_PROPERTY( int fixedWidth WRITE setFixedWidth )
     Q_PROPERTY( QSize resize WRITE resizeEx )
     Q_PROPERTY( bool isHQWidget READ isHQWidget)
+    Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
+
 public:
     explicit HQWidget(QWidget *parent = 0);
     explicit HQWidget(const HObjectInfo& objinfo, QWidget* parent = NULL);
@@ -37,6 +40,9 @@ public:
 
     HEnums::HLayoutType layoutType() const;
 
+    /** QGraphicsProxyWidget's parent */
+    HGWidget* parentGWidget() const;
+
     /** add widget to owner layout */
     virtual int addWidget(QWidget* widget);
     virtual int insertWidget(QWidget* widget ,const HLayoutIndex& layIndex);
@@ -50,6 +56,9 @@ public:
     void setFixedHeight(int h);
     void resizeEx(const QSize &s);
 
+    /** the object is alignment in parent layout */
+    Qt::Alignment alignment() const;
+    void setAlignment(Qt::Alignment align);
 protected:
     void doConstruct();
     virtual void construct(){}

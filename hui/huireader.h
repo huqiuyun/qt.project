@@ -79,7 +79,8 @@ private:
     const QString kXmlLayoutIndex;
     const QString kXmlFile;
     const QString kXmlMain;
-    const QString kPrexParent;
+    const QString kPrexSkip;
+    const QString kPrexProxy;
     friend class HStyle;
 };
 

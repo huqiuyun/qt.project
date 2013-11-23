@@ -2,10 +2,14 @@
 #include "hstyle.h"
 #include "hcore.h"
 #include "hfactory.h"
+#include "hgview.h"
+#include "hgwidget.h"
 #include "hframestyle.h"
-#include "Hbackgroundstyle.h"
+#include "hbackgroundstyle.h"
 #include "hqlayoutstyle.h"
+#include "hglayoutstyle.h"
 #include "private/hqwidget_p.h"
+#include <QGraphicsProxyWidget>
 
 HQWidgetPrivate::HQWidgetPrivate() :
     q_ptr(NULL)
@@ -182,6 +186,46 @@ void HQWidget::resizeEx(const QSize &s)
     QWidget::resize(s.width(),s.height());
 }
 
+/** the object is alignment in parent layout */
+Qt::Alignment HQWidget::alignment() const
+{
+    return Qt::AlignCenter;
+}
+
+void HQWidget::setAlignment(Qt::Alignment align)
+{
+    HGWidget* widget = parentGWidget();
+    if (widget) {
+        QObject* p = NULL;
+        QGraphicsProxyWidget* proxy = graphicsProxyWidget();
+        if (!proxy || !(p = proxy->parent()))
+            return;
+        if (p->property("isHGWidget").toBool())
+            static_cast<HGWidget*>(p)->layoutStyle()->setAlignment(proxy,align);
+    }
+    else {
+        QObject* p = parent();
+        if (p->property("isHQWidget").toBool()) {
+            static_cast<HQWidget*>(p)->layoutStyle()->setAlignment(this,align);
+        }
+        else if(p->property("isHGView").toBool()) {
+            static_cast<HGView*>(p)->layoutStyle()->setAlignment(this,align);
+        }
+    }
+}
+
+HGWidget* HQWidget::parentGWidget() const
+{
+    QObject* p = parent();
+    if (p) return NULL;
+
+    QGraphicsProxyWidget* proxy = graphicsProxyWidget();
+    if (!proxy || !proxy->parent())
+        return NULL;
+    p = proxy->parent();
+    return (p->property("isHGWidget").toBool()) ? static_cast<HGWidget*>(p) : NULL;
+}
+
 void HQWidget::doConstruct()
 {
     Q_D(HQWidget);
@@ -190,7 +234,6 @@ void HQWidget::doConstruct()
     }
     construct();
 }
-
 
 void HQWidget::resizeEvent(QResizeEvent *event)
 {

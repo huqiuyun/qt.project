@@ -7,6 +7,9 @@
  <!-->
  <layout>
 
+   <!-- Style is private , belong to all childs.
+        If child need to use them , then need to add the key <style/>.
+   <!-->
    <style>
      <obj clsname="HBackgroundStyle" name="" styleid="backgroundId2">
        <property id="color">200,200,200</property>
@@ -18,13 +21,32 @@
          <class clsname="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
        </property>
      </obj>
+
+    <obj clsname="HGLayoutStyle" name="" styleid="glayoutId3">
+       <property id="layoutType">kHBox</property>
+       <property id="alignment"></property>
+       <property id="margins">0,0,0,0</property>
+       <property id="spacing">6</property>
+    </obj>
+
+     <obj clsname="HGWidgetStyle" name="" styleid="gwidgetId3">
+       <property id="styleSheet"></property>
+       <property id="backgroundStyle">
+         <class clsname="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
+       </property>
+       <property id="layoutStyle">
+         <class clsname="HGLayoutStyle" name="layoutStyle" styleid="glayoutId3"/>
+       </property>
+     </obj>
+
    </style>
 
-   <widget clsname="HGWidget" name="" styleid="gwidgetId2">
+   <widget clsname="HGWidget" name="" styleid="gwidgetId3">
       <style/>
-      <property id="color">200,0,200</property>
-      <property id="fixedWidth">80</property>
-      <property id="parent:alignment">Qt::AlignRight</property>
+      <property id="color">200,200,200</property>
+      <property id="openGraphicsItemFlag">16</property>
+      <layout file=":/xml/main.qlayout.xml"/>
+      <property id="skip:alignment">Qt::AlignCenter</property>
    </widget>
 
    <widget clsname="HGWidget" name="" styleid="gwidgetId2">
@@ -42,6 +64,7 @@
      <property id="fixedSize">80,120</property>
      <property id="margins">10,10,10,10</property>
      <layout file=":xml/main.qlayout.xml" />
+     <property id="skip:alignment">Qt::AlignLeft</property>
   </widget>
 
   <widget clsname="HGStackedWidget" name="" styleid="gwidgetId2">

@@ -205,6 +205,18 @@ void HGWidget::setBackgroundBrush(const QBrush& brush)
         d->mBackgroundStyle->setBackgroundBrush(brush);
 }
 
+void HGWidget::openGraphicsItemFlag(int flag)
+{
+    //ItemClipsChildrenToShape
+    QGraphicsItem::setFlag((GraphicsItemFlag)flag,true);
+}
+
+void HGWidget::closeGraphicsItemFlag(int flag)
+{
+    //ItemClipsChildrenToShape
+    QGraphicsItem::setFlag((GraphicsItemFlag)flag,false);
+}
+
 void HGWidget::setWidgetStyle(QSharedPointer<HGWidgetStyle> style)
 {
     d_func()->mWidgetStyle = style;
@@ -318,7 +330,7 @@ bool HGWidget::removeWidget(QWidget* widget)
 Qt::Alignment HGWidget::alignment() const
 {
     HGWidget* p = static_cast<HGWidget*>(parent());
-    return (p == NULL) ? Qt::AlignCenter : p->layoutStyle()->alignment((QGraphicsLayoutItem*)(this));
+    return (p == NULL) ? Qt::AlignCenter : p->layoutStyle()->alignment(qobject_cast<QGraphicsLayoutItem*>(this));
 }
 
 void HGWidget::setAlignment(Qt::Alignment align)

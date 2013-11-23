@@ -25,6 +25,7 @@ public:
     Q_PROPERTY( int fixedWidth WRITE setFixedWidth )
     Q_PROPERTY( QSize resize WRITE resizeEx )
     Q_PROPERTY( bool isHGView READ isHGView)
+    Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
 public:
     explicit HGView(QWidget *parent = 0);
     explicit HGView(const HObjectInfo& objinfo, QWidget *parent = 0);
@@ -53,6 +54,9 @@ public:
     // layout functions
     HEnums::HLayoutType layoutType() const;
 
+    /** QGraphicsProxyWidget's parent */
+    HGWidget* parentGWidget() const;
+
     /** add widget to owner layout */
     virtual int  addWidget(QWidget* widget);
     virtual int  insertWidget(QWidget* widget ,const HLayoutIndex& index);
@@ -66,6 +70,9 @@ public:
     void setFixedWidth(int w);
     void resizeEx(const QSize &s);
 
+    /** the object is alignment in parent layout */
+    Qt::Alignment alignment() const;
+    void setAlignment(Qt::Alignment align);
     //HObject
 protected:
     void doConstruct();

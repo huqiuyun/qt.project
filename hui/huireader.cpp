@@ -34,7 +34,8 @@ HuiReader::HuiReader() :
     kXmlLayoutIndex("layoutIndex"),
     kXmlFile("file"),
     kXmlMain("main"),
-    kPrexParent("parent:")
+    kPrexSkip("skip:"),
+    kPrexProxy("proxy:")
 {
 }
 
@@ -584,8 +585,8 @@ void HuiReader::readProperty(QXmlStreamReader* reader, QObject* obj,QList<HIdVal
         else if (token == QXmlStreamReader::Characters) {// id , text = isWhitespace() or isCDATA()
             if (!reader->isWhitespace()) {
                 QString val = reader->text().toString();
-                if (id.startsWith(kPrexParent)) {
-                    propertys.append(HIdValue(id.mid(kPrexParent.size()),val));
+                if (id.startsWith(kPrexSkip)) {
+                    propertys.append(HIdValue(id.mid(kPrexSkip.size()),val));
                 }
                 else {
                     HuiTask::setProperty(obj,id,val,isUseProperty());

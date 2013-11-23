@@ -31,6 +31,8 @@ public:
     Q_PROPERTY( QString imagePath WRITE setImagePath )
     Q_PROPERTY( QColor color WRITE setColor )
     Q_PROPERTY( QBrush backgroundBrush WRITE setBackgroundBrush )
+    Q_PROPERTY( int openGraphicsItemFlag WRITE openGraphicsItemFlag)
+    Q_PROPERTY( int closeGraphicsItemFlag WRITE closeGraphicsItemFlag)
 public:
     explicit HGWidget(QGraphicsItem* parent = NULL);
     explicit HGWidget(const HObjectInfo& objinfo, QGraphicsItem* parent = NULL);
@@ -86,6 +88,10 @@ public:
     void setImagePath(const QString& path);
     void setColor(const QColor& rgb);
     void setBackgroundBrush(const QBrush& brush);
+
+    // for xml file
+    void openGraphicsItemFlag(int flag);
+    void closeGraphicsItemFlag(int flag);
 
     /** the object is alignment in parent layout */
     Qt::Alignment alignment() const;

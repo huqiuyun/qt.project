@@ -190,17 +190,22 @@ void HuiTask::addWidget(bool isUse)
                 widget->addGWidget(mChild->objCast<QGraphicsWidget>());
         }
     }
+    execSkipProperty(mChild,isUse);
+    deleteChild();
+}
 
-    if (QObject* obj = mChild->qObject())
+void HuiTask::execSkipProperty(HuiTask* task,bool isUse)
+{
+    if (!task) return ;
+    if (QObject* obj = task->qObject())
     {// set property
-        QList<HIdValue>::iterator iter = mChild->mPropertys.begin();
-        if (iter != mChild->mPropertys.end()) {
+        QList<HIdValue>::iterator iter = task->mPropertys.begin();
+        if (iter != task->mPropertys.end()) {
             setProperty(obj, iter->mId, iter->mVal.toString(),isUse);
             ++iter;
         }
-        mChild->mPropertys.clear();
+        task->mPropertys.clear();
     }
-    deleteChild();
 }
 
 void HuiTask::addWidgetToList()
@@ -216,6 +221,7 @@ void HuiTask::addWidgetToList()
         }
         else {
             //exception
+            Q_ASSERT(0);
         }
     }
     else if (isHGWidget()) {

@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
  <hui version="1.0">
   <property id="resize">400,600</property>
+  <!-- proxy:method  :parent execute to do invoke method
+       proxy:skip:method : skip the layout,and parent execute to do invoke method
+       skip:method : skip the layout, and owner execute to do invoke method
+  <!-->
+  <property id="skip:resize">400,600</property>
+  <invoke method="proxy:fun">
+     <arg type="bool"></arg>
+     <arg type="string"></arg>
+     <arg type="int"></arg>
+     <arg type="rect"></arg>
+     <arg type="size"></arg>
+     <arg type="point"></arg>
+     <arg type="color"></arg>
+     <arg type="font"></arg>
+     <arg type="brush"></arg>
+     <arg type="image"></arg>
+  </invoke>
  </hui>

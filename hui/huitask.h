@@ -141,6 +141,8 @@ private:
     void setFlagsWithQWidget(QWidget* parent);
     void setFlagsWithHGWidget(QGraphicsWidget* parent);
     void setFlagsWithHGItem(QGraphicsItem* parent);
+
+    static void execSkipProperty(HuiTask* task,bool isUse);
     static void setProperty(QObject* obj, const QString& id, const QString& attr,bool isUse);
 
     template<class OBJ>
