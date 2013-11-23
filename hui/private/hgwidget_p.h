@@ -6,24 +6,24 @@
 #include "hglayoutstyle.h"
 #include "hgwidgetstyle.h"
 class HGWidget;
-
+class HStyle;
 class H_API HGWidgetPrivate
 {
 public:
-    explicit HGWidgetPrivate(const char* styleid);
+    explicit HGWidgetPrivate();
     virtual ~HGWidgetPrivate();
 
 private:
     void init();
-    void initStyle(HGWidgetStyle* style);
+    bool installStyle(const HStyle* style);
+    void initStyle(const HStyle* style);
 
 protected:
     friend class HGWidget;
     HGWidget  *q_ptr;
-    QSharedPointer<HGWidgetStyle>    mGWidgetStyle;
+    QSharedPointer<HGWidgetStyle>    mWidgetStyle;
     QSharedPointer<HBackgroundStyle> mBackgroundStyle;
     QSharedPointer<HGLayoutStyle>    mLayoutStyle;
-    HString  mStyleId;
 };
 
 #endif // HGWIDGET_P_H

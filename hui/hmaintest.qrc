@@ -1,5 +1,14 @@
 <RCC>
     <qresource prefix="/layout/main">
-        <file>lt.main.xml</file>
+        <file>main.xml</file>
+        <file>main.property.xml</file>
+        <file>main.glayout.xml</file>
+        <file>main.style.xml</file>
+        <file>main.scene.xml</file>
+        <file>main.widget.xml</file>
+        <file>main.qlayout.xml</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>theme/mm.jpg</file>
     </qresource>
 </RCC>

@@ -8,7 +8,7 @@ QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = test
+TARGET = hui
 TEMPLATE = app
 
 DEFINES += BUILD_HFW
@@ -35,7 +35,13 @@ SOURCES += main.cpp\
     hqlayoutstyle.cpp \
     hglayoutstyle.cpp \
     hgwidgetstyle.cpp \
-    hstyle.cpp
+    hstyle.cpp \
+    hqwidget.cpp \
+    hwidgetstyle.cpp \
+    hgscene.cpp \
+    hattributeproxy.cpp \
+    hgproxywidget.cpp \
+    huitask.cpp
 
 
 
@@ -76,7 +82,14 @@ HEADERS  += mainwindow.h \
     hqlayoutstyle.h \
     hglayoutstyle.h \
     hgwidgetstyle.h \
-    hstyle.h
+    hstyle.h \
+    hqwidget.h \
+    hwidgetstyle.h \
+    private/hqwidget_p.h \
+    hgscene.h \
+    hattributeproxy.h \
+    hgproxywidget.h \
+    huitask.h
 
 FORMS    += mainwindow.ui
 
