@@ -23,7 +23,7 @@
    </style>
    <property id="resize">400,600</property>
    <property id="windowTitle">test1</property>
-   <layout file=":/layout/main/main.qlayout.xml"/>
+   <layout file=":/xml/main.qlayout.xml"/>
  </widget>
 
  <widget clsname="HQWidget" name="main" styleid="my.framewindow.test2">
@@ -45,7 +45,7 @@
 
    <property id="resize">600,400</property>
    <property id="windowTitle">test2</property>
-   <layout file=":/layout/main/main.qlayout.xml"/>
+   <layout file=":/xml/main.qlayout.xml"/>
  </widget>
 
 </hui>

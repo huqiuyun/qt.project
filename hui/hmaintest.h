@@ -40,17 +40,17 @@ public:
 
        HuiReader uiReader;
        // xml for MainWindow set property.
-       uiReader.createChild(":/layout/main/main.property.xml",QString(),MainWindow);
+       uiReader.createChild(":/xml/main.property.xml",QString(),MainWindow);
 
 
        // xml for native window
-      HQWidgetList qwlist = uiReader.createWidget(":/layout/main/main.widget.xml",QString(),MainWindow);
+      HQWidgetList qwlist = uiReader.createWidget(":/xml/main.widget.xml",QString(),MainWindow);
        for (int i = 0; i< qwlist.size();i++) {
            QWidget* first = qwlist.at(i);
            first->show();
        }
 
-       uiReader.createChild(":/layout/main/main.scene.xml",QString(),MainWindow);
+       uiReader.createChild(":/xml/main.scene.xml",QString(),MainWindow);
        /*
        if (MainWindow->hasSceneStyle())
        {

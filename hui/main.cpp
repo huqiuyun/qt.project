@@ -18,7 +18,7 @@ public:
         //
 
         HuiReader uiReader;
-        uiReader.createStyle(":/layout/main/main.style.xml",QString(),HSTYLE);
+        uiReader.createStyle(":/xml/main.style.xml",QString(),HSTYLE);
 
     }
 

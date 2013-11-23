@@ -21,7 +21,7 @@
    <widget clsname="HQWidget" name="" styleid="private.framewindowId">
      <property id="fixedHeight">110</property>
      <property id="margins">10,10,10,10</property>
-     <layout file=":/layout/main/main.qlayout.xml" />
+     <layout file=":xml/main.qlayout.xml" />
   </widget>
 
   <widget clsname="HGStackedWidget" name="" styleid="gwidgetId2">
@@ -40,31 +40,3 @@
 </layout>
 
 </hui>
-<!--
- <layout>
-   <widget clsname="HQWidget" name="" styleid="undefined">
-      <property id="fixedHeight">140</property>
-      <property id="layoutIndex">
-      </property>
-   </widget>
-   <widget clsname="QPushButton" name="" styleid="undefined">
-      <property id="text">text0</property>
-      <property id="icon"></property>
-   </widget>
-   <widget clsname="QPushButton" name="" styleid="undefined">
-       <property id="text">text1</property>
-       <property id="icon"></property>
-   </widget>
-   <widget clsname="QPushButton" name="" styleid="undefined">
-       <property id="text">text2</property>
-       <property id="icon"></property>
-   </widget>
-   <widget clsname="QRadioButton" name="" styleid="undefined">
-       <property id="text">text1</property>
-       <property id="icon"></property>
-       <property id="checked">1</property>
-   </widget>
-   <widget clsname="QWidget" name="" styleid="undefined">
-   </widget>
- </layout>
- <!-->

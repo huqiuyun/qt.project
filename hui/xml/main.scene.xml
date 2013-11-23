@@ -4,7 +4,7 @@
  <!-- only support based QGraphicsView <!-->
  <scene main="true">
    <widget clsname="HGWidget" name="" styleid="gwidgetId">
-      <layout file=":/layout/main/main.glayout.xml"/>
+      <layout file=":/xml/main.glayout.xml"/>
    </widget>
  </scene>
 
