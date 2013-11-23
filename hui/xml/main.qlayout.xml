@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hui version="1.0">
+
+ <!-- support based QWidget layout OR HGWidget
+   if parent is QWidget,then all layout items are based QWidget object
+   if parent is HGWidget,then layout items are  based QWidget Or based QGrahicsWidget
+ <!-->
+ <layout>
+
+  <widget clsname="HQWidget" name="" styleid="undefined" />
+
+  <widget clsname="QPushButton" name="" styleid="undefined">
+          <property id="text">text0</property>
+          <property id="icon"></property>
+  </widget>
+
+  <widget clsname="QPushButton" name="" styleid="undefined">
+          <property id="text">text1</property>
+          <property id="icon"></property>
+  </widget>
+
+  <widget clsname="QPushButton" name="" styleid="undefined">
+          <property id="text">text2</property>
+          <property id="icon"></property>
+  </widget>
+
+  <widget clsname="QRadioButton" name="" styleid="undefined">
+          <property id="text">text1</property>
+          <property id="icon"></property>
+          <property id="checked">1</property>
+  </widget>
+
+  <widget clsname="QWidget" name="" styleid="undefined">
+  </widget>
+
+</layout>
+
+</hui>
+
