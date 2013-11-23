@@ -2,83 +2,15 @@
 #define HBASE_H
 
 #include "hconfig.h"
+#include "henums.h"
 #include <QByteArray>
 #include <QLatin1String>
 #include <QVariant>
 #include <QMetaType>
+#include <QSharedPointer>
 
-
-class H_API HObject
-{
-public:
-
-    HObject(){}
-    virtual ~HObject(){}
-
-protected:
-    template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
-    virtual void doConstruct(){}
-};
-
-typedef struct tagHAnchorItem
-{
-    Qt::AnchorPoint first;
-    Qt::AnchorPoint second;
-    int distance;
-}HAnchorItem_t,*PHAnchorItem_t;
-
-class H_API HAnchor
-{
-public:
-    HAnchor();
-    HAnchor(const HAnchorItem_t item[4]);
-    HAnchor(const HAnchor& anchor);
-    HAnchor& operator=(const HAnchor& anchor);
-
-    int counts() const;
-    HAnchorItem_t at(int index);
-
-    void operator >> (QByteArray& bytes);
-    void operator << (const QByteArray& bytes);
-private:
-    HAnchorItem_t mItems[4];
-};
-Q_DECLARE_METATYPE(HAnchor);
-
-class H_API HLayoutIndex
-{
-public:
-    explicit HLayoutIndex() :
-        mIndex(-1),
-        mRow(-1),
-        mColumn(-1)
-    {
-    }
-
-    explicit HLayoutIndex(int index) :
-        mIndex(index),
-        mRow(-1),
-        mColumn(-1)
-    {
-    }
-
-    explicit HLayoutIndex(int row,int col) :
-        mIndex(-1),
-        mRow(row),
-        mColumn(col)
-    {
-    }
-public:
-    int index() const { return mIndex;}
-    int row() const { return mRow;}
-    int column() const { return mColumn;}
-private:
-    int mIndex; // for HBOX,VBOX
-
-    int mRow; // for grid box
-    int mColumn;
-};
-Q_DECLARE_METATYPE(HLayoutIndex);
+class QWidget;
+typedef QList<QWidget*> HQWidgetList;
 
 /** stylid , objectname, classname */
 class HString
@@ -92,8 +24,16 @@ class HString
     HString(const std::string& id) :
         mId(id){}
 
-    HString(const HString& id):
-        mId(id.mId){}
+    HString(const HString& id)
+    {
+        *this = id;
+    }
+
+    HString& operator =(const HString& id)
+    {
+        mId = id.mId;
+        return *this;
+    }
 
     HString(const QLatin1String& id) :
         mId(id.size()>1?id.data():""){}
@@ -132,21 +72,91 @@ public:
     {
         return (latin1()<=s.latin1());
     }
-
     std::string mId;
 };
+
+class H_API HObject
+{
+public:
+    HObject(const HString& styleid = HString()) :
+        mObjType(USEOBJTYPE(Unk)),
+        mStyleId(styleid)
+    {}
+    virtual ~HObject(){}
+
+    int objType() const {return mObjType;}
+    const char* styleId() const { return mStyleId.data();}
+protected:
+    template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
+    virtual void doConstruct(){}
+
+protected:
+    int mObjType;
+    HString  mStyleId;
+};
+
+typedef struct tagHAnchorItem
+{
+    Qt::AnchorPoint first;
+    Qt::AnchorPoint second;
+    int distance;
+}HAnchorItem_t,*PHAnchorItem_t;
+
+class H_API HAnchor
+{
+public:
+    HAnchor();
+    HAnchor(const HAnchorItem_t item[4]);
+    HAnchor(const HAnchor& anchor);
+    HAnchor& operator=(const HAnchor& anchor);
+
+    int counts() const;
+    HAnchorItem_t at(int index);
+
+    void operator >> (QByteArray& bytes);
+    void operator << (const QByteArray& bytes);
+private:
+    HAnchorItem_t mItems[4];
+};
+Q_DECLARE_METATYPE(HAnchor);
+
+class H_API HLayoutIndex
+{
+public:
+    explicit HLayoutIndex() :
+        mIndex(-1),
+        mColumn(-1)
+    {
+    }
+
+    explicit HLayoutIndex(int index) :
+        mIndex(index),
+        mColumn(-1)
+    {
+    }
+
+    explicit HLayoutIndex(int row,int col) :
+        mIndex(row),
+        mColumn(col)
+    {
+    }
+public:
+    int pos() const { return mIndex;}
+    int row() const { return mIndex;}
+    int column() const { return mColumn;}
+private:
+    int mIndex; // for HBOX,VBOX, grid row
+    int mColumn;
+};
+Q_DECLARE_METATYPE(HLayoutIndex);
 
 /** if create object class , need clsname AND styleid */
 class HObjectInfo
 {
 public:
-    HObjectInfo() :
-        mStyleId(""),
-        mObjName(""){}
+    HObjectInfo(){}
 
-    HObjectInfo(const HObjectInfo& info):
-        mStyleId(""),
-        mObjName("")
+    HObjectInfo(const HObjectInfo& info)
     {
         *this = info;
     }
@@ -179,12 +189,10 @@ public:
 class HClassInfo : public HObjectInfo
 {
 public:
-    HClassInfo() :
-        mClsName("")
+    HClassInfo()
     {
     }
-    HClassInfo(const HClassInfo& info):
-        mClsName("")
+    HClassInfo(const HClassInfo& info)
     {
         *this = info;
     }
@@ -248,56 +256,90 @@ inline OBJ* hSetObjectT(const HObjectInfo& objinfo, OBJ* obj)
     return obj;
 }
 
-class HCreateParameter
+class HBaseStyle;
+template<class OBJ>
+inline OBJ* hStyleCast(HBaseStyle* obj)
+{
+    return static_cast<OBJ*>(obj);
+}
+
+template<class OBJ>
+inline OBJ* hStyleSharedCast(QSharedPointer<HBaseStyle> obj)
+{
+    return static_cast<OBJ*>(obj.data());
+}
+
+template<class OBJ>
+inline QSharedPointer<OBJ> hStyleShared(HBaseStyle* obj)
+{
+    return QSharedPointer<OBJ>(static_cast<OBJ*>(obj));
+}
+
+class HCreateParam
 {
 public:
-    explicit HCreateParameter():
-        mConstruct(true)
+    explicit HCreateParam():
+        mConstruct(true),
+        mType(USEOBJTYPE(Unk)),
+        mError(-1)
     {
     }
-    explicit HCreateParameter(bool construct, const QVariant& var0) :
-        mConstruct(construct),
-        mVar0(var0)
-    {
-    }
-    explicit HCreateParameter(bool construct, const QVariant& var0,const QVariant& var1) :
+    explicit HCreateParam(bool construct, const QVariant& var0) :
         mConstruct(construct),
         mVar0(var0),
-        mVar1(var1)
+        mType(USEOBJTYPE(Unk)),
+        mError(-1)
+    {
+    }
+    explicit HCreateParam(bool construct, const QVariant& var0, const QVariant& var1) :
+        mConstruct(construct),
+        mVar0(var0),
+        mVar1(var1),
+        mType(USEOBJTYPE(Unk)),
+        mError(-1)
     {
     }
     inline bool construct() const {return mConstruct;}
-    bool     mConstruct;
+    inline bool hasError() const { return mError != 0;}
+
+    inline int&  type() { return mType;}
+    inline long& error() { return mError;}
+public:
+    //输入参数
+    bool mConstruct;
     QVariant mVar0;
     QVariant mVar1;
+    // 输出参数
+    int  mType;
+    long mError;
 };
 
-#define DECLARE_STATIC_CREATE_FUNC(CLSNAME,FUNC,PAPENT)    \
-    static CLSNAME* FUNC(const HObjectInfo& objinfo, PAPENT* parent, const HCreateParameter& param, long *hr)
+#define DECLARE_STATIC_CREATE_FUNC(NEWOBJ,FUNC,PAPENT)    \
+    static NEWOBJ* FUNC(const HObjectInfo& objinfo, PAPENT* parent, HCreateParam& param)
 
-#define IMPLEMENT_STATIC_CREATE_FUNC(NEWOBJ,CLSNAME,FUNC,PAPENT)  \
-    NEWOBJ* CLSNAME::FUNC(const HObjectInfo& objinfo, PAPENT* parent, const HCreateParameter& param, long *hr) {\
-    *hr = qy::kHOk;                                                                                 \
+#define IMPLEMENT_STATIC_CREATE_FUNC(NEWOBJ,CLSNAME,FUNC,PAPENT,TYPE)   \
+    NEWOBJ* CLSNAME::FUNC(const HObjectInfo& objinfo, PAPENT* parent, HCreateParam& param) {\
+    param.error() = qy::kHOk;  \
+    param.type() = TYPE;       \
     return (param.construct()) ? hDoConstructT(new NEWOBJ(objinfo,parent)) : new NEWOBJ(objinfo,parent);  \
     }
 
 #define IMPLEMENT_STATIC_CREATE_FUNC_DEFINED(NEWOBJ,CLSNAME,FUNC,PAPENT)  \
-    NEWOBJ* CLSNAME::FUNC(const HObjectInfo& objinfo, PAPENT* parent, const HCreateParameter& param, long *hr)
-
+    NEWOBJ* CLSNAME::FUNC(const HObjectInfo& objinfo, PAPENT* parent, HCreateParam& param)
 
 // QObject
 #define DECLARE_OBJECT_STATIC_CREATE(CLSNAME)    \
     DECLARE_STATIC_CREATE_FUNC(CLSNAME,create##CLSNAME,QObject)
 
 #define IMPLEMENT_OBJECT_STATIC_CREATE(CLSNAME)  \
-    IMPLEMENT_STATIC_CREATE_FUNC(CLSNAME,CLSNAME,create##CLSNAME,QObject)
+    IMPLEMENT_STATIC_CREATE_FUNC(CLSNAME,CLSNAME,create##CLSNAME,QObject,USEOBJTYPE(CLSNAME))
 
 // QGraphicsItem
 #define DECLARE_GITEM_STATIC_CREATE(CLSNAME)      \
     DECLARE_STATIC_CREATE_FUNC(CLSNAME,create##CLSNAME,QGraphicsItem)
 
 #define IMPLEMENT_GITEM_STATIC_CREATE(NEWOBJ,CLSNAME)  \
-    IMPLEMENT_STATIC_CREATE_FUNC(NEWOBJ,CLSNAME,create##NEWOBJ,QGraphicsItem)
+    IMPLEMENT_STATIC_CREATE_FUNC(NEWOBJ,CLSNAME,create##NEWOBJ,QGraphicsItem,USEOBJTYPE(NEWOBJ))
 
 #define IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(NEWOBJ,CLSNAME)  \
     IMPLEMENT_STATIC_CREATE_FUNC_DEFINED(NEWOBJ,CLSNAME,create##NEWOBJ,QGraphicsItem)
@@ -306,21 +348,24 @@ public:
 #define DECLARE_GVIEW_STATIC_CREATE(CLSNAME)    \
     DECLARE_STATIC_CREATE_FUNC(CLSNAME,create##CLSNAME,QWidget)
 
-#define IMPLEMENT_GVIEW_STATIC_CREATE(CLSNAME)  \
-    IMPLEMENT_STATIC_CREATE_FUNC(CLSNAME,CLSNAME,create##CLSNAME,QWidget)
+#define IMPLEMENT_GVIEW_STATIC_CREATE(CLSNAME,TYPE)  \
+    IMPLEMENT_STATIC_CREATE_FUNC(CLSNAME,CLSNAME,create##CLSNAME,QWidget,TYPE)
 
 // QWidget
 #define DECLARE_QWIDGET_STATIC_CREATE(CLSNAME)    \
     DECLARE_STATIC_CREATE_FUNC(CLSNAME,create##CLSNAME,QWidget)
 
-#define IMPLEMENT_QWIDGET_STATIC_CREATE(NEWOBJ,CLSNAME)  \
-    IMPLEMENT_STATIC_CREATE_FUNC(NEWOBJ,CLSNAME,create##NEWOBJ,QWidget)
+#define IMPLEMENT_QWIDGET_STATIC_CREATE(NEWOBJ,CLSNAME,TYPE)  \
+    IMPLEMENT_STATIC_CREATE_FUNC(NEWOBJ,CLSNAME,create##NEWOBJ,QWidget,TYPE)
 
 #define IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(NEWOBJ,CLSNAME)  \
     IMPLEMENT_STATIC_CREATE_FUNC_DEFINED(NEWOBJ,CLSNAME,create##NEWOBJ,QWidget)
 
 #define REG_QWIDGET(CLSNAME,CREATOR)   \
    {#CLSNAME,(HCreateQWidgetInstanceCB)&CREATOR::create##CLSNAME}
+
+#define REG_GWIDGET(CLSNAME,CREATOR)     \
+   {#CLSNAME,(HCreateGWidgetInstanceCB)&CREATOR::create##CLSNAME}
 
 #define REG_GITEM(CLSNAME,CREATOR)     \
    {#CLSNAME,(HCreateGItemInstanceCB)&CREATOR::create##CLSNAME}

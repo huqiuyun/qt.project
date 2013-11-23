@@ -11,17 +11,23 @@ HQLayoutStyle::HQLayoutStyle(QObject* parent) :
     HLayoutStyle(parent),
     mWindow(NULL)
 {
+    mObjType = USEOBJTYPE(HQLayoutStyle);
 }
 
 HQLayoutStyle::HQLayoutStyle(const HObjectInfo& objinfo,QObject* parent) :
     HLayoutStyle(objinfo,parent),
     mWindow(NULL)
 {
+    mObjType = USEOBJTYPE(HQLayoutStyle);
 }
 
 void HQLayoutStyle::setWindow(QWidget* window)
 {
     mWindow = window;
+    //to do create layout
+    setLayoutType(mLayoutType);
+    setMargins(mMargins);
+    setSpacing(mSpacing);
 }
 
 QLayout* HQLayoutStyle::layout() const
@@ -41,25 +47,21 @@ void HQLayoutStyle::setSpacing(int s)
     QLayout* l = static_cast<QLayout*>(layout());
     if (!l) return ;
 
-    switch (layoutType())
-    {
+    switch (layoutType()) {
     case HEnums::kVBox:
     case HEnums::kHBox:
     case HEnums::kVBoxBottomTop:
     case HEnums::kVBoxTopBottom:
     case HEnums::kHBoxLeftRight:
-    case HEnums::kHBoxRightLeft:
-    {
+    case HEnums::kHBoxRightLeft: {
         static_cast<QBoxLayout*>(l)->setSpacing(s);
         break;
     }
-    case HEnums::kGrid:
-    {
+    case HEnums::kGrid: {
         static_cast<QGridLayout*>(l)->setSpacing(s);
         break;
     }
-    case HEnums::kStacked:
-    {
+    case HEnums::kStacked: {
         static_cast<QStackedLayout*>(l)->setSpacing(s);
         break;
     }
@@ -70,8 +72,7 @@ void HQLayoutStyle::setSpacing(int s)
 
 QMargins HQLayoutStyle::margins() const
 {
-    if (layout())
-    {
+    if (layout()) {
         int left = 0;
         int top = 0;
         int right = 0;
@@ -84,8 +85,7 @@ QMargins HQLayoutStyle::margins() const
 
 void HQLayoutStyle::setMargins(const QMargins& m)
 {
-    if (layout())
-    {
+    if (layout()) {
         layout()->setContentsMargins(m.left(), m.top(), m.right(), m.bottom());
     }
     HLayoutStyle::setMargins(m);
@@ -95,13 +95,11 @@ void HQLayoutStyle::setLayoutType(HEnums::HLayoutType type)
 {
     HLayoutStyle::setLayoutType(type);
 
-    if (!mWindow)
-    {
+    if (!mWindow) {
         return ;
     }
     QLayout *layout = NULL;
-    switch (type)
-    {
+    switch (type) {
     case HEnums::kVBox:
         layout = new QVBoxLayout(mWindow);
         break;
@@ -134,28 +132,36 @@ void HQLayoutStyle::setLayoutType(HEnums::HLayoutType type)
     setSpacing(0);
 }
 
-bool HQLayoutStyle::addWidget(QWidget* widget)
+int HQLayoutStyle::addWidget(QWidget* widget)
 {
     Q_UNUSED(widget);
-    return false;
+    return insertWidget(widget,HLayoutIndex());
 }
 
-bool HQLayoutStyle::insertWidget(QWidget* widget ,const HLayoutIndex& layIndex)
+int HQLayoutStyle::insertWidget(QWidget* widget ,const HLayoutIndex& index)
 {
     Q_UNUSED(widget);
-    Q_UNUSED(layIndex);
-    return false;
+    Q_UNUSED(index);
+    if (layout()) {
+        layout()->addWidget(widget);
+        return 0;
+    }
+    return -1;
 }
 
 bool HQLayoutStyle::removeWidget(QWidget* widget)
 {
     Q_UNUSED(widget);
+    if (layout()) {
+        layout()->removeWidget(widget);
+        return true;
+    }
     return false;
 }
 
 HBaseStyle* HQLayoutStyle::clone()
 {
-    HQLayoutStyle* style = new HQLayoutStyle(mObjinfo,parent());
+    HQLayoutStyle* style = new HQLayoutStyle(HObjectInfo(styleId(),""),parent());
     copyTo(style);
 
     return style;

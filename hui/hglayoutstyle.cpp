@@ -4,7 +4,6 @@
 #include <QGraphicsLinearLayout>
 #include <QGraphicsAnchorLayout>
 #include <QGraphicsGridLayout>
-#include <QGraphicsProxyWidget>
 
 //HGLayoutStyle
 IMPLEMENT_OBJECT_STATIC_CREATE(HGLayoutStyle)
@@ -13,18 +12,24 @@ HGLayoutStyle::HGLayoutStyle(QObject* parent) :
     HLayoutStyle(parent),
     mWidget(NULL)
 {
+    mObjType = USEOBJTYPE(HGLayoutStyle);
 }
 
 HGLayoutStyle::HGLayoutStyle(const HObjectInfo& objinfo,QObject* parent) :
     HLayoutStyle(objinfo,parent),
     mWidget(NULL)
 {
+    mObjType = USEOBJTYPE(HGLayoutStyle);
 }
 
 void HGLayoutStyle::setWidget(HGWidget* widget)
 {
     mWidget = widget;
+
     //todo create layout object
+    setLayoutType(mLayoutType);
+    setMargins(mMargins);
+    setSpacing(mSpacing);
 }
 
 QGraphicsLayout* HGLayoutStyle::layout() const
@@ -39,23 +44,19 @@ void HGLayoutStyle::setSpacing(int s)
     QGraphicsLayout* ll = layout();
     if (!ll) return ;
 
-    switch (layoutType())
-    {
+    switch (layoutType()) {
     case HEnums::kVBox:
-    case HEnums::kHBox:
-    {
+    case HEnums::kHBox: {
         QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(ll);
         l->setSpacing(s);
         break;
     }
-    case HEnums::kGrid:
-    {
+    case HEnums::kGrid: {
         QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(ll);
         l->setSpacing(s);
         break;
     }
-    case HEnums::kAnchor:
-    {
+    case HEnums::kAnchor: {
         QGraphicsAnchorLayout* l = static_cast<QGraphicsAnchorLayout*>(ll);
         l->setSpacing(s);
         break;
@@ -72,8 +73,7 @@ int HGLayoutStyle::spacing() const
 
 QMargins HGLayoutStyle::margins() const
 {
-    if (layout())
-    {
+    if (layout()) {
         qreal left = 0;
         qreal top = 0;
         qreal right = 0;
@@ -86,8 +86,7 @@ QMargins HGLayoutStyle::margins() const
 
 void HGLayoutStyle::setMargins(const QMargins& m)
 {
-    if (layout())
-    {
+    if (layout()) {
         layout()->setContentsMargins(m.left(), m.top(), m.right(), m.bottom());
     }
     HLayoutStyle::setMargins(m);
@@ -97,30 +96,24 @@ void HGLayoutStyle::setAnchor(const HAnchor& a)
 {
     HLayoutStyle::setAnchor(a);
     if (HEnums::kAnchor != layoutType()) return ;
-
 }
 
 Qt::Alignment HGLayoutStyle::alignment() const
 {
-    if (!mWidget)
-    {
+    if (!mWidget) {
         return HLayoutStyle::alignment();
     }
     HGWidget* parent = static_cast<HGWidget*>(mWidget->parent());
-    if (parent != NULL)
-    {
+    if (parent != NULL) {
         QGraphicsLayout* ll = parent->layout();
-        if (ll)
-        {
+        if (ll) {
             HEnums::HLayoutType type = parent->layoutType() ;
             if (type == HEnums::kHBox ||
-                    type == HEnums::kVBox)
-            {
+                    type == HEnums::kVBox) {
                 QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(ll);
                 return l->alignment((QGraphicsLayoutItem*)mWidget);
             }
-            else if(type == HEnums::kGrid)
-            {
+            else if(type == HEnums::kGrid) {
                 QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(ll);
                 return l->alignment((QGraphicsLayoutItem*)mWidget);
             }
@@ -131,27 +124,22 @@ Qt::Alignment HGLayoutStyle::alignment() const
 
 void HGLayoutStyle::setAlignment(Qt::Alignment align)
 {
-    if (!mWidget)
-    {
+    if (!mWidget) {
         HLayoutStyle::setAlignment(align);
         return;
     }
 
     HGWidget* parent = static_cast<HGWidget*>(mWidget->parent());
-    if (parent != NULL)
-    {
+    if (parent != NULL) {
         QGraphicsLayout* ll = parent->layout();
-        if (ll)
-        {
+        if (ll) {
             HEnums::HLayoutType type = parent->layoutType() ;
             if (type == HEnums::kHBox ||
-                type == HEnums::kVBox)
-            {
+                type == HEnums::kVBox) {
                 QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(ll);
                 l->setAlignment(mWidget, align);
             }
-            else if(type == HEnums::kGrid)
-            {
+            else if(type == HEnums::kGrid) {
                 QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(ll);
                 l->setAlignment(mWidget,align);
             }
@@ -167,8 +155,7 @@ void HGLayoutStyle::setLayoutType(HEnums::HLayoutType type)
     if (!mWidget) return;
 
     QGraphicsLayout *layout = NULL;
-    switch (type)
-    {
+    switch (type) {
     case HEnums::kVBox:
         layout = new QGraphicsLinearLayout(Qt::Vertical,mWidget);
         break;
@@ -189,63 +176,55 @@ void HGLayoutStyle::setLayoutType(HEnums::HLayoutType type)
     setSpacing(0);
 }
 
-bool HGLayoutStyle::addItem(QGraphicsLayoutItem* item)
+int HGLayoutStyle::addItem(QGraphicsLayoutItem* item)
 {
     return insertItem(item,HLayoutIndex());
 }
 
-bool HGLayoutStyle::insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& layIndex)
+int HGLayoutStyle::insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& index)
 {
-    if (!layout()) return false;
+    if (!layout()) return -1;
 
-    switch (layoutType())
-    {
+    switch (layoutType()) {
     case HEnums::kVBox:
-    case HEnums::kHBox:
-    {
+    case HEnums::kHBox: {
         QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(layout());
-        l->insertItem(layIndex.index(),item);
+        l->insertItem(index.pos(),item);
         break;
     }
-    case HEnums::kGrid:
-    {
+    case HEnums::kGrid: {
         QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(layout());
-        l->addItem(item,layIndex.row(),layIndex.column());
+        l->addItem(item,index.pos(),index.column());
         break;
     }
-    case HEnums::kAnchor:
-    {
+    case HEnums::kAnchor: {
         //anchor layout can't add item here, add item in setAnchor
 
-        return false;
+        return -1;
     }
     default:
-        return false;
+        return -1;
     }
-    return true;
+    return index.pos();
 }
 
 bool HGLayoutStyle::removeItem(QGraphicsLayoutItem *item)
 {
     if (!layout()) return false;
 
-    switch (layoutType())
-    {
+    switch (layoutType()) {
     case HEnums::kVBox:
-    case HEnums::kHBox:
-    {
+    case HEnums::kHBox: {
         QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(layout());
         l->removeItem(item);
         break;
     }
-    case HEnums::kGrid:
-    {
+    case HEnums::kGrid: {
         QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(layout());
         l->removeItem(item);
         break;
     }
-    case HEnums::kAnchor:
-    {//"anchor layout can't remove item now!"
+    case HEnums::kAnchor: {//"anchor layout can't remove item now!"
         return false;
     }
     default:
@@ -254,42 +233,24 @@ bool HGLayoutStyle::removeItem(QGraphicsLayoutItem *item)
     return true;
 }
 
-bool HGLayoutStyle::addWidget(QWidget* widget)
+int HGLayoutStyle::addGWidget(QGraphicsWidget* widget)
 {
-    return insertWidget(widget,HLayoutIndex());
+    return insertGWidget(widget,HLayoutIndex());
 }
 
-bool HGLayoutStyle::insertWidget(QWidget* widget ,const HLayoutIndex& layIndex)
+int HGLayoutStyle::insertGWidget(QGraphicsWidget* widget, const HLayoutIndex& index)
 {
-    QGraphicsProxyWidget* proxy = widget->graphicsProxyWidget();
-    if (!proxy)
-    {
-        proxy = new QGraphicsProxyWidget(mWidget);
-        proxy->setParent(this);
-        proxy->setObjectName("NoGraphicsProxyWidget");
-        proxy->setWidget(widget);
-    }
-
-    if (!insertItem(proxy,layIndex))
-    {
-        delete proxy;
-        return false;
-    }
-    return true;
+    return insertItem(widget,index);
 }
 
-bool HGLayoutStyle::removeWidget(QWidget* widget)
+bool HGLayoutStyle::removeGWidget(QGraphicsWidget* widget)
 {
-    QGraphicsProxyWidget* proxy = widget->graphicsProxyWidget();
-    if (!proxy)
-        return false;
-
-    return removeItem(proxy);
+    return removeItem(widget);
 }
 
 HBaseStyle* HGLayoutStyle::clone()
 {
-    HGLayoutStyle* style = new HGLayoutStyle(mObjinfo,parent());
+    HGLayoutStyle* style = new HGLayoutStyle(HObjectInfo(styleId(),""),parent());
     copyTo(style);
 
     return style;

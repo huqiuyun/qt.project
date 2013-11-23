@@ -9,6 +9,7 @@ HLayoutStyle::HLayoutStyle(QObject* parent) :
     mLayoutType = HEnums::kNone;
     mSpacing = 0;
     mAlignment = Qt::AlignCenter;
+    mObjType = USEOBJTYPE(HLayoutStyle);
 }
 
 HLayoutStyle::HLayoutStyle(const HObjectInfo& objinfo,QObject* parent) :
@@ -17,6 +18,7 @@ HLayoutStyle::HLayoutStyle(const HObjectInfo& objinfo,QObject* parent) :
     mLayoutType = HEnums::kNone;
     mSpacing = 0;
     mAlignment = Qt::AlignCenter;
+    mObjType = USEOBJTYPE(HLayoutStyle);
 }
 
 // next layout functions

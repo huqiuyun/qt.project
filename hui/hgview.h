@@ -10,14 +10,21 @@ class HFrameStyle;
 class HGSceneStyle;
 class HBackgroundStyle;
 class HQLayoutStyle;
+class HGWidget;
+class QGraphicsItem;
+class HStyle;
 
 class H_API HGView : public QGraphicsView, public HObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE( HGView )
     Q_DISABLE_COPY( HGView )
-    Q_PROPERTY( bool supportScene READ supportScene)
-    Q_PROPERTY( bool supportLayout READ supportLayout)
+public:
+    Q_PROPERTY( QSize fixedSize WRITE setFixedSize )
+    Q_PROPERTY( int fixedHeight WRITE setFixedHeight )
+    Q_PROPERTY( int fixedWidth WRITE setFixedWidth )
+    Q_PROPERTY( QSize resize WRITE resizeEx )
+    Q_PROPERTY( bool isHGView READ isHGView)
 public:
     explicit HGView(QWidget *parent = 0);
     explicit HGView(const HObjectInfo& objinfo, QWidget *parent = 0);
@@ -25,23 +32,39 @@ public:
 
     DECLARE_GVIEW_STATIC_CREATE(HGView);
 public:
-    bool supportScene() const;
-    bool supportLayout() const;
+    Q_INVOKABLE void installStyle(const HStyle* style);
 
+    bool hasFrameStyle() const;
     void setFrameStyle(QSharedPointer<HFrameStyle> style/*new object*/);
     QSharedPointer<HFrameStyle> frameStyle() const;
 
+    bool hasSceneStyle() const;
     void setSceneStyle(QSharedPointer<HGSceneStyle> style);
     QSharedPointer<HGSceneStyle> sceneStyle() const;
 
+    bool hasBackgroundStyle() const;
     void setBackgroundStyle(QSharedPointer<HBackgroundStyle> style);
     QSharedPointer<HBackgroundStyle> backgroundStyle() const;
 
+    bool hasLayoutStyle() const;
     void setLayoutStyle(QSharedPointer<HQLayoutStyle> style);
     QSharedPointer<HQLayoutStyle> layoutStyle() const;
 
-    // next layout functions
+    // layout functions
     HEnums::HLayoutType layoutType() const;
+
+    /** add widget to owner layout */
+    virtual int  addWidget(QWidget* widget);
+    virtual int  insertWidget(QWidget* widget ,const HLayoutIndex& index);
+    virtual bool removeWidget(QWidget* widget) ;
+
+    //property
+public:
+    bool isHGView() const { return true;}
+    void setFixedSize(const QSize &s);
+    void setFixedHeight(int h);
+    void setFixedWidth(int w);
+    void resizeEx(const QSize &s);
 
     //HObject
 protected:

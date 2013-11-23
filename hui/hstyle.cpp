@@ -1,136 +1,61 @@
 #include "HStyle.h"
 #include "hcore.h"
 #include "hfactory.h"
-#include "huireader.h"
 #include "hresourcemgr.h"
 #include <QXmlStreamReader>
 #include <QXmlStreamAttributes>
 
-//
-class HStylePrivate
-{
-public:
-    HStyleMap mStyle;
-};
-
 //HStyle
 HStyle::HStyle(QObject *parent) :
-    QObject(parent),
-    d_ptr(new HStylePrivate)
+    QObject(parent)
 {
+    mObjType = USEOBJTYPE(HStyle);
 }
 
 HStyle::~HStyle()
 {
-    delete d_ptr;
+}
+
+
+bool HStyle::isPrivate(const char* styleid)
+{
+    const char* prex = "private.";
+    return (styleid == strstr(styleid,prex));
+}
+
+std::string HStyle::prex(const std::string& cls, bool& pri)
+{
+    const char* prex = "private.";
+    pri = isPrivate(cls.c_str());
+    return (pri) ? cls.substr(sizeof(char)*sizeof(prex)) : cls;
 }
 
 QSharedPointer<HBaseStyle> HStyle::create(const char* styleid,const char* clsname)
 {
-    Q_D(HStyle);
     HClassInfo cls(clsname, styleid, "");
 
-    std::string::size_type pos = cls.mStyleId.mId.find("undefined");
-    if (pos==0)
-    {
+    if(0==cls.mStyleId.mId.find("undefined")) {
         return QSharedPointer<HBaseStyle>(NULL);
     }
-    const char* prex = "private.";
-    std::string findid;
-    pos = cls.mStyleId.mId.find(prex);
-    bool pri = (pos==0);
-    if (pri)
-    {
-        findid = cls.mStyleId.mId.substr(sizeof(char)*sizeof(prex));
-    }
-    else
-    {
-        findid = cls.mStyleId.mId;
-    }
+    QSharedPointer<HBaseStyle> item = itemAt(styleid);
+    if (item)
+        return item;
 
-    long hr = 0;
-    HStyleMap::iterator iter = d->mStyle.find(findid);
-    if (iter != d->mStyle.end())
-    {
-        if (pri)
-        {//todo clone
-            HBaseStyle* obj = static_cast<HBaseStyle*>(HFACTORY->createObject(cls,this,HCreateParameter(),&hr));
-
-            iter.value()->copyTo(obj);
-            return QSharedPointer<HBaseStyle>(obj);
-        }
-        return iter.value();
-    }
-    QSharedPointer<HBaseStyle> css(static_cast<HBaseStyle*>(HFACTORY->createObject(cls,this,HCreateParameter(),&hr)));
-    if (css.data() && !pri)
-    {
-        d->mStyle.insert(styleid,css);
+    HCreateParam param;
+    QSharedPointer<HBaseStyle> css(static_cast<HBaseStyle*>(HFACTORY->createObject(cls,NULL,param)));
+    if (css.data()) {
+        mStyle.insert(styleid,css);
     }
     return css;
 }
 
-HStyleMap HStyle::createWithFile(const QString& filename)
+QSharedPointer<HBaseStyle> HStyle::itemAt(const char* styleid) const
 {
-    QXmlStreamReader reader(HRESMGR->loadData(filename));
-    return _createWitXmlReader(&reader);
-}
+    bool pri = false;
+    std::string findid = prex(styleid,pri);
 
-HStyleMap HStyle::createWithData(const QString& data)
-{
-    QXmlStreamReader reader(data);
-    return _createWitXmlReader(&reader);
-}
-
-HStyleMap HStyle::_createWitXmlReader(QXmlStreamReader* reader)
-{
-    HUIReader uiReader;
-    bool ok = false;
-    while(!reader->atEnd() && !reader->hasError())
-    {
-        /* Read next element.*/
-        QXmlStreamReader::TokenType token = reader->readNext();
-
-        /* If token is just StartDocument, we'll go to next.*/
-        if(token == QXmlStreamReader::StartDocument)
-        {
-            continue;
-        }
-
-        if(token != QXmlStreamReader::StartElement)
-        {
-            continue;
-        }
-
-        if (reader->name() == QLatin1String("hui"))
-        { //
-            QXmlStreamAttributes attri = reader->attributes();
-            if (!attri.hasAttribute("version"))
-                break;
-
-            ok = true;
-        }
-        else if(ok)
-        {
-            if (reader->name() == QLatin1String("style"))
-            {//create css objects
-                long hr = -1;
-                return uiReader.createStyleWithXmlReader(reader,&hr);
-            }
-            else
-            {
-                reader->skipCurrentElement();
-            }
-        }
-    }
-    return HStyleMap();
-}
-
-QSharedPointer<HBaseStyle> HStyle::itemAt(const char* styleid)
-{
-    Q_D(HStyle);
-    HStyleMap::iterator iter = d->mStyle.find(styleid);
-    if (iter != d->mStyle.end())
-    {
+    HStyleMap::const_iterator iter = mStyle.constFind(findid);
+    if (iter != mStyle.constEnd()) {
         return iter.value();
     }
     return QSharedPointer<HBaseStyle>(NULL);
@@ -138,18 +63,30 @@ QSharedPointer<HBaseStyle> HStyle::itemAt(const char* styleid)
 
 bool HStyle::addItem(const char* styleid, QSharedPointer<HBaseStyle> item)
 {
-    Q_D(HStyle);
-    if (itemAt(styleid)) return false;
-    d->mStyle.insert(styleid,item);
+    if (itemAt(styleid))
+        return false;
+    mStyle.insert(styleid,item);
     return true;
 }
 
 void HStyle::removeItem(const char* styleid)
 {
-    Q_D(HStyle);
-    HStyleMap::iterator iter = d->mStyle.find(styleid);
-    if (iter != d->mStyle.end())
-    {
-        d->mStyle.erase(iter);
+    HStyleMap::iterator iter = mStyle.find(styleid);
+    if (iter != mStyle.end()) {
+        mStyle.erase(iter);
     }
+}
+
+void HStyle::add(const HStyleMap& styles)
+{
+    HStyleMap::const_iterator iter = styles.constBegin();
+    while (iter != styles.constEnd()) {
+        addItem(iter.key().data(),iter.value());
+        ++iter;
+    }
+}
+
+int HStyle::size() const
+{
+    return mStyle.size();
 }

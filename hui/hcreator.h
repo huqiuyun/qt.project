@@ -14,7 +14,8 @@
 #include "hframestyle.h"
 #include "hbackgroundstyle.h"
 #include "hgstackedwidget.h"
-
+#include "hqwidget.h"
+#include "hgproxywidget.h"
 #include <QWidget>
 #include <QCheckBox>
 #include <QPushButton>
@@ -77,7 +78,6 @@ const HRegisterObject s_objs[] =
 class HQCreator
 {
 public:
-
     DECLARE_QWIDGET_STATIC_CREATE(QWidget);
     DECLARE_QWIDGET_STATIC_CREATE(QPushButton);
     DECLARE_QWIDGET_STATIC_CREATE(QCheckBox);
@@ -144,6 +144,9 @@ public:
 
     DECLARE_HCONVERT_QSTRING(QFont);
     DECLARE_HCONVERT_QVARIANT(QFont);
+
+    DECLARE_HCONVERT_QSTRING(QIcon);
+    DECLARE_HCONVERT_QVARIANT(QIcon);
 };
 
 #define REG_CONVERT_EX(TYPE)   \
@@ -163,6 +166,7 @@ const HRegisterConvert s_converts[] =
     REG_CONVERT_EX(QPoint),
     REG_CONVERT_EX(QBrush),
     REG_CONVERT_EX(QFont),
+    REG_CONVERT_EX(QIcon),
     REG_CONVERT_EX(HAnchor),
     {-1,NULL,NULL}
 };
@@ -173,10 +177,6 @@ const HRegisterConvert s_converts[] =
 // QGraphicsItem
 const HRegisterGItem s_gitems[] =
 {
-    // css object
-    REG_GITEM(HGWidget, HGWidget),
-    REG_GITEM(HGStackedWidget, HGStackedWidget),
-    //
     REG_GITEM_EX(QGraphicsEllipseItem),
     REG_GITEM_EX(QGraphicsLineItem),
     REG_GITEM_EX(QGraphicsPathItem),
@@ -188,13 +188,21 @@ const HRegisterGItem s_gitems[] =
     {NULL,NULL}
 };
 
+const HRegisterGWidget s_gwidgets[] =
+{
+    REG_GWIDGET(HGWidget, HGWidget),
+    REG_GWIDGET(HGStackedWidget, HGStackedWidget),
+    REG_GWIDGET(HGProxyWidget, HGProxyWidget),
+    {NULL,NULL}
+};
+
 #define REG_QWIDGET_EX(CLSNAME)       \
     REG_QWIDGET(CLSNAME,HQCreator)
 
 const HRegisterQWidget s_qwidgets[] =
 {
-    // css object
     REG_QWIDGET(HGView, HGView),
+    REG_QWIDGET(HQWidget, HQWidget),
     REG_QWIDGET_EX(QWidget),
     REG_QWIDGET_EX(QPushButton),
     REG_QWIDGET_EX(QCheckBox),

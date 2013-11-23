@@ -3,9 +3,14 @@
 #include "hmaintest.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    HGView(parent),
+    HGView(HObjectInfo("framewindowId",""),parent),
     ui(NULL),
     mainTest(NULL)
+{
+    init();
+}
+
+void MainWindow::init()
 {
 #if 0
     ui = new Ui::MainWindow();

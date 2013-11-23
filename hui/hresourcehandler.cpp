@@ -10,14 +10,12 @@ bool HResourceHandler::isRelativePath(const QString& path)
     if (path.isEmpty())
         return false;
 
-    if (!QDir::isRelativePath(path))
-    {
+    if (!QDir::isRelativePath(path)) {
         return false;
     }
 
     QRegExp reg("[\\*\\?\\|\\<\\>\\\"\\:]");
-    if (path.contains(reg))
-    {
+    if (path.contains(reg)) {
         return false;
     }
     return true;
@@ -32,8 +30,7 @@ bool HAbsoluteHandler::loadImage(const QString& path, QPixmap& pixmap)
 bool HAbsoluteHandler::loadData(const QString& path, QByteArray &bytes)
 {
     QFile file(path);
-    if (file.open(QIODevice::ReadOnly))
-    {
+    if (file.open(QIODevice::ReadOnly)) {
         bytes = file.readAll();
         return true;
     }
@@ -43,8 +40,7 @@ bool HAbsoluteHandler::loadData(const QString& path, QByteArray &bytes)
 //HDefaultHandler
 bool HDefaultHandler::loadImage(const QString& path, QPixmap& pixmap)
 {
-    if (isRelativePath(path))
-    {
+    if (isRelativePath(path)) {
         return HAbsoluteHandler::loadImage(realPath(path),pixmap);
     }
     return false;
@@ -52,8 +48,7 @@ bool HDefaultHandler::loadImage(const QString& path, QPixmap& pixmap)
 
 bool HDefaultHandler::loadData(const QString& path, QByteArray &bytes)
 {
-    if (isRelativePath(path))
-    {
+    if (isRelativePath(path)) {
         return HAbsoluteHandler::loadData(realPath(path),bytes);
     }
     return false;
@@ -72,8 +67,7 @@ QString HDefaultHandler::absolutePath(const QString& path)
 //HQtHandler
 bool HQtHandler::loadImage(const QString& path, QPixmap& pixmap)
 {
-    if(path.startsWith(":/"))
-    {
+    if(path.startsWith(":/")) {
         return HAbsoluteHandler::loadImage(realPath(path),pixmap);
     }
     return false;
@@ -81,8 +75,7 @@ bool HQtHandler::loadImage(const QString& path, QPixmap& pixmap)
 
 bool HQtHandler::loadData(const QString& path, QByteArray &bytes)
 {
-    if(path.startsWith(":/"))
-    {
+    if(path.startsWith(":/")) {
         return HAbsoluteHandler::loadData(realPath(path),bytes);
     }
     return false;
@@ -97,8 +90,7 @@ QString HQtHandler::realPath(const QString& path)
 bool HPluginHandler::loadImage(const QString& path, QPixmap& pixmap)
 {
     Q_UNUSED(pixmap);
-    if(path.startsWith('?'))
-    {
+    if(path.startsWith('?')) {
         QString pluginid,relPath;
         if (!splitPath(path,pluginid,relPath)) return false;
         return HAbsoluteHandler::loadImage(realPath(pluginid,relPath),pixmap);
@@ -109,8 +101,7 @@ bool HPluginHandler::loadImage(const QString& path, QPixmap& pixmap)
 bool HPluginHandler::loadData(const QString& path, QByteArray &bytes)
 {
     Q_UNUSED(bytes);
-    if(path.startsWith('?'))
-    {
+    if(path.startsWith('?')) {
         QString pluginid,relPath;
         if (!splitPath(path,pluginid,relPath)) return false;
 

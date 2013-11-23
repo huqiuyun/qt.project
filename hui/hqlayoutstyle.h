@@ -27,15 +27,10 @@ public:
     int spacing() const;
     void setSpacing(int s);
 
-    /** QWidget not support */
-    bool addItem(QGraphicsLayoutItem*) { return false; }
-    bool insertItem(QGraphicsLayoutItem* , const HLayoutIndex& ) { return false;}
-    bool removeItem(QGraphicsLayoutItem* ){ return false;}
-
     /** add widget to owner layout */
-    bool addWidget(QWidget* widget);
-    bool insertWidget(QWidget* widget ,const HLayoutIndex& layIndex);
-    bool removeWidget(QWidget* widget);
+    virtual int  addWidget(QWidget* widget);
+    virtual int  insertWidget(QWidget* widget ,const HLayoutIndex& index);
+    virtual bool removeWidget(QWidget* widget);
 
     virtual HBaseStyle* clone();
 protected:

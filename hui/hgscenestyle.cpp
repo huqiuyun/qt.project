@@ -1,136 +1,210 @@
 #include "hgscenestyle.h"
+#include "hgscene.h"
+#include "hgwidget.h"
+#include <QPointer>
 #include <QGraphicsView>
-#include <QGraphicsScene>
+
+class HGSceneStylePrivate
+{
+public:
+    HGSceneStylePrivate() :
+        mView(NULL),
+        mScene(NULL),
+        mMWidget(NULL)
+    {
+        mSizePolicy = QSizePolicy::Fixed;
+        mAlignment = Qt::AlignCenter;
+    }
+
+    QGraphicsView *mView;
+    HGScene *mScene;
+    QPointer<HGWidget> mMWidget;
+    Qt::Alignment mAlignment;
+    QBrush mForegroundBrush;
+    QBrush mBackgroundBrush;
+    QSizePolicy::Policy mSizePolicy;
+};
 
 //HGSceneStyle
 IMPLEMENT_OBJECT_STATIC_CREATE(HGSceneStyle)
 
 HGSceneStyle::HGSceneStyle(QObject *parent) :
     HBaseStyle(parent),
-    mView(NULL),
-    mScene(NULL)
+    d_ptr(new HGSceneStylePrivate())
 {
-    mSizePolicy= QSizePolicy::Ignored;
-    mAlignment = Qt::AlignCenter;
 }
 
 HGSceneStyle::HGSceneStyle(const HObjectInfo& objinfo,QObject* parent) :
     HBaseStyle(objinfo,parent),
-    mView(NULL),
-    mScene(NULL)
+    d_ptr(new HGSceneStylePrivate())
 {
-    mSizePolicy= QSizePolicy::Ignored;
-    mAlignment = Qt::AlignCenter;
+    mObjType = USEOBJTYPE(HGSceneStyle);
 }
 
 HGSceneStyle::~HGSceneStyle()
 {
-
+    hDelete(d_ptr);
 }
 
 void HGSceneStyle::setGView(QGraphicsView* view)
 {
-    mView = view;
-    mScene = new QGraphicsScene(this);
-    mView->setScene(mScene);
+    Q_D(HGSceneStyle);
+    if (!d->mScene)
+        d->mScene = new HGScene(this);
+
+    d->mView = view;
+    d->mView->setScene(d->mScene);
 
     //todo
-    mView->setAlignment(alignment());
+    d->mView->setAlignment(d->mAlignment);
 
-    if (hasBackgroundBrush())
-    {
-        mScene->setBackgroundBrush(backgroundBrush());
+    if (hasBackgroundBrush()) {
+        d->mScene->setBackgroundBrush(d->mBackgroundBrush);
     }
 
-    if (hasForegroundBrush())
-    {
-        mScene->setForegroundBrush(foregroundBrush());
+    if (hasForegroundBrush()) {
+        d->mScene->setForegroundBrush(d->mForegroundBrush);
     }
 }
 
 /** set alignment in scene */
 Qt::Alignment HGSceneStyle::alignment() const
 {
-    return mAlignment;
+    return d_func()->mAlignment;
 }
 
 void HGSceneStyle::setAlignment(Qt::Alignment align)
 {
-    mAlignment = align;
+    d_func()->mAlignment = align;
 }
 
 QSizePolicy::Policy HGSceneStyle::sizePolicy() const
 {
-    return mSizePolicy;
+    return d_func()->mSizePolicy;
 }
 
 void HGSceneStyle::setSizePolicy(QSizePolicy::Policy policy)
 {
-    mSizePolicy = policy;
+    d_func()->mSizePolicy = policy;
 }
 
 bool HGSceneStyle::hasForegroundBrush() const
 {
-    return (mForegroundBrush.style() != Qt::NoBrush);
+    return (d_func()->mForegroundBrush.style() != Qt::NoBrush);
 }
 
 QBrush HGSceneStyle::foregroundBrush() const
 {
-    return mForegroundBrush;
+    return d_func()->mForegroundBrush;
 }
 
 void HGSceneStyle::setForegroundBrush(const QBrush& brush)
 {
-    mForegroundBrush = brush;
+    d_func()->mForegroundBrush = brush;
 }
 
 // scene
 bool HGSceneStyle::hasBackgroundBrush() const
 {
-    return (mBackgroundBrush.style() != Qt::NoBrush);
+    return (d_func()->mBackgroundBrush.style() != Qt::NoBrush);
 }
 
 QBrush HGSceneStyle::backgroundBrush() const
 {
-    return mBackgroundBrush;
+    return d_func()->mBackgroundBrush;
 }
 
 void HGSceneStyle::setBackgroundBrush(const QBrush& brush)
 {
-    mBackgroundBrush = brush;
+    d_func()->mBackgroundBrush = brush;
 }
 
 void HGSceneStyle::copyTo(HBaseStyle* obj)
 {
+    Q_D(HGSceneStyle);
     HGSceneStyle* style = static_cast<HGSceneStyle*>(obj);
     if (!style) return ;
 
-    style->setAlignment(alignment());
-    style->setBackgroundBrush(backgroundBrush());
-    style->setForegroundBrush(foregroundBrush());
-    style->setSizePolicy(sizePolicy());
+    style->setAlignment(d->mAlignment);
+    style->setBackgroundBrush(d->mBackgroundBrush);
+    style->setForegroundBrush(d->mForegroundBrush);
+    style->setSizePolicy(d->mSizePolicy);
     HBaseStyle::copyTo(obj);
+}
+
+bool HGSceneStyle::hasScene() const
+{
+    return d_func()->mScene != NULL;
+}
+
+HGScene* HGSceneStyle::scene() const
+{
+    return d_func()->mScene;
 }
 
 void HGSceneStyle::reSize(const QRectF& rect)
 {
-    if (!mView) return ;
-    if (sizePolicy() == QSizePolicy::Fixed)
-    {
-        mView->setSceneRect(rect);
+    Q_D(HGSceneStyle);
+    if (!d->mView)
+        return ;
+
+    if (sizePolicy() == QSizePolicy::Fixed) {
+        d->mView->setSceneRect(rect);
+        if (d->mMWidget)
+            d->mMWidget->setGeometry(rect);
     }
+    //other items adjust rect
 }
 
 void HGSceneStyle::doConstruct()
 {
-
 }
 
 HBaseStyle* HGSceneStyle::clone()
 {
-    HGSceneStyle* style = new HGSceneStyle(mObjinfo,parent());
+    HGSceneStyle* style = new HGSceneStyle(HObjectInfo(styleId(),""),parent());
     copyTo(style);
 
     return style;
 }
+
+bool HGSceneStyle::addGWidget(HGWidget* widget,bool main)
+{
+    Q_UNUSED(main);
+    Q_D(HGSceneStyle);
+    if (hasScene()) {
+        if (main)
+            d->mMWidget = widget;
+        d->mScene->addItem(widget);
+        return true;
+    }
+    return false;
+}
+
+void HGSceneStyle::removeGWidget(HGWidget* widget)
+{
+    Q_D(HGSceneStyle);
+    if (hasScene()) {
+        d->mScene->removeItem(widget);
+    }
+}
+
+bool HGSceneStyle::addItem(QGraphicsItem* item)
+{
+    Q_D(HGSceneStyle);
+    if (hasScene()) {
+        d->mScene->addItem(item);
+        return true;
+    }
+    return false;
+}
+
+void HGSceneStyle::removeItem(QGraphicsItem* item)
+{
+    Q_D(HGSceneStyle);
+    if (hasScene()) {
+        d->mScene->removeItem(item);
+    }
+}
+
 

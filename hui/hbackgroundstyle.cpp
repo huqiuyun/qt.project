@@ -13,13 +13,15 @@ HBackgroundStyle::HBackgroundStyle(QObject *parent) :
     d_ptr(new HBackgroundStylePrivate()),
     mResMgr(HRESMGR)
 {
+    mObjType = USEOBJTYPE(HBackgroundStyle);
 }
 
 HBackgroundStyle::HBackgroundStyle(const HObjectInfo& objinfo, QObject *parent) :
     HBaseStyle(objinfo,parent),
     d_ptr(new HBackgroundStylePrivate()),
     mResMgr(HRESMGR)
-{
+{   
+    mObjType = USEOBJTYPE(HBackgroundStyle);
 }
 
 HBackgroundStyle::~HBackgroundStyle()
@@ -107,22 +109,23 @@ void HBackgroundStyle::setBackgroundBrush(const QBrush& brush)
 
 void HBackgroundStyle::copyTo(HBaseStyle* obj)
 {
+    Q_D(HBackgroundStyle);
     HBackgroundStyle* style = static_cast<HBackgroundStyle*>(obj);
     if (!style) return ;
 
-    style->setImagePath(imagePath());
-    style->setMargins(margins());
-    style->setAlignment(alignment());
-    style->setColor(color());
-    style->setColorized(colorized());
-    style->setBackgroundBrush(backgroundBrush());
+    style->setImagePath(d->mImagePath);
+    style->setMargins(d->mMargins);
+    style->setAlignment(d->mAlignment);
+    style->setColor(d->mColor);
+    style->setColorized(d->mColorized);
+    style->setBackgroundBrush(d->mBackgroundBrush);
 
     HBaseStyle::copyTo(obj);
 }
 
 HBaseStyle* HBackgroundStyle::clone()
 {
-    HBackgroundStyle* style = new HBackgroundStyle(mObjinfo,parent());
+    HBackgroundStyle* style = new HBackgroundStyle(HObjectInfo(styleId(),""),parent());
     copyTo(style);
 
     return style;
@@ -134,8 +137,7 @@ void HBackgroundStyle::draw(QPainter * painter, const QRect &rect)
     Q_UNUSED(rect);
 
     //draw
-    if(mImage.isNull())
-    {
+    if(mImage.isNull()) {
         drawColor(painter,rect);
         return ;
     }
@@ -162,20 +164,16 @@ void HBackgroundStyle::colorChanged(const QColor& rgb)
     Q_D(HBackgroundStyle);
 
     int type = 0;
-    if (!mImage.isNull())
-    {
-        if (mResMgr->colorizeWithPixmap(mImage))
-        {
+    if (!mImage.isNull()) {
+        if (mResMgr->colorizeWithPixmap(mImage)) {
             type = 1;
         }
     }
-    else if (d->mImagePath.size()>1)
-    {
+    else if (d->mImagePath.size()>1) {
         mImage = mResMgr->loadPixmap(d->mImagePath);
         type = 1;
     }
-    if (d->mColor.isValid())
-    {
+    if (d->mColor.isValid()) {
         setColorized(mResMgr->colorizeWithColor(d->mColor));
         type |= 2;
     }

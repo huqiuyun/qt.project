@@ -7,19 +7,15 @@ public:
     static quint32 version(const QStringList& s,bool major)
     {
         int bit = s.size();
-        if (major)
-        {
-            switch(bit)
-            {
+        if (major) {
+            switch(bit) {
             case 1:  return (s[0].toUInt() << 16);
             case 2:  return ((s[0].toUInt() << 16) + s[1].toUInt());
             default: break;
             }
         }
-        else if(bit>=2)
-        {
-            switch(bit)
-            {
+        else if(bit>=2) {
+            switch(bit) {
             case 3:  return (s[2].toUInt() << 16);
             case 4:  return (s[2].toUInt() << 16 + s[3].toUInt());
             default: break;

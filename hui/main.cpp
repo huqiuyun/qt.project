@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include <hcore.h>
 #include <hsystem.h>
+#include <hstyle.h>
+#include <huireader.h>
 #include <QApplication>
 
 class HApplication : public QApplication
@@ -14,6 +16,10 @@ public:
         //
         HSYSTEM->setAppPath(applicationDirPath());
         //
+
+        HuiReader uiReader;
+        uiReader.createStyle(":/layout/main/main.style.xml",QString(),HSTYLE);
+
     }
 
     ~HApplication()

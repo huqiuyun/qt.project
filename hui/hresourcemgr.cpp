@@ -13,8 +13,7 @@ public:
     ~HResourceMgrPrivate()
     {
         RES_HANDLERS::iterator iter = mHandlers.begin();
-        while (iter != mHandlers.end())
-        {
+        while (iter != mHandlers.end()) {
             delete (*iter);
             ++iter;
         }
@@ -42,8 +41,7 @@ void HResourceMgr::addHandler(HResourceHandler* handler)
 {
     Q_D(HResourceMgr);
     RES_HANDLERS::iterator iter = d->mHandlers.begin();
-    while (iter != d->mHandlers.end())
-    {
+    while (iter != d->mHandlers.end()) {
         if (*iter == handler) return;
         ++iter;
     }
@@ -54,10 +52,8 @@ void HResourceMgr::removeHandler(HResourceHandler* handler)
 {
     Q_D(HResourceMgr);
     RES_HANDLERS::iterator iter = d->mHandlers.begin();
-    while (iter != d->mHandlers.end())
-    {
-        if (*iter == handler)
-        {
+    while (iter != d->mHandlers.end()) {
+        if (*iter == handler) {
             d->mHandlers.erase(iter);
             return;
         }
@@ -83,10 +79,8 @@ QPixmap HResourceMgr::loadPixmap(const QString &path)
     QPixmap pixmap;
     QString trimmedPath = path.trimmed();
     RES_HANDLERS::iterator iter = d->mHandlers.begin();
-    while (iter != d->mHandlers.end())
-    {
-        if ((*iter)->loadImage(trimmedPath, pixmap))
-        {
+    while (iter != d->mHandlers.end()) {
+        if ((*iter)->loadImage(trimmedPath, pixmap)) {
             break;
         }
         ++iter;
@@ -101,10 +95,8 @@ QByteArray HResourceMgr::loadData(const QString& path)
     QByteArray bytes;
     QString trimmedPath = path.trimmed();
     RES_HANDLERS::iterator iter = d->mHandlers.begin();
-    while (iter != d->mHandlers.end())
-    {
-        if ((*iter)->loadData(trimmedPath, bytes))
-        {
+    while (iter != d->mHandlers.end()) {
+        if ((*iter)->loadData(trimmedPath, bytes)) {
             break;
         }
         ++iter;

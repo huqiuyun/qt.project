@@ -6,7 +6,7 @@
 class HGWidget;
 class QWidget;
 class QGraphicsLayoutItem;
-
+class QGraphicsWidget;
 class QGraphicsLayout;
 
 class H_API HGLayoutStyle : public HLayoutStyle
@@ -37,14 +37,13 @@ public:
     void setSpacing(int s);
 
     /** add item to owner layout */
-    bool addItem(QGraphicsLayoutItem* item);
-    bool insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& layIndex);
-    bool removeItem(QGraphicsLayoutItem* item);
+    virtual int  addItem(QGraphicsLayoutItem* item);
+    virtual int  insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& index);
+    virtual bool removeItem(QGraphicsLayoutItem* item);
 
-    /** add widget to owner layout */
-    bool addWidget(QWidget* widget);
-    bool insertWidget(QWidget* widget ,const HLayoutIndex& layIndex);
-    bool removeWidget(QWidget* widget);
+    virtual int  addGWidget(QGraphicsWidget* item);
+    virtual int  insertGWidget(QGraphicsWidget* item, const HLayoutIndex& index);
+    virtual bool removeGWidget(QGraphicsWidget* item);
 
     virtual HBaseStyle* clone();
 protected:

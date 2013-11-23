@@ -1,19 +1,16 @@
 #ifndef HFRAMESTYLE_H
 #define HFRAMESTYLE_H
 
-#include "hbasestyle.h"
+#include "hwidgetstyle.h"
 #include <QObject>
 
 class QResizeEvent;
 class QWidget;
 
-class H_API HFrameStyle : public HBaseStyle
+class H_API HFrameStyle : public HWidgetStyle
 {
     Q_OBJECT
     Q_PROPERTY( Qt::WindowFlags windowFlags READ windowFlags WRITE setWindowFlags )
-    Q_PROPERTY( QString styleSheet READ styleSheet WRITE setStyleSheet)
-    Q_PROPERTY(	HClassInfo backgroundStyle READ backgroundStyle WRITE setBackgroundStyle )
-    Q_PROPERTY(	HClassInfo layoutStyle READ layoutStyle WRITE setLayoutStyle)
     Q_PROPERTY(	HClassInfo sceneStyle READ sceneStyle WRITE setSceneStyle)
 public:
     explicit HFrameStyle(QObject *parent = 0);
@@ -24,18 +21,6 @@ public:
 public:
     void setWindowFlags(Qt::WindowFlags flags);
     Qt::WindowFlags windowFlags() const;
-
-    bool hasStyleSheet() const;
-    void setStyleSheet(const QString& sheet);
-    QString styleSheet() const;
-
-    bool hasBackgroundStyle() const;
-    void setBackgroundStyle(const HClassInfo& cls);
-    HClassInfo backgroundStyle() const;
-
-    bool hasLayoutStyle() const;
-    void setLayoutStyle(const HClassInfo& cls);
-    HClassInfo layoutStyle() const;
 
     bool hasSceneStyle() const;
     void setSceneStyle(const HClassInfo& cls);
@@ -54,9 +39,6 @@ public:
 protected:
     QWidget  *mWindow;
     Qt::WindowFlags mWinFlags;
-    QString mStyleSheet;
-    HClassInfo mBackgroundStyle;
-    HClassInfo mLayoutStyle;
     HClassInfo mSceneStyle;
 };
 

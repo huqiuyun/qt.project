@@ -6,8 +6,7 @@ HAnchor::HAnchor()
     Qt::AnchorPoint dummy[] = {
         Qt::AnchorLeft, Qt::AnchorRight,
         Qt::AnchorTop, Qt::AnchorBottom};
-    for (uint i = 0; i < sizeof(dummy)/sizeof(dummy[0]); ++i)
-    {
+    for (uint i = 0; i < sizeof(dummy)/sizeof(dummy[0]); ++i) {
         mItems[i].distance = 0;
         mItems[i].first  = dummy[i];
         mItems[i].second = dummy[i];
@@ -27,8 +26,7 @@ HAnchor::HAnchor(const HAnchor& anchor)
 
 HAnchor& HAnchor::operator=(const HAnchor& anchor)
 {
-    for (int i = 0; i < 4; i++)
-    {
+    for (int i = 0; i < 4; i++) {
         mItems[i] = anchor.mItems[i];
     }
     return *this;
@@ -51,8 +49,7 @@ void HAnchor::operator >> (QByteArray& bytes)
 
 void HAnchor::operator << (const QByteArray& bytes)
 {
-    if (bytes.size()>= (int)sizeof(mItems))
-    {
+    if (bytes.size()>= (int)sizeof(mItems)) {
         memcpy((void*)&mItems[0], bytes.data(), sizeof(mItems));
     }
 }

@@ -3,17 +3,19 @@
 
 IMPLEMENT_OBJECT_STATIC_CREATE(HFrameStyle)
 HFrameStyle::HFrameStyle(QObject *parent) :
-    HBaseStyle(parent),
+    HWidgetStyle(parent),
     mWindow(NULL)
 {
     mWinFlags = Qt::Window;
+    mObjType = USEOBJTYPE(HFrameStyle);
 }
 
 HFrameStyle::HFrameStyle(const HObjectInfo& objinfo, QObject *parent) :
-    HBaseStyle(objinfo,parent),
+    HWidgetStyle(objinfo,parent),
     mWindow(NULL)
 {
     mWinFlags = Qt::Window;
+    mObjType = USEOBJTYPE(HFrameStyle);
 }
 
 HFrameStyle::~HFrameStyle()
@@ -33,49 +35,6 @@ void HFrameStyle::setWindowFlags(Qt::WindowFlags flags)
 Qt::WindowFlags HFrameStyle::windowFlags() const
 {
     return mWinFlags;
-}
-
-bool HFrameStyle::hasStyleSheet() const
-{
-    return (mStyleSheet.size() > 1);
-}
-
-void HFrameStyle::setStyleSheet(const QString& sheet)
-{
-    mStyleSheet = sheet;
-}
-
-QString HFrameStyle::styleSheet() const
-{
-    return mStyleSheet;
-}
-
-bool HFrameStyle::hasBackgroundStyle() const
-{
-    return (mBackgroundStyle.mClsName.size() > 1 && mBackgroundStyle.mStyleId.size()>1);
-}
-void HFrameStyle::setBackgroundStyle(const HClassInfo& cls)
-{
-    mBackgroundStyle = cls;
-}
-
-HClassInfo HFrameStyle::backgroundStyle() const
-{
-    return mBackgroundStyle;
-}
-
-bool HFrameStyle::hasLayoutStyle() const
-{
-    return (mLayoutStyle.mClsName.size() > 1 && mLayoutStyle.mStyleId.size()>1);
-}
-void HFrameStyle::setLayoutStyle(const HClassInfo& cls)
-{
-    mLayoutStyle = cls;
-}
-
-HClassInfo HFrameStyle::layoutStyle() const
-{
-    return mLayoutStyle;
 }
 
 bool HFrameStyle::hasSceneStyle() const
@@ -99,13 +58,13 @@ void HFrameStyle::copyTo(HBaseStyle* obj)
     if (!style) return ;
 
     style->setWindowFlags(windowFlags());
-    style->setStyleSheet(styleSheet());
-    HBaseStyle::copyTo(obj);
+    style->setSceneStyle(sceneStyle());
+    HWidgetStyle::copyTo(obj);
 }
 
 HBaseStyle* HFrameStyle::clone()
 {
-    HFrameStyle* style = new HFrameStyle(mObjinfo,parent());
+    HFrameStyle* style = new HFrameStyle(HObjectInfo(styleId(),""),parent());
     copyTo(style);
 
     return style;
@@ -115,11 +74,9 @@ void  HFrameStyle::init()
 {
     mWindow->setWindowFlags(windowFlags());
 
-    if (hasStyleSheet())
-    {
+    if (hasStyleSheet()) {
         mWindow->setStyleSheet(styleSheet());
     }
-    mWindow->setAttribute(Qt::WA_TranslucentBackground, true);
 }
 
 void  HFrameStyle::resizeEvent(QResizeEvent *event)

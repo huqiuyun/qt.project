@@ -6,11 +6,16 @@
 #include <QBrush>
 
 class QGraphicsView;
-class QGraphicsScene;
+class QGraphicsItem;
+class HGScene;
+class HGWidget;
 
+class HGSceneStylePrivate;
 class H_API HGSceneStyle : public HBaseStyle
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE( HGSceneStyle )
+
     Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
     Q_PROPERTY( QBrush backgroundBrush READ backgroundBrush WRITE setBackgroundBrush )
     Q_PROPERTY( QBrush foregroundBrush READ foregroundBrush WRITE setForegroundBrush )
@@ -37,21 +42,27 @@ public:
     QBrush foregroundBrush() const;
     void setForegroundBrush(const QBrush& brush);
 
-    void copyTo(HBaseStyle* obj);
+    bool hasScene() const;
+    HGScene* scene() const;
+
+    bool addGWidget(HGWidget* widget,bool main=false);
+    void removeGWidget(HGWidget* widget);
+
+    bool addItem(QGraphicsItem* item);
+    void removeItem(QGraphicsItem* item);
 
 public:
-    void doConstruct();
+    void copyTo(HBaseStyle* obj);
     HBaseStyle* clone();
+
     void setGView(QGraphicsView* view);
     void reSize(const QRectF& rect);
 
 protected:
-    QGraphicsView  *mView;
-    QGraphicsScene *mScene;
-    Qt::Alignment mAlignment;
-    QBrush mForegroundBrush;
-    QBrush mBackgroundBrush;
-    QSizePolicy::Policy mSizePolicy;
+    template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
+    void doConstruct();
+private:
+    HGSceneStylePrivate* d_ptr;
 };
 
 #endif // HGSCENESTYLE_H

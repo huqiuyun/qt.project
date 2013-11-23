@@ -47,8 +47,7 @@ HCore::~HCore()
 HFactory* HCore::factory()
 {
     Q_D(HCore);
-    if (!d->mFactory)
-    {
+    if (!d->mFactory) {
         d->mFactory = new HFactory();
         d->mFactory->coInitialize();
 
@@ -67,6 +66,11 @@ HFactory* HCore::factory()
             d->mFactory->coRegisterGItem(&s_gitems[i]);
         }}
 
+        {for (uint i = 0; i < sizeof(s_gwidgets)/sizeof(s_gwidgets[0]); i++)
+        {
+            d->mFactory->coRegisterGWidget(&s_gwidgets[i]);
+        }}
+
         {for (uint i = 0; i < sizeof(s_qwidgets)/sizeof(s_qwidgets[0]); i++)
         {
             d->mFactory->coRegisterQWidget(&s_qwidgets[i]);
@@ -78,8 +82,7 @@ HFactory* HCore::factory()
 HResourceMgr* HCore::resMgr()
 {
     Q_D(HCore);
-    if (!d->mResMgr)
-    {
+    if (!d->mResMgr) {
         d->mResMgr = new HResourceMgr(this);
     }
     return d->mResMgr;
@@ -88,8 +91,7 @@ HResourceMgr* HCore::resMgr()
 HStyle* HCore::style()
 {
     Q_D(HCore);
-    if (!d->mStyle)
-    {
+    if (!d->mStyle) {
         d->mStyle = new HStyle(this);
     }
     return d->mStyle;
@@ -98,8 +100,7 @@ HStyle* HCore::style()
 HSystem* HCore::system()
 {
     Q_D(HCore);
-    if (!d->mSystem)
-    {
+    if (!d->mSystem) {
         d->mSystem = new HSystem();
     }
     return d->mSystem;

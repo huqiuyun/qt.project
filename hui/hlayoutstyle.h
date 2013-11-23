@@ -38,16 +38,6 @@ public:
     virtual void setSpacing(int s);
     virtual int spacing() const;
 
-    /** add item to owner layout */
-    virtual bool addItem(QGraphicsLayoutItem* item) = 0;
-    virtual bool insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& layIndex) = 0;
-    virtual bool removeItem(QGraphicsLayoutItem* item) = 0;
-
-    /** add widget to owner layout */
-    virtual bool addWidget(QWidget* widget) = 0;
-    virtual bool insertWidget(QWidget* widget ,const HLayoutIndex& layIndex) = 0;
-    virtual bool removeWidget(QWidget* widget) = 0;
-
     void doConstruct();
 protected:
     void copyTo(HBaseStyle* obj);

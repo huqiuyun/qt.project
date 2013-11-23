@@ -4,7 +4,7 @@
 #include "hbase.h"
 #include "henums.h"
 #include <QMargins>
-
+class HStyle;
 class H_API HBaseStyle : public QObject, public HObject
 {
 public:
@@ -13,11 +13,9 @@ public:
     virtual ~HBaseStyle();
 
 public:
+    void backup(const HStyle* style);
     virtual HBaseStyle* clone();
     virtual void copyTo(HBaseStyle* obj);
-
-protected:
-    HObjectInfo  mObjinfo;
 };
 typedef QMap<HString, QSharedPointer<HBaseStyle> > HStyleMap;
 

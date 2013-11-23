@@ -23,18 +23,22 @@ public:
     bool isGItem(const char* clsname);
     long coRegisterGItem(const HRegisterGItem* com);
     long coUnRegisterGItem(const char* clsname);
-    void* createGItem(const HClassInfo& clsinfo, QGraphicsItem* parent, const HCreateParameter& param,long *hr);
-
+    QGraphicsItem* createGItem(const HClassInfo& clsinfo, QGraphicsItem* parent, HCreateParam& param);
+    //
+    bool isGWidget(const char* clsname);
+    long coRegisterGWidget(const HRegisterGWidget* com);
+    long coUnRegisterGWidget(const char* clsname);
+    HGWidget* createGWidget(const HClassInfo& clsinfo, QGraphicsItem* parent, HCreateParam& param);
     //
     bool isQWidget(const char* clsname);
     long coRegisterQWidget(const HRegisterQWidget* com);
     long coUnRegisterQWidget(const char* clsname);
-    QWidget* createQWidget(const HClassInfo& clsinfo, QWidget* parent, const HCreateParameter& param,long *hr);
+    QWidget* createQWidget(const HClassInfo& clsinfo, QWidget* parent, HCreateParam& param);
 
     bool isObject(const char* clsname);
     long coRegisterObject(const HRegisterObject* com);
     long coUnRegisterObject(const char* clsname);
-    QObject* createObject(const HClassInfo& clsinfo, QObject* parent, const HCreateParameter& param,long *hr);
+    QObject* createObject(const HClassInfo& clsinfo, QObject* parent, HCreateParam& param);
     //
     bool isConvert(CONVERT_ID_PTR id);
     long coRegisterConvert(const HRegisterConvert* com);

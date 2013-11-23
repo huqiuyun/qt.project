@@ -6,17 +6,15 @@
 #include "hstyle.h"
 #include "hcore.h"
 #include "hfactory.h"
-#include <QGraphicsLinearLayout>
-#include <QGraphicsAnchorLayout>
-#include <QGraphicsGridLayout>
-#include <QGraphicsProxyWidget>
-#include <QGraphicsScene>
-#include <QWidget>
+#include "hgproxywidget.h"
 #include "private/hgwidget_p.h"
 
-HGWidgetPrivate::HGWidgetPrivate(const char* styleid) :
-    q_ptr(NULL),
-    mStyleId(styleid)
+#include <QGraphicsLayoutItem>
+#include <QGraphicsProxyWidget>
+#include <QWidget>
+
+HGWidgetPrivate::HGWidgetPrivate() :
+    q_ptr(NULL)
 {
 }
 
@@ -27,39 +25,45 @@ HGWidgetPrivate::~HGWidgetPrivate()
 void HGWidgetPrivate::init()
 {
     static int s_index = 0;
-    QString name = "NoNameWidget" + QString::number(s_index++);
+    QString name = "NoGWidget" + QString::number(s_index++);
     q_ptr->setObjectName(name);
+    installStyle(HSTYLE);
+}
 
+bool HGWidgetPrivate::installStyle(const HStyle* style)
+{
     // find
-    HGWidgetStyle* style = static_cast<HGWidgetStyle*>(HSTYLE->itemAt(mStyleId.data()).data());
-    if (style)
-    {
-        mGWidgetStyle = QSharedPointer<HGWidgetStyle>(static_cast<HGWidgetStyle*>(style->clone()));
+    HGWidgetStyle* widgetstyle = hStyleSharedCast<HGWidgetStyle>(style->itemAt(q_ptr->styleId()));
+    if (widgetstyle) {
+        mWidgetStyle = hStyleShared<HGWidgetStyle>(widgetstyle->clone());
         initStyle(style);
+        return true;
     }
+    return false;
  }
 
-void HGWidgetPrivate::initStyle(HGWidgetStyle* style)
+void HGWidgetPrivate::initStyle(const HStyle* style)
 {
-    if (!style)
-    {
+    HGWidgetStyle* widgetstyle = mWidgetStyle.data();
+    if (!widgetstyle) {
         return;
     }
-    style->setWidget(q_ptr);
+    widgetstyle->setWidget(q_ptr);
 
-    long hr = 0;
-    if (style->hasBackgroundStyle())
-    {
-        HClassInfo cls = style->backgroundStyle();
-        HBackgroundStyle* back = static_cast<HBackgroundStyle*>(HFACTORY->createObject(cls,q_ptr,HCreateParameter(),&hr));
+    if (widgetstyle->hasBackgroundStyle()) {
+        HCreateParam param;
+        HClassInfo cls = widgetstyle->backgroundStyle();
+        HBackgroundStyle* back = static_cast<HBackgroundStyle*>(HFACTORY->createObject(cls,q_ptr,param));
         mBackgroundStyle = QSharedPointer<HBackgroundStyle>(back);
+        mBackgroundStyle->backup(style);
     }
 
-    if (style->hasLayoutStyle())
-    {
-        HClassInfo cls = style->backgroundStyle();
-        HGLayoutStyle* layout = static_cast<HGLayoutStyle*>(HFACTORY->createObject(cls,q_ptr,HCreateParameter(),&hr));
+    if (widgetstyle->hasLayoutStyle()) {
+        HCreateParam param;
+        HClassInfo cls = widgetstyle->layoutStyle();
+        HGLayoutStyle* layout = static_cast<HGLayoutStyle*>(HFACTORY->createObject(cls,q_ptr,param));
         mLayoutStyle = QSharedPointer<HGLayoutStyle>(layout);
+        mLayoutStyle->backup(style);
         mLayoutStyle->setWidget(q_ptr);
     }
 }
@@ -67,16 +71,20 @@ void HGWidgetPrivate::initStyle(HGWidgetStyle* style)
 IMPLEMENT_GITEM_STATIC_CREATE(HGWidget,HGWidget)
 HGWidget::HGWidget(QGraphicsItem* parent) :
     QGraphicsWidget(parent),
-    d_ptr(new HGWidgetPrivate("widgetId"))
+    d_ptr(new HGWidgetPrivate())
 {
+    mObjType = USEOBJTYPE(HGWidget);
     d_ptr->q_ptr = this;
     d_ptr->init();
+
 }
 
 HGWidget::HGWidget(const HObjectInfo& objinfo,QGraphicsItem* parent):
     QGraphicsWidget(parent),
-    d_ptr(new HGWidgetPrivate(objinfo.mStyleId.data()))
+    HObject(objinfo.mStyleId),
+    d_ptr(new HGWidgetPrivate())
 {
+    mObjType = USEOBJTYPE(HGWidget);
     d_ptr->q_ptr = this;
     d_ptr->init();
     if (objinfo.mObjName.size()>1) setObjectName(objinfo.objName());
@@ -86,14 +94,17 @@ HGWidget::HGWidget(HGWidgetPrivate &dd, QGraphicsItem *parent) :
     QGraphicsWidget(parent),
     d_ptr(&dd)
 {
+    mObjType = USEOBJTYPE(HGWidget);
     d_ptr->q_ptr = this;
     d_ptr->init();
 }
 
 HGWidget::HGWidget(HGWidgetPrivate& dd,const HObjectInfo& objinfo,QGraphicsItem* parent) :
     QGraphicsWidget(parent),
+    HObject(objinfo.mStyleId),
     d_ptr(&dd)
 {
+    mObjType = USEOBJTYPE(HGWidget);
     d_ptr->q_ptr = this;
     d_ptr->init();
     if (objinfo.mObjName.size()>1) setObjectName(objinfo.objName());
@@ -102,6 +113,12 @@ HGWidget::HGWidget(HGWidgetPrivate& dd,const HObjectInfo& objinfo,QGraphicsItem*
 HGWidget::~HGWidget()
 {
     delete d_ptr;
+}
+
+void HGWidget::installStyle(const HStyle *style)
+{
+    Q_D(HGWidget);
+    d->installStyle(style);
 }
 
 int HGWidget::height() const
@@ -131,52 +148,74 @@ void HGWidget::setWidth(int w)
     resize(s);
 }
 
-QSizeF HGWidget::fixSize() const
+QSizeF HGWidget::fixedSize() const
 {
     return size();
 }
 
-void HGWidget::setFixSize(const QSizeF &s)
+void HGWidget::setFixedSize(const QSizeF &s)
 {
     setMaximumSize(s);
     setMinimumSize(s);
     setPreferredSize(s);
 }
 
-int HGWidget::fixHeight() const
+int HGWidget::fixedHeight() const
 {
     return size().height();
 }
 
-void HGWidget::setFixHeight(int h)
+void HGWidget::setFixedHeight(int h)
 {
     setMaximumHeight(h);
     setMinimumHeight(h);
     setPreferredHeight(h);
 }
 
-int HGWidget::fixWidth() const
+int HGWidget::fixedWidth() const
 {
     return size().width();
 }
 
-void HGWidget::setFixWidth(int w)
+void HGWidget::setFixedWidth(int w)
 {
     setMaximumWidth(w);
     setMinimumWidth(w);
     setPreferredWidth(w);
 }
 
-void HGWidget::setGWidgetStyle(QSharedPointer<HGWidgetStyle> style)
+void HGWidget::setImagePath(const QString& path)
 {
-    d_func()->mGWidgetStyle = style;
-
-    d_ptr->initStyle(style.data());
+    Q_D(HGWidget);
+    if (d->mBackgroundStyle)
+        d->mBackgroundStyle->setImagePath(path);
 }
 
-QSharedPointer<HGWidgetStyle> HGWidget::gwidgetStyle() const
+void HGWidget::setColor(const QColor& rgb)
 {
-    return d_func()->mGWidgetStyle;
+    Q_D(HGWidget);
+    if (d->mBackgroundStyle)
+        d->mBackgroundStyle->setColor(rgb);
+    else Q_ASSERT(0);
+}
+
+void HGWidget::setBackgroundBrush(const QBrush& brush)
+{
+    Q_D(HGWidget);
+    if (d->mBackgroundStyle)
+        d->mBackgroundStyle->setBackgroundBrush(brush);
+}
+
+void HGWidget::setWidgetStyle(QSharedPointer<HGWidgetStyle> style)
+{
+    d_func()->mWidgetStyle = style;
+
+    d_ptr->initStyle(HSTYLE);
+}
+
+QSharedPointer<HGWidgetStyle> HGWidget::widgetStyle() const
+{
+    return d_func()->mWidgetStyle;
 }
 
 void HGWidget::setBackgroundStyle(QSharedPointer<HBackgroundStyle> style)
@@ -205,6 +244,77 @@ HEnums::HLayoutType HGWidget::layoutType() const
     return d->mLayoutStyle?d->mLayoutStyle->layoutType():HEnums::kNone;
 }
 
+/** add item to owner layout */
+int HGWidget::addItem(QGraphicsLayoutItem* item)
+{
+    Q_D(HGWidget);
+    if (d->mLayoutStyle)
+        return d->mLayoutStyle->addItem(item);
+    return -1;
+}
+
+int HGWidget::insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& layIndex)
+{
+    Q_D(HGWidget);
+    if (d->mLayoutStyle)
+        return d->mLayoutStyle->insertItem(item,layIndex);
+    return -1;
+}
+
+bool HGWidget::removeItem(QGraphicsLayoutItem* item)
+{
+    Q_D(HGWidget);
+    if (d->mLayoutStyle)
+        return d->mLayoutStyle->removeItem(item);
+    return false;
+}
+
+int HGWidget::addGWidget(QGraphicsWidget* widget)
+{
+    return insertGWidget(widget,HLayoutIndex());
+}
+
+int HGWidget::insertGWidget(QGraphicsWidget* widget ,const HLayoutIndex& index)
+{
+    return insertItem(widget,index);
+}
+
+bool HGWidget::removeGWidget(QGraphicsWidget* widget)
+{
+    return removeItem(widget);
+}
+
+int HGWidget::addWidget(QWidget* widget)
+{
+    return insertWidget(widget,HLayoutIndex());
+}
+
+int HGWidget::insertWidget(QWidget* widget ,const HLayoutIndex& index)
+{
+    QGraphicsProxyWidget* proxy = widget->graphicsProxyWidget();
+    if (!proxy) {
+        proxy = new HGProxyWidget(this);
+        proxy->setParent(this);
+        proxy->setObjectName("NoGProxyWidget");
+        proxy->setWidget(widget);
+    }
+
+    if (!insertGWidget(proxy,index)) {
+        delete proxy;
+        return -1;
+    }
+    return 0;
+}
+
+bool HGWidget::removeWidget(QWidget* widget)
+{
+    QGraphicsProxyWidget* proxy = widget->graphicsProxyWidget();
+    if (!proxy)
+        return false;
+
+    return removeGWidget(proxy);
+}
+
 void HGWidget::doConstruct()
 {
     construct();
@@ -217,8 +327,7 @@ void HGWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(widget);
     Q_D(HGWidget);
 
-    if (d->mBackgroundStyle)
-    {
+    if (d->mBackgroundStyle) {
         d->mBackgroundStyle->draw(painter,rect().toRect());
     }
     QGraphicsWidget::paint(painter,option,widget);
