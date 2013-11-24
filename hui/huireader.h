@@ -68,15 +68,14 @@ private:
     const QLatin1String kXmlProperty;
     const QLatin1String kXmlObj;
     const QLatin1String kXmlClass;
-    const QString kXmlId;
-    const QString kXmlClsname;
-    const QString kXmlName;
-    const QString kXmlStyleId;
-    const QString kXmlLayoutIndex;
-    const QString kXmlFile;
-    const QString kXmlMain;
-    const QString kPrexSkip;
-    const QString kPrexProxy;
+    const QLatin1String kXmlId;
+    const QLatin1String kXmlClsname;
+    const QLatin1String kXmlName;
+    const QLatin1String kXmlStyleId;
+    const QLatin1String kXmlFile;
+    const QLatin1String kXmlMain;
+    const QLatin1String kPrexSkip;
+    const QLatin1String kPrexProxy;
     friend class HStyle;
 };
 

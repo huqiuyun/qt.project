@@ -31,7 +31,6 @@ HuiReader::HuiReader() :
     kXmlClsname("clsname"),
     kXmlName("name"),
     kXmlStyleId("styleid"),
-    kXmlLayoutIndex("layoutIndex"),
     kXmlFile("file"),
     kXmlMain("main"),
     kPrexSkip("skip:"),
