@@ -30,6 +30,12 @@
           <property id="checked">1</property>
   </widget>
 
+  <widget clsname="QLineEdit" name="" styleid="undefined">
+          <property id="text">I am a QLineEdit</property>
+          <property id="icon"></property>
+          <property id="checked">1</property>
+  </widget>
+
   <widget clsname="QWidget" name="" styleid="undefined">
   </widget>
 

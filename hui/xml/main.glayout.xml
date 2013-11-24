@@ -59,14 +59,31 @@
      <property id="color">101,101,101</property>
    </widget>
 
-   <widget clsname="HQWidget" name="" styleid="private.framewindowId">
+   <widget clsname="HGWidget" name="" styleid="gwidgetId3">
      <style/>
-     <property id="fixedSize">80,120</property>
-     <property id="margins">10,10,10,10</property>
-     <layout file=":xml/main.qlayout.xml" />
-     <property id="skip:alignment">Qt::AlignLeft</property>
-  </widget>
+      <layout>
+        <widget clsname="HQWidget" name="" styleid="private.framewindowId">
+          <style/>
+          <property id="margins">10,10,10,10</property>
+          <layout file=":xml/main.qlayout.xml" />
+          <property id="skip:alignment">Qt::AlignLeft</property>
+        </widget>
 
+        <widget clsname="HQWidget" name="" styleid="private.framewindowId">
+          <style/>
+          <property id="margins">10,10,10,10</property>
+          <layout file=":xml/main.qlayout.xml" />
+          <property id="skip:alignment">Qt::AlignLeft</property>
+        </widget>
+
+        <widget clsname="HQWidget" name="" styleid="private.framewindowId">
+          <style/>
+          <property id="margins">10,10,10,10</property>
+          <layout file=":xml/main.qlayout.xml" />
+          <property id="skip:alignment">Qt::AlignLeft</property>
+        </widget>
+     </layout>
+  </widget>
   <widget clsname="HGStackedWidget" name="" styleid="gwidgetId2">
     <style/>
     <property id="color">0,255,0</property>
