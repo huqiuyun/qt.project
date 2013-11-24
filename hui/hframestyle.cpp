@@ -37,6 +37,22 @@ Qt::WindowFlags HFrameStyle::windowFlags() const
     return mWinFlags;
 }
 
+
+bool HFrameStyle::hasStyleSheet() const
+{
+    return (mStyleSheet.size() > 1);
+}
+
+void HFrameStyle::setStyleSheet(const QString& sheet)
+{
+    mStyleSheet = sheet;
+}
+
+QString HFrameStyle::styleSheet() const
+{
+    return mStyleSheet;
+}
+
 bool HFrameStyle::hasSceneStyle() const
 {
     return (mSceneStyle.mClsName.size() > 1 && mSceneStyle.mStyleId.size()>1);
@@ -57,8 +73,9 @@ void HFrameStyle::copyTo(HBaseStyle* obj)
     HFrameStyle* style = static_cast<HFrameStyle*>(obj);
     if (!style) return ;
 
-    style->setWindowFlags(windowFlags());
-    style->setSceneStyle(sceneStyle());
+    style->setWindowFlags(mWinFlags);
+    style->setStyleSheet(mStyleSheet);
+    style->setSceneStyle(mSceneStyle);
     HWidgetStyle::copyTo(obj);
 }
 
@@ -79,7 +96,7 @@ void  HFrameStyle::init()
     }
 }
 
-void  HFrameStyle::resizeEvent(QResizeEvent *event)
+void HFrameStyle::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
 }

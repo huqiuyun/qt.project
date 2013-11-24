@@ -28,7 +28,6 @@ HuiReader::HuiReader() :
     kXmlObj("obj"),
     kXmlClass("class"),
     kXmlId("id"),
-    kXmlClsname("clsname"),
     kXmlName("name"),
     kXmlStyleId("styleid"),
     kXmlFile("file"),
@@ -344,7 +343,7 @@ void HuiReader::createWidgetWithXmlReader(HuiTask* task, QXmlStreamReader* reade
 {
     // get class info attribute
     QXmlStreamAttributes attris = reader->attributes();
-    HClassInfo clsinfo(attris.value(kXmlClsname).toString(),
+    HClassInfo clsinfo(attris.value(kXmlClass).toString(),
                        attris.value(kXmlStyleId).toString(),
                        attris.value(kXmlName).toString());
     if (!clsinfo.isValid()) {
@@ -504,7 +503,7 @@ void HuiReader::createStyleWithXmlReader(HuiTask* task,QXmlStreamReader* reader,
             if (reader->name() == kXmlObj) {
                 /* Read attribute */
                 QXmlStreamAttributes attris = reader->attributes();
-                if(!attris.hasAttribute(kXmlClsname)) {
+                if(!attris.hasAttribute(kXmlClass)) {
                     reader->skipCurrentElement(); // skipping any child nodes
                     reader->readNext();
                     continue;
@@ -516,7 +515,7 @@ void HuiReader::createStyleWithXmlReader(HuiTask* task,QXmlStreamReader* reader,
                 }
                 // 生成
                 HString styleid(attris.value(kXmlStyleId).toString());
-                HString clsname(attris.value(kXmlClsname).toString());
+                HString clsname(attris.value(kXmlClass).toString());
 
                 task->generateStyle();
                 styleobj = task->style()->create(styleid.data(),clsname.data());
@@ -569,7 +568,7 @@ void HuiReader::readProperty(QXmlStreamReader* reader, QObject* obj,QList<HIdVal
         else if(token == QXmlStreamReader::StartElement) {
             if (reader->name() == kXmlClass) {// <property> <class clsname="" name="" styleid=""/></property>
                 QXmlStreamAttributes attris = reader->attributes();
-                HClassInfo cls(attris.value(kXmlClsname).toString(),
+                HClassInfo cls(attris.value(kXmlClass).toString(),
                                attris.value(kXmlStyleId).toString(),
                                attris.value(kXmlName).toString());
                 obj->setProperty(id.toLatin1(),cls.toQVariant());

@@ -15,21 +15,6 @@ HWidgetStyle::HWidgetStyle(const HObjectInfo& objinfo,QObject* parent) :
     mObjType = USEOBJTYPE(HWidgetStyle);
 }
 
-bool HWidgetStyle::hasStyleSheet() const
-{
-    return (mStyleSheet.size() > 1);
-}
-
-void HWidgetStyle::setStyleSheet(const QString& sheet)
-{
-    mStyleSheet = sheet;
-}
-
-QString HWidgetStyle::styleSheet() const
-{
-    return mStyleSheet;
-}
-
 bool HWidgetStyle::hasBackgroundStyle() const
 {
     return (mBackgroundStyle.mClsName.size() > 1 && mBackgroundStyle.mStyleId.size()>1);
@@ -65,7 +50,6 @@ void HWidgetStyle::copyTo(HBaseStyle* obj)
     HWidgetStyle* style = static_cast<HWidgetStyle*>(obj);
     if (!style) return ;
 
-    style->setStyleSheet(mStyleSheet);
     style->setBackgroundStyle(mBackgroundStyle);
     style->setLayoutStyle(mLayoutStyle);
     HBaseStyle::copyTo(obj);

@@ -6,7 +6,6 @@
 class HWidgetStyle : public HBaseStyle
 {
     Q_OBJECT
-    Q_PROPERTY( QString styleSheet READ styleSheet WRITE setStyleSheet)
     Q_PROPERTY(	HClassInfo backgroundStyle READ backgroundStyle WRITE setBackgroundStyle )
     Q_PROPERTY(	HClassInfo layoutStyle READ layoutStyle WRITE setLayoutStyle)
 public:
@@ -15,10 +14,6 @@ public:
 
     DECLARE_OBJECT_STATIC_CREATE(HWidgetStyle);
 public:
-
-    bool hasStyleSheet() const;
-    void setStyleSheet(const QString& sheet);
-    QString styleSheet() const;
 
     bool hasBackgroundStyle() const;
     void setBackgroundStyle(const HClassInfo& cls);
@@ -32,7 +27,6 @@ public:
     HBaseStyle* clone();
 
 protected:
-    QString   mStyleSheet;
     HClassInfo mBackgroundStyle;
     HClassInfo mLayoutStyle;
 };

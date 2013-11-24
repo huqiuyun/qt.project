@@ -26,6 +26,7 @@
 #include <QListWidget>
 #include <QListView>
 #include <QTextBrowser>
+#include <QTextEdit>
 #include <QLabel>
 #include <QLineEdit>
 #include <QTabBar>
@@ -34,6 +35,7 @@
 #include <QTableView>
 #include <QSplitter>
 #include <QSlider>
+#include <QDialog>
 #include <QBrush>
 #include <QGraphicsEllipseItem>
 #include <QGraphicsLineItem>
@@ -97,7 +99,8 @@ public:
     DECLARE_QWIDGET_STATIC_CREATE(QTableView);
     DECLARE_QWIDGET_STATIC_CREATE(QSplitter);
     DECLARE_QWIDGET_STATIC_CREATE(QSlider);
-
+    DECLARE_QWIDGET_STATIC_CREATE(QDialog);
+    DECLARE_QWIDGET_STATIC_CREATE(QTextEdit);
     //graphicsitem
     DECLARE_GITEM_STATIC_CREATE(QGraphicsEllipseItem);
     DECLARE_GITEM_STATIC_CREATE(QGraphicsLineItem);
@@ -221,6 +224,7 @@ const HRegisterQWidget s_qwidgets[] =
     REG_QWIDGET_EX(QTableView),
     REG_QWIDGET_EX(QSplitter),
     REG_QWIDGET_EX(QSlider),
+    REG_QWIDGET_EX(QDialog),
     {NULL,NULL}
 };
 

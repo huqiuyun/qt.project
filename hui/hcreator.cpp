@@ -185,6 +185,26 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QSlider,HQCreator)
     return hSetObjectT<QSlider>(objinfo,new QSlider((Qt::Orientation)param.mVar0.toUInt(),parent));
 }
 
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QDialog,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+
+    param.error()= qy::kHOk;
+    param.type() =USEOBJTYPE(QDialog);
+    return hSetObjectT<QDialog>(objinfo,new QDialog(parent));
+}
+
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTextEdit,HQCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+
+    param.error()= qy::kHOk;
+    param.type() =USEOBJTYPE(QTextEdit);
+    return hSetObjectT<QTextEdit>(objinfo,new QTextEdit(parent));
+}
+
 IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsEllipseItem,HQCreator)
 {
     Q_UNUSED(objinfo);

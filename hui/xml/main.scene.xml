@@ -5,14 +5,14 @@
       add QGraphicsItem to QGraphicsScene
  <!-->
  <scene main="true">
-   <widget clsname="HGWidget" name="" styleid="gwidgetId">
+   <widget class="HGWidget" name="" styleid="gwidgetId">
       <layout file=":/xml/main.glayout.xml"/>
    </widget>
-   <widget clsname="QGraphicsLineItem" name="" styleid="undefined">
+   <widget class="QGraphicsLineItem" name="" styleid="undefined">
      <property id="proxy:skip:"></property>
      <invoke method="proxy:skip:"></invoke>
    </widget>
-   <widget clsname="QGraphicsPixmapItem" name="" styleid="undefined"/>
+   <widget class="QGraphicsPixmapItem" name="" styleid="undefined"/>
  </scene>
 
 </hui>

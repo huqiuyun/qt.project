@@ -69,7 +69,6 @@ private:
     const QLatin1String kXmlObj;
     const QLatin1String kXmlClass;
     const QLatin1String kXmlId;
-    const QLatin1String kXmlClsname;
     const QLatin1String kXmlName;
     const QLatin1String kXmlStyleId;
     const QLatin1String kXmlFile;

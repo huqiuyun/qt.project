@@ -3,14 +3,14 @@
  <!-- css for public <!-->
  <style>
 
-    <obj clsname="HGSceneStyle" name="" styleid="sceneId">
+    <obj class="HGSceneStyle" name="" styleid="sceneId">
        <property id="alignment"></property>
        <property id="sizePolicy">QSizePolicy::Fixed</property>
        <property id="foregroundBrush">color|100,100,100,200</property>
     </obj>
 
     <!-- <!-->
-    <obj clsname="HQLayoutStyle" name="" styleid="qlayoutId">
+    <obj class="HQLayoutStyle" name="" styleid="qlayoutId">
        <property id="layoutType">kVBox</property>
        <property id="alignment"></property>
        <property id="margins">4,4,4,4</property>
@@ -18,7 +18,7 @@
     </obj>
 
     <!-- <!-->
-    <obj clsname="HGLayoutStyle" name="" styleid="glayoutId">
+    <obj class="HGLayoutStyle" name="" styleid="glayoutId">
        <property id="layoutType">kVBox</property>
        <property id="alignment"></property>
        <property id="margins">0,0,0,0</property>
@@ -26,32 +26,32 @@
     </obj>
 
     <!-- <!-->
-    <obj clsname="HBackgroundStyle" name="" styleid="backgroundId">
+    <obj class="HBackgroundStyle" name="" styleid="backgroundId">
        <property id="alignment">Qt::AlignLeft|Qt::AlignTop</property>
        <property id="margins">1,1,1,1</property>
        <property id="imagePath"></property>
        <property id="color">200,200,20</property>
     </obj>
     <!-- <!-->
-    <obj clsname="HGWidgetStyle" name="" styleid="gwidgetId">
+    <obj class="HGWidgetStyle" name="" styleid="gwidgetId">
        <property id="styleSheet"></property>
        <property id="backgroundStyle">
-         <class clsname="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId"/>
+         <class class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId"/>
        </property>
        <property id="layoutStyle">
-         <class clsname="HGLayoutStyle" name="layoutStyle" styleid="glayoutId"/>
+         <class class="HGLayoutStyle" name="layoutStyle" styleid="glayoutId"/>
        </property>
     </obj>
     <!-- <!-->
-    <obj clsname="HFrameStyle" name="" styleid="framewindowId">
+    <obj class="HFrameStyle" name="" styleid="framewindowId">
        <property id="windowFlags">Qt::Window</property>
        <property id="styleSheet"></property>
 
        <property id="layoutStyle">
-        <class clsname="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId"/>
+        <class class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId"/>
        </property>
        <property id="sceneStyle">
-        <class clsname="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
+        <class class="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
        </property>
     </obj>
  </style>

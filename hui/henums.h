@@ -61,6 +61,8 @@ public:
         OBJTYPE(QTableView) = 515,
         OBJTYPE(QSplitter) = 516,
         OBJTYPE(QSlider) = 517,
+        OBJTYPE(QDialog),
+        OBJTYPE(QTextEdit),
 
         OBJTYPE(HQWidget),
         OBJTYPE(HGView),

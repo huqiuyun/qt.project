@@ -6,41 +6,41 @@
 
     2. If parent is QWidget , then child only is based QWidget.
        @exmaple, create failure:
-       <widget clsname="HQWidget" styleid="undefined">
-         <widget clsname="HGWidget" name="" styleid="gwidgetId"/>
+       <widget class="HQWidget" styleid="undefined">
+         <widget class="HGWidget" name="" styleid="gwidgetId"/>
        </widget>
 
     3. If parent is QGraphicWidget,then child only is based GraphicsWidget.
      @exmaple,create failure:
-     <widget clsname="HGWidget" styleid="undefined">
-       <widget clsname="HQWidget" name="" styleid="gwidgetId"/>
+     <widget class="HGWidget" styleid="undefined">
+       <widget class="HQWidget" name="" styleid="gwidgetId"/>
      </widget>
 
      @exmaple, create success, it can be in the <layout>, but parent need be layout style:
-     <widget clsname="HGWidget" name="" styleid="gwidgetId">
+     <widget class="HGWidget" name="" styleid="gwidgetId">
         <style>
             @see main.style.xml , HGWidgetStyle
         </style>
         <layout>
-          <widget clsname="HQWidget" name="" styleid="undefined"/>
+          <widget class="HQWidget" name="" styleid="undefined"/>
         </layout>
      </widget>
 <!-->
 
- <widget clsname="HGView" name="main" styleid="my.framewindow.test1">
+ <widget class="HGView" name="main" styleid="my.framewindow.test1">
    <!-- style is private <!-->
    <style>
-      <obj clsname="HFrameStyle" name="" styleid="my.framewindow.test1">
+      <obj class="HFrameStyle" name="" styleid="my.framewindow.test1">
          <property id="windowFlags">Qt::Window</property>
          <property id="styleSheet"></property>
          <property id="layoutStyle">
-            <class clsname="HQLayoutStyle" name="layoutStyle" styleid="my.qhbox.layoutId"/>
+            <class class="HQLayoutStyle" name="layoutStyle" styleid="my.qhbox.layoutId"/>
          </property>
          <property id="sceneStyle">
-            <class clsname="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
+            <class class="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
          </property>
        </obj>
-       <obj clsname="HQLayoutStyle" name="" styleid="my.qhbox.layoutId">
+       <obj class="HQLayoutStyle" name="" styleid="my.qhbox.layoutId">
           <property id="layoutType">kHBox</property>
           <property id="alignment"></property>
           <property id="margins">4,4,4,4</property>
@@ -52,16 +52,16 @@
    <layout file=":/xml/main.qlayout.xml"/>
  </widget>
 
- <widget clsname="HQWidget" name="main" styleid="my.framewindow.test2">
+ <widget class="HQWidget" name="main" styleid="my.framewindow.test2">
    <style>
-     <obj clsname="HFrameStyle" name="" styleid="my.framewindow.test2">
+     <obj class="HFrameStyle" name="" styleid="my.framewindow.test2">
        <property id="windowFlags">Qt::Window</property>
        <property id="styleSheet"></property>
        <property id="layoutStyle">
-          <class clsname="HQLayoutStyle" name="layoutStyle" styleid="my.qgrid.layoutId"/>
+          <class class="HQLayoutStyle" name="layoutStyle" styleid="my.qgrid.layoutId"/>
        </property>
     </obj>
-    <obj clsname="HQLayoutStyle" name="" styleid="my.qgrid.layoutId">
+    <obj class="HQLayoutStyle" name="" styleid="my.qgrid.layoutId">
        <property id="layoutType">kGrid</property>
        <property id="alignment"></property>
        <property id="margins">4,4,4,4</property>

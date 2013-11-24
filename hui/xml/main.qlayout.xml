@@ -7,36 +7,36 @@
  <!-->
  <layout>
 
-  <widget clsname="HQWidget" name="" styleid="undefined" />
+  <widget class="HQWidget" name="" styleid="undefined" />
 
-  <widget clsname="QPushButton" name="" styleid="undefined">
+  <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text0</property>
           <property id="icon"></property>
   </widget>
 
-  <widget clsname="QPushButton" name="" styleid="undefined">
+  <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text1</property>
           <property id="icon"></property>
   </widget>
 
-  <widget clsname="QPushButton" name="" styleid="undefined">
+  <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text2</property>
           <property id="icon"></property>
   </widget>
 
-  <widget clsname="QRadioButton" name="" styleid="undefined">
+  <widget class="QRadioButton" name="" styleid="undefined">
           <property id="text">text1</property>
           <property id="icon"></property>
           <property id="checked">1</property>
   </widget>
 
-  <widget clsname="QLineEdit" name="" styleid="undefined">
+  <widget class="QLineEdit" name="" styleid="undefined">
           <property id="text">I am a QLineEdit</property>
           <property id="icon"></property>
           <property id="checked">1</property>
   </widget>
 
-  <widget clsname="QWidget" name="" styleid="undefined">
+  <widget class="QWidget" name="" styleid="undefined">
   </widget>
 
 </layout>
