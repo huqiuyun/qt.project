@@ -1,5 +1,5 @@
-#ifndef HStyle_H
-#define HStyle_H
+#ifndef HSTYLE_H
+#define HSTYLE_H
 
 #include "hbasestyle.h"
 #include "henums.h"
@@ -41,4 +41,4 @@ private:
 
 Q_DECLARE_METATYPE(const HStyle*);
 
-#endif // HStyle_H
+#endif // HSTYLE_H

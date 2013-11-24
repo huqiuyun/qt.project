@@ -40,16 +40,17 @@ public:
 
         HuiReader uiReader;
 
-        // xml for MainWindow set property.
+        // Test : xml for MainWindow set property.
         uiReader.createChild(":/xml/main.property.xml",QString(),MainWindow);
 
-        // xml for native window
+        // Test : xml for native window
         QList<QWidget*> qwlist = uiReader.createWidget(":/xml/main.widget.xml",QString(),MainWindow);
         for (int i = 0; i< qwlist.size();i++) {
             QWidget* first = qwlist.at(i);
             first->show();
         }
 
+        // Test :
         uiReader.createChild(":/xml/main.scene.xml",QString(),MainWindow);
 
         retranslateUi(MainWindow);

@@ -1,5 +1,5 @@
-#ifndef HREMgr_H
-#define HResourceMgr_H
+#ifndef HRESOURCEMGR_H
+#define HRESOURCEMGR_H
 
 #include "hconfig.h"
 #include <QPixmap>
@@ -32,4 +32,4 @@ private:
     HResourceMgrPrivate* d_ptr;
 };
 
-#endif // HResourceMgr_H
+#endif // HRESOURCEMGR_H
