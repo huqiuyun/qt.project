@@ -39,9 +39,9 @@ SOURCES += main.cpp\
     hqwidget.cpp \
     hwidgetstyle.cpp \
     hgscene.cpp \
-    hattributeproxy.cpp \
     hgproxywidget.cpp \
-    huitask.cpp
+    huitask.cpp \
+    hpropertyproxy.cpp
 
 
 
@@ -89,7 +89,8 @@ HEADERS  += mainwindow.h \
     hgscene.h \
     hattributeproxy.h \
     hgproxywidget.h \
-    huitask.h
+    huitask.h \
+    hpropertyproxy.h
 
 FORMS    += mainwindow.ui
 

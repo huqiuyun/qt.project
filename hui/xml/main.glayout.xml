@@ -64,6 +64,7 @@
         <widget class="HQWidget" name="" styleid="private.framewindowId">
           <style/>
           <property id="margins">10,10,10,10</property>
+          <property id="visible">true</property>
           <layout file=":xml/main.qlayout.xml" />
           <property id="skip:alignment">Qt::AlignLeft</property>
         </widget>
