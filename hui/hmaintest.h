@@ -25,6 +25,7 @@
 #include <huireader.h>
 #include <hgscenestyle.h>
 #include <hgscene.h>
+#include <hpropertyproxy.h>
 class HMainTest
 {
 public:
@@ -38,7 +39,8 @@ public:
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(10, 20);
 
-        HuiReader uiReader;
+        HPropertyProxy proproxy;
+        HuiReader uiReader(&proproxy);
 
         // Test : xml for MainWindow set property.
         uiReader.createChild(":/xml/main.property.xml",QString(),MainWindow);

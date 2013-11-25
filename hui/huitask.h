@@ -9,7 +9,7 @@ class QWidget;
 class QGraphicsWidget;
 class QObject;
 class HStyle;
-
+class HPropertyProxy;
 class HuiTask
 {
 public:
@@ -120,9 +120,9 @@ private:
         return (isGWidget() && mFlags.isObjHGWidget);
     }
 
-    QGraphicsItem *parentGItem();
-    QWidget *parentQWidget();
-    QGraphicsWidget *parentGWidget();
+    QGraphicsItem *gItem();
+    QWidget *qWidget();
+    QGraphicsWidget *gWidget();
     QObject *qObject();
     HStyle *style() const;
     //
@@ -133,7 +133,7 @@ private:
     void installStyle();
     void deleteStyle();
     void addScene(bool& main);
-    void addWidget(bool isUse);
+    void addWidget(HPropertyProxy* proxy,bool isUse);
     void addWidgetToList();
 
     int  findFunc(const char* clsname);
@@ -142,7 +142,7 @@ private:
     void setFlagsWithHGWidget(QGraphicsWidget* parent);
     void setFlagsWithHGItem(QGraphicsItem* parent);
 
-    static void execSkipProperty(HuiTask* task,bool isUse);
+    static void execSkipProperty(HuiTask* task,HPropertyProxy* proxy,bool isUse);
     static void setProperty(QObject* obj, const QString& id, const QString& attr,bool isUse);
 
     template<class OBJ>

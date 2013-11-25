@@ -2,7 +2,7 @@
 #include "hresourcemgr.h"
 #include "hcore.h"
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QWidget,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QWidget,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -12,7 +12,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QWidget,HQCreator)
     return hSetObjectT<QWidget>(objinfo,new QWidget(parent,(Qt::WindowFlags)param.mVar0.toUInt()));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QPushButton,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QPushButton,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -22,7 +22,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QPushButton,HQCreator)
     return hSetObjectT<QPushButton>(objinfo,new QPushButton(param.mVar0.toString(),parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QCheckBox,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QCheckBox,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -33,7 +33,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QCheckBox,HQCreator)
 }
 
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QRadioButton,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QRadioButton,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -43,7 +43,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QRadioButton,HQCreator)
     return hSetObjectT<QRadioButton>(objinfo,new QRadioButton(param.mVar0.toString(),parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QComboBox,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QComboBox,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -54,7 +54,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QComboBox,HQCreator)
 }
 
 //
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTreeWidget,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTreeWidget,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -64,7 +64,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTreeWidget,HQCreator)
     return hSetObjectT<QTreeWidget>(objinfo,new QTreeWidget(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTreeView,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTreeView,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -74,7 +74,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTreeView,HQCreator)
     return hSetObjectT<QTreeView>(objinfo,new QTreeView(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QListWidget,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QListWidget,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -84,7 +84,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QListWidget,HQCreator)
     return hSetObjectT<QListWidget>(objinfo,new QListWidget(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QListView,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QListView,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -94,7 +94,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QListView,HQCreator)
     return hSetObjectT<QListView>(objinfo,new QListView(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTextBrowser,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTextBrowser,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -104,7 +104,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTextBrowser,HQCreator)
     return hSetObjectT<QTextBrowser>(objinfo,new QTextBrowser(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QLabel,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QLabel,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -114,7 +114,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QLabel,HQCreator)
     return hSetObjectT<QLabel>(objinfo,new QLabel(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QLineEdit,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QLineEdit,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -124,7 +124,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QLineEdit,HQCreator)
     return hSetObjectT<QLineEdit>(objinfo,new QLineEdit(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTabBar,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTabBar,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -134,7 +134,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTabBar,HQCreator)
     return hSetObjectT<QTabBar>(objinfo,new QTabBar(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QStackedWidget,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QStackedWidget,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -145,7 +145,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QStackedWidget,HQCreator)
 }
 
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTableWidget,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTableWidget,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -155,7 +155,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTableWidget,HQCreator)
     return hSetObjectT<QTableWidget>(objinfo,new QTableWidget(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTableView,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTableView,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -165,7 +165,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTableView,HQCreator)
     return hSetObjectT<QTableView>(objinfo,new QTableView(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QSplitter,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QSplitter,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -175,7 +175,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QSplitter,HQCreator)
     return hSetObjectT<QSplitter>(objinfo,new QSplitter((Qt::Orientation)param.mVar0.toUInt(),parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QSlider,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QSlider,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -185,7 +185,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QSlider,HQCreator)
     return hSetObjectT<QSlider>(objinfo,new QSlider((Qt::Orientation)param.mVar0.toUInt(),parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QDialog,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QDialog,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -195,7 +195,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QDialog,HQCreator)
     return hSetObjectT<QDialog>(objinfo,new QDialog(parent));
 }
 
-IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTextEdit,HQCreator)
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTextEdit,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -205,7 +205,7 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTextEdit,HQCreator)
     return hSetObjectT<QTextEdit>(objinfo,new QTextEdit(parent));
 }
 
-IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsEllipseItem,HQCreator)
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsEllipseItem,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -215,7 +215,7 @@ IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsEllipseItem,HQCreator)
     return new QGraphicsEllipseItem(parent);
 }
 
-IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsLineItem,HQCreator)
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsLineItem,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -225,7 +225,7 @@ IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsLineItem,HQCreator)
     return new QGraphicsLineItem(parent);
 }
 
-IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPathItem,HQCreator)
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPathItem,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -235,7 +235,7 @@ IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPathItem,HQCreator)
     return new QGraphicsPathItem(parent);
 }
 
-IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPixmapItem,HQCreator)
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPixmapItem,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -245,7 +245,7 @@ IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPixmapItem,HQCreator)
     return new QGraphicsPixmapItem(parent);
 }
 
-IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPolygonItem,HQCreator)
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPolygonItem,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -255,7 +255,7 @@ IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsPolygonItem,HQCreator)
     return new QGraphicsPolygonItem(parent);
 }
 
-IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsRectItem,HQCreator)
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsRectItem,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -265,7 +265,7 @@ IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsRectItem,HQCreator)
     return new QGraphicsRectItem(parent);
 }
 
-IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsSimpleTextItem,HQCreator)
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsSimpleTextItem,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);
@@ -275,7 +275,7 @@ IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsSimpleTextItem,HQCreator)
     return new QGraphicsSimpleTextItem(parent);
 }
 
-IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsTextItem,HQCreator)
+IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsTextItem,HuiCreator)
 {
     Q_UNUSED(objinfo);
     Q_UNUSED(parent);

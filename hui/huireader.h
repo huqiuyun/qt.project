@@ -13,11 +13,12 @@ class HQWidget;
 class HStyle;
 class HLayoutStyle;
 class HuiTask;
+class HPropertyProxy;
 
 class H_API HuiReader
 {
 public:
-    HuiReader();
+    HuiReader(HPropertyProxy* proxy=NULL);
 
     bool createStyle(const QString& xml, const QString& xmlpath, HStyle* style );
     bool createStyle(const char* data, HStyle* style );
@@ -58,6 +59,7 @@ private:
 
     inline bool isUseProperty() const { return mUseProperty;}
 private:
+    HPropertyProxy* mPropertyProxy;
     bool mUseProperty;
     const QLatin1String kXmlHui;
     const QLatin1String kXmlVersion;

@@ -6,6 +6,7 @@
 #include "hqwidget.h"
 #include "hgwidget.h"
 #include "hgscenestyle.h"
+#include "hpropertyproxy.h"
 #include <QWidget>
 #include <QGraphicsItem>
 #include <QGraphicsWidget>
@@ -71,17 +72,17 @@ int HuiTask::findFunc(const char* clsname)
     return func;
 }
 
-QGraphicsItem* HuiTask::parentGItem()
+QGraphicsItem* HuiTask::gItem()
 {
     return (isGraphicsItem()||isGWidget()) ? objCast<QGraphicsItem>():NULL;
 }
 
-QWidget* HuiTask::parentQWidget()
+QWidget* HuiTask::qWidget()
 {
     return (isQWidget()) ? objCast<QWidget>():NULL;
 }
 
-QGraphicsWidget* HuiTask::parentGWidget()
+QGraphicsWidget* HuiTask::gWidget()
 {
     return (isGWidget()) ?objCast<QGraphicsWidget>():NULL;
 }
@@ -153,8 +154,9 @@ void HuiTask::addScene(bool& main)
     deleteChild();
 }
 
-void HuiTask::addWidget(bool isUse)
+void HuiTask::addWidget(HPropertyProxy* proxy,bool isUse)
 {
+    Q_UNUSED(proxy);
     if (!mChild) {
         return ;
     }
@@ -190,18 +192,33 @@ void HuiTask::addWidget(bool isUse)
                 widget->addGWidget(mChild->objCast<QGraphicsWidget>());
         }
     }
-    execSkipProperty(mChild,isUse);
+    execSkipProperty(mChild,proxy,isUse);
     deleteChild();
 }
 
-void HuiTask::execSkipProperty(HuiTask* task,bool isUse)
+void HuiTask::execSkipProperty(HuiTask* task,HPropertyProxy* proxy,bool isUse)
 {
     if (!task) return ;
     if (QObject* obj = task->qObject())
     {// set property
         QList<HIdValue>::iterator iter = task->mPropertys.begin();
         if (iter != task->mPropertys.end()) {
-            setProperty(obj, iter->mId, iter->mVal.toString(),isUse);
+            if (proxy && iter->mProxy) {
+                if (task->isQWidget())
+                    proxy->handlerQWidget(task->qWidget(),task->mObjType,iter->mId,iter->mVal.toString());
+                else if(task->isGWidget()) {
+                    proxy->handlerGWidget(task->gWidget(),task->mObjType,iter->mId,iter->mVal.toString());
+                }
+                else if(task->isGraphicsItem()) {
+                    proxy->handlerGItem(task->gItem(),task->mObjType,iter->mId,iter->mVal.toString());
+                }
+                else {
+                    Q_ASSERT(0);
+                }
+            }
+            else{
+                setProperty(obj, iter->mId, iter->mVal.toString(),isUse);
+            }
             ++iter;
         }
         task->mPropertys.clear();

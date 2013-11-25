@@ -7,7 +7,7 @@
 #include "hqwidget.h"
 #include "hresourcemgr.h"
 #include "hgscenestyle.h"
-#include "hattributeproxy.h"
+#include "hpropertyproxy.h"
 #include "huitask.h"
 #include <QWidget>
 #include <QGraphicsItem>
@@ -16,7 +16,8 @@
 #include <QXmlStreamReader>
 #include <QDir>
 
-HuiReader::HuiReader() :
+HuiReader::HuiReader(HPropertyProxy* proxy) :
+    mPropertyProxy(proxy),
     mUseProperty(false),
     kXmlHui("hui"),
     kXmlVersion("version"),
@@ -272,7 +273,7 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
     switch(func) {
     case 0: {// HQWidget , HGView OR based QWidget
         HCreateParam param;
-        QWidget* parent = task->parentQWidget();
+        QWidget* parent = task->qWidget();
         QWidget* widget = HFACTORY->createQWidget(clsinfo, parent, param);
         if (!param.hasError()) {
             task->generateChild();
@@ -289,7 +290,7 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
     }
     case 1: {//HGWidget
         HCreateParam param;
-        QGraphicsWidget* parent = task->parentGWidget();
+        QGraphicsWidget* parent = task->gWidget();
         HGWidget* item = HFACTORY->createGWidget(clsinfo, parent, param);
         if (!param.hasError()) {
             Q_ASSERT(item->isWidget());
@@ -311,7 +312,7 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
     case 2: {//QGraphicsItem
 
         HCreateParam param;
-        QGraphicsItem* item = HFACTORY->createGItem(clsinfo, task->parentGItem(), param);
+        QGraphicsItem* item = HFACTORY->createGItem(clsinfo, task->gItem(), param);
         if (!param.hasError()) {
             task->generateChild();
             task->mChild->mObj = item;
@@ -381,7 +382,7 @@ void HuiReader::createWidgetWithXmlReader(HuiTask* task, QXmlStreamReader* reade
             else if (reader->name() == kXmlWidget) {
                 if (child->canCreateWidget()) {
                     createWidgetWithXmlReader(child,reader,hr);
-                    child->addWidget(isUseProperty());
+                    child->addWidget(mPropertyProxy,isUseProperty());
                 }
                 else {
                     reader->skipCurrentElement();
@@ -437,7 +438,7 @@ void HuiReader::createLayoutWithXmlReader(HuiTask* task,QXmlStreamReader* reader
             else if (reader->name() == kXmlWidget) {
                 //todo try create child widget
                 createWidgetWithXmlReader(task,reader,hr);
-                task->addWidget(isUseProperty());
+                task->addWidget(mPropertyProxy,isUseProperty());
             }
             else {
                 reader->skipCurrentElement();

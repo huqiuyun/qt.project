@@ -1,5 +1,5 @@
-#ifndef HQCREATOR_H
-#define HQCREATOR_H
+#ifndef HuiCreator_H
+#define HuiCreator_H
 
 #include "hbase.h"
 #include "hfactory_i.h"
@@ -69,15 +69,15 @@ const HRegisterObject s_objs[] =
     DECLARE_STATIC_CONVERT_FUNC(QString,QVariant,QString_##TYPE)
 
 #define IMPLEMENT_HCONVERT_QSTRING(TYPE) \
-    IMPLEMENT_STATIC_CONVERT_FUNC(HQCreator,QString,QVariant,QString_##TYPE)
+    IMPLEMENT_STATIC_CONVERT_FUNC(HuiCreator,QString,QVariant,QString_##TYPE)
 
 #define DECLARE_HCONVERT_QVARIANT(TYPE)  \
     DECLARE_STATIC_CONVERT_FUNC(QVariant,QString,QVariant_##TYPE)
 
 #define IMPLEMENT_HCONVERT_QVARIANT(TYPE) \
-    IMPLEMENT_STATIC_CONVERT_FUNC(HQCreator,QVariant,QString,QVariant_##TYPE)
+    IMPLEMENT_STATIC_CONVERT_FUNC(HuiCreator,QVariant,QString,QVariant_##TYPE)
 
-class HQCreator
+class HuiCreator
 {
 public:
     DECLARE_QWIDGET_STATIC_CREATE(QWidget);
@@ -153,11 +153,11 @@ public:
 };
 
 #define REG_CONVERT_EX(TYPE)   \
-    REG_CONVERT(qRegisterMetaType<TYPE>(#TYPE),TYPE,HQCreator)
+    REG_CONVERT(qRegisterMetaType<TYPE>(#TYPE),TYPE,HuiCreator)
 
 const HRegisterConvert s_converts[] =
 {
-    REG_CONVERT(0,QString,HQCreator), // default handler
+    REG_CONVERT(0,QString,HuiCreator), // default handler
     REG_CONVERT_EX(QString),
     REG_CONVERT_EX(QMargins),
     REG_CONVERT_EX(QColor),
@@ -175,7 +175,7 @@ const HRegisterConvert s_converts[] =
 };
 
 #define REG_GITEM_EX(CLSNAME)   \
-    REG_GITEM(CLSNAME,HQCreator)
+    REG_GITEM(CLSNAME,HuiCreator)
 
 // QGraphicsItem
 const HRegisterGItem s_gitems[] =
@@ -200,7 +200,7 @@ const HRegisterGWidget s_gwidgets[] =
 };
 
 #define REG_QWIDGET_EX(CLSNAME)       \
-    REG_QWIDGET(CLSNAME,HQCreator)
+    REG_QWIDGET(CLSNAME,HuiCreator)
 
 const HRegisterQWidget s_qwidgets[] =
 {
@@ -228,4 +228,4 @@ const HRegisterQWidget s_qwidgets[] =
     {NULL,NULL}
 };
 
-#endif // HQCREATOR_H
+#endif // HuiCreator_H

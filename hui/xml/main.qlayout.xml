@@ -12,11 +12,13 @@
   <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text0</property>
           <property id="icon"></property>
+          <property id="proxy:fixedSize">64,48</property>
   </widget>
 
   <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text1</property>
           <property id="icon"></property>
+          <property id="proxy:fixedHeight">48</property>
   </widget>
 
   <widget class="QPushButton" name="" styleid="undefined">
@@ -33,7 +35,7 @@
   <widget class="QLineEdit" name="" styleid="undefined">
           <property id="text">I am a QLineEdit</property>
           <property id="icon"></property>
-          <property id="checked">1</property>
+          <property id="proxy:fixedHeight">32</property>
   </widget>
 
   <widget class="QWidget" name="" styleid="undefined">
