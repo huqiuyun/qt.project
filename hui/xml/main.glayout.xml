@@ -12,7 +12,7 @@
    <!-->
    <style>
      <obj class="HBackgroundStyle" name="" styleid="backgroundId2">
-       <property id="color">200,200,200</property>
+       <property id="color">200,20,200</property>
      </obj>
 
      <obj class="HGWidgetStyle" name="" styleid="gwidgetId2">
@@ -42,7 +42,8 @@
 
    <widget class="HGWidget" name="" styleid="gwidgetId3">
       <style/>
-      <property id="color">200,200,200</property>
+      <property id="color">16,16,16</property>
+      <property id="fixedHeight">64</property>
       <property id="openGraphicsItemFlag">16</property>
       <layout file=":/xml/main.qlayout.xml"/>
       <property id="skip:alignment">Qt::AlignCenter</property>

@@ -7,12 +7,12 @@
  <!-->
  <layout>
 
-  <widget class="HQWidget" name="" styleid="undefined" />
 
   <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text0</property>
           <property id="icon"></property>
-          <property id="proxy:fixedSize">64,48</property>
+          <property id="proxy:fixedHeight">60</property>
+          <property id="proxy:fixedWidth">100</property>
   </widget>
 
   <widget class="QPushButton" name="" styleid="undefined">

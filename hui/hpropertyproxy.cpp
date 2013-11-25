@@ -43,7 +43,10 @@ bool HPropertyProxy::handlerDefQWidget(QWidget *obj, int objType, const QString&
     else if(HPROPERTY_ID_MATCH("fixedSize")) {//QSize
         obj->setFixedSize(HuiCreator::convertQVariant_QSize(val,&hr).toSize());
     }
-    return false;
+    else
+        return false;
+
+    return true;
 }
 
 bool HPropertyProxy::handlerDefGWidget(QGraphicsWidget *obj, int objType, const QString& id, const QString &val)
