@@ -204,17 +204,19 @@ void HuiTask::execSkipProperty(HuiTask* task,HPropertyProxy* proxy,bool isUse)
         QList<HIdValue>::iterator iter = task->mPropertys.begin();
         while (iter != task->mPropertys.end()) {
             if (proxy && iter->mProxy) {
+                bool handler = false;
+
                 if (task->isQWidget())
-                    proxy->handlerQWidget(task->qWidget(),task->mObjType,iter->mId,iter->mVal.toString());
+                    handler = proxy->handlerQWidget(task->qWidget(),task->mObjType,iter->mId,iter->mVal.toString());
 
                 else if(task->isGWidget())
-                    proxy->handlerGWidget(task->gWidget(),task->mObjType,iter->mId,iter->mVal.toString());
+                    handler = proxy->handlerGWidget(task->gWidget(),task->mObjType,iter->mId,iter->mVal.toString());
 
                 else if(task->isGraphicsItem())
-                    proxy->handlerGItem(task->gItem(),task->mObjType,iter->mId,iter->mVal.toString());
+                    handler = proxy->handlerGItem(task->gItem(),task->mObjType,iter->mId,iter->mVal.toString());
 
-                else
-                    Q_ASSERT(0);
+                if (!handler)
+                    setProperty(obj, iter->mId, iter->mVal.toString(),isUse);
             }
             else{
                 setProperty(obj, iter->mId, iter->mVal.toString(),isUse);

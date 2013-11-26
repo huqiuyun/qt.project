@@ -39,6 +39,6 @@ private:
     HStyleMap mStyle;
 };
 
-Q_DECLARE_METATYPE(const HStyle*);
+Q_DECLARE_METATYPE(const HStyle*)
 
 #endif // HSTYLE_H

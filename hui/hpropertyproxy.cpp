@@ -43,6 +43,15 @@ bool HPropertyProxy::handlerDefQWidget(QWidget *obj, int objType, const QString&
     else if(HPROPERTY_ID_MATCH("fixedSize")) {//QSize
         obj->setFixedSize(HuiCreator::convertQVariant_QSize(val,&hr).toSize());
     }
+    else if(HPROPERTY_ID_MATCH("opaquePaintEvent")){
+        obj->setAttribute(Qt::WA_OpaquePaintEvent,val.toInt());
+    }
+    else if(HPROPERTY_ID_MATCH("noSystemBackground")){
+        obj->setAttribute(Qt::WA_NoSystemBackground,val.toInt());
+    }
+    else if(HPROPERTY_ID_MATCH("translucentBackground")){
+        obj->setAttribute(Qt::WA_TranslucentBackground,val.toInt());
+    }
     else
         return false;
 

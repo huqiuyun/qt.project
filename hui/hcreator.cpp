@@ -514,3 +514,15 @@ IMPLEMENT_HCONVERT_QVARIANT(QIcon)
     return QIcon();
 }
 
+IMPLEMENT_HCONVERT_QSTRING(qreal)
+{
+    *hr = 0;
+    return QString("%1").arg(val.toFloat());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(qreal)
+{
+    *hr = 0;
+    return val.toFloat();
+}
+

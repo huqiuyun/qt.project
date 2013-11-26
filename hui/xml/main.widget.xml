@@ -34,14 +34,14 @@
          <property id="windowFlags">Qt::Window</property>
          <property id="styleSheet"></property>
          <property id="layoutStyle">
-            <class class="HQLayoutStyle" name="layoutStyle" styleid="my.qhbox.layoutId"/>
+            <class class="HQLayoutStyle" name="layoutStyle" styleid="my.qvbox.layoutId"/>
          </property>
          <property id="sceneStyle">
             <class class="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
          </property>
        </obj>
-       <obj class="HQLayoutStyle" name="" styleid="my.qhbox.layoutId">
-          <property id="layoutType">kHBox</property>
+       <obj class="HQLayoutStyle" name="" styleid="my.qvbox.layoutId">
+          <property id="layoutType">kVBox</property>
           <property id="alignment"></property>
           <property id="margins">4,4,4,4</property>
           <property id="spacing">6</property>
@@ -49,7 +49,19 @@
    </style>
    <property id="resize">400,600</property>
    <property id="windowTitle">test1-hgview</property>
-   <layout file=":/xml/main.qlayout.xml"/>
+   <scene main="true">
+     <widget class="HGWidget" name="" styleid="gwidgetId">
+        <layout>
+           <widget class="QTextEdit" name=""  styleid="undefined">
+             <property id="plainText">I am QTextEdit</property>
+           </widget>
+           <widget class="QTextBrowser" name="" styleid="undefined">
+             <property id="plainText">I am QTextBrowser></property>
+             <property id="readOnly">0</property>
+           </widget>
+        </layout>
+     </widget>
+   </scene>
  </widget>
 
  <widget class="HQWidget" name="main" styleid="my.framewindow.test2">

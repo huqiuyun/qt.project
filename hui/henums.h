@@ -41,6 +41,7 @@ public:
         OBJTYPE(HLayoutStyle),
         OBJTYPE(HGLayoutStyle),
         OBJTYPE(HQLayoutStyle),
+        OBJTYPE(HFontStyle),
         OBJTYPE(HGScene),
         //
         OBJTYPE(QWidget) = 500,

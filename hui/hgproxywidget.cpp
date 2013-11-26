@@ -13,3 +13,11 @@ HGProxyWidget::HGProxyWidget(const HObjectInfo& objinfo,QGraphicsItem* parent):
     mObjType = USEOBJTYPE(HGProxyWidget);
     if (objinfo.mObjName.size()>1) setObjectName(objinfo.objName());
 }
+
+ void HGProxyWidget::paintWindowFrame(QPainter *painter,
+                                      const QStyleOptionGraphicsItem *option,QWidget *widget)
+ {
+     Q_UNUSED(painter);
+     Q_UNUSED(option);
+     Q_UNUSED(widget);
+ }

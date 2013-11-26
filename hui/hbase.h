@@ -131,7 +131,7 @@ public:
 private:
     HAnchorItem_t mItems[4];
 };
-Q_DECLARE_METATYPE(HAnchor);
+Q_DECLARE_METATYPE(HAnchor)
 
 class H_API HLayoutIndex
 {
@@ -161,7 +161,7 @@ private:
     int mIndex; // for HBOX,VBOX, grid row
     int mColumn;
 };
-Q_DECLARE_METATYPE(HLayoutIndex);
+Q_DECLARE_METATYPE(HLayoutIndex)
 
 /** if create object class , need clsname AND styleid */
 class HObjectInfo
@@ -251,8 +251,8 @@ public:
     }
 };
 
-Q_DECLARE_METATYPE(HClassInfo);
-Q_DECLARE_METATYPE(HObjectInfo);
+Q_DECLARE_METATYPE(HClassInfo)
+Q_DECLARE_METATYPE(HObjectInfo)
 
 template<class OBJ>
 inline OBJ* hDoConstructT(OBJ* obj)

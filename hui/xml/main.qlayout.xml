@@ -13,6 +13,7 @@
           <property id="icon"></property>
           <property id="proxy:fixedHeight">60</property>
           <property id="proxy:fixedWidth">100</property>
+          <property id="proxy:noSystemBackground">1</property>
   </widget>
 
   <widget class="QPushButton" name="" styleid="undefined">

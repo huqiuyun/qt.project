@@ -38,14 +38,34 @@
        </property>
      </obj>
 
+     <obj class="HQLayoutStyle" name="" styleid="qlayoutId3">
+        <property id="layoutType">kHBox</property>
+        <property id="alignment"></property>
+        <property id="margins"></property>
+        <property id="spacing">1</property>
+     </obj>
+
+     <obj class="HFrameStyle" name="" styleid="gwidgetframeId">
+        <property id="windowFlags">0</property>
+        <property id="styleSheet"></property>
+        <property id="layoutStyle">
+         <class class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId3"/>
+        </property>
+     </obj>
+
    </style>
 
    <widget class="HGWidget" name="" styleid="gwidgetId3">
       <style/>
-      <property id="color">16,16,16</property>
-      <property id="fixedHeight">64</property>
+      <property id="color">160,16,16</property>
       <property id="openGraphicsItemFlag">16</property>
-      <layout file=":/xml/main.qlayout.xml"/>
+      <layout>
+        <widget class="HQWidget" name="" styleid="gwidgetframeId">
+          <style/>
+          <property id="proxy:noSystemBackground">1</property>
+          <layout file=":xml/main.qlayout.xml" />
+        </widget>
+      </layout>
       <property id="skip:alignment">Qt::AlignCenter</property>
    </widget>
 
@@ -67,6 +87,7 @@
           <property id="margins">10,10,10,10</property>
           <property id="visible">true</property>
           <layout file=":xml/main.qlayout.xml" />
+          <property id="proxy:noSystemBackground">1</property>
           <property id="skip:alignment">Qt::AlignLeft</property>
         </widget>
 

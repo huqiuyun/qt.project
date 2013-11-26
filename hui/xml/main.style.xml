@@ -3,17 +3,40 @@
  <!-- css for public <!-->
  <style>
 
+    <obj class="HFontStyle" name="" styleid="fontId">
+       <property id="family"></property>
+       <property id="pointSize"></property>
+       <property id="pointSizeF"></property>
+       <property id="pixelSize"></property>
+       <property id="weight"></property>
+       <property id="bold"></property>
+       <property id="italic"></property>
+       <property id="underline"></property>
+       <property id="overline"></property>
+       <property id="strikeOut"></property>
+       <property id="fixedPitch"></property>
+       <property id="kerning"></property>
+       <property id="stretch"></property>
+       <property id="styleStrategy"></property>
+       <property id="wordSpacing"></property>
+       <property id="capitalization"></property>
+       <property id="stretch"></property>
+       <property id="hintingPreference"></property>
+       <property id="rawMode"></property>
+       <property id="rawName"></property>
+    </obj>
+
     <obj class="HGSceneStyle" name="" styleid="sceneId">
        <property id="alignment"></property>
        <property id="sizePolicy">QSizePolicy::Fixed</property>
-       <property id="foregroundBrush">color|100,100,100,200</property>
+       <!--property id="foregroundBrush">color|100,100,100,200</property><!-->
     </obj>
 
     <!-- <!-->
     <obj class="HQLayoutStyle" name="" styleid="qlayoutId">
        <property id="layoutType">kVBox</property>
        <property id="alignment"></property>
-       <property id="margins">4,4,4,4</property>
+       <property id="margins"></property>
        <property id="spacing">1</property>
     </obj>
 

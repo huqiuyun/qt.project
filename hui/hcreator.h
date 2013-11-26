@@ -13,6 +13,7 @@
 #include "hglayoutstyle.h"
 #include "hframestyle.h"
 #include "hbackgroundstyle.h"
+#include "hfontstyle.h"
 #include "hgstackedwidget.h"
 #include "hqwidget.h"
 #include "hgproxywidget.h"
@@ -47,7 +48,7 @@
 #include <QGraphicsTextItem>
 #include <QMargins>
 
-Q_DECLARE_METATYPE(QMargins);
+Q_DECLARE_METATYPE(QMargins)
 
 #define REG_OBJECT_EX(CLSNAME)   \
     REG_OBJECT(CLSNAME,CLSNAME)
@@ -61,7 +62,7 @@ const HRegisterObject s_objs[] =
     REG_OBJECT_EX(HGWidgetStyle),
     REG_OBJECT_EX(HGLayoutStyle),
     REG_OBJECT_EX(HQLayoutStyle),
-    //
+    REG_OBJECT_EX(HFontStyle),
     {NULL,NULL}
 };
 
@@ -150,6 +151,9 @@ public:
 
     DECLARE_HCONVERT_QSTRING(QIcon);
     DECLARE_HCONVERT_QVARIANT(QIcon);
+
+    DECLARE_HCONVERT_QSTRING(qreal);
+    DECLARE_HCONVERT_QVARIANT(qreal);
 };
 
 #define REG_CONVERT_EX(TYPE)   \
@@ -171,6 +175,7 @@ const HRegisterConvert s_converts[] =
     REG_CONVERT_EX(QFont),
     REG_CONVERT_EX(QIcon),
     REG_CONVERT_EX(HAnchor),
+    REG_CONVERT_EX(qreal),
     {-1,NULL,NULL}
 };
 
@@ -216,6 +221,7 @@ const HRegisterQWidget s_qwidgets[] =
     REG_QWIDGET_EX(QListWidget),
     REG_QWIDGET_EX(QListView),
     REG_QWIDGET_EX(QTextBrowser),
+    REG_QWIDGET_EX(QTextEdit),
     REG_QWIDGET_EX(QLabel),
     REG_QWIDGET_EX(QLineEdit),
     REG_QWIDGET_EX(QTabBar),
