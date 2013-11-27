@@ -339,17 +339,19 @@ void HuiReader::readLayoutConf(QXmlStreamReader* reader,HLayoutConf* conf)
 {
     QXmlStreamAttributes attris = reader->attributes();
     conf->mIndex = attris.value("row").toInt();
+
     if (attris.hasAttribute("col"))
         conf->mColumn= attris.value("col").toInt();
 
     if (attris.hasAttribute("stretch"))
         conf->mStretch = attris.value("stretch").toInt();
 
-    if (attris.hasAttribute("alignment")) {
+    //?
+/*    if (attris.hasAttribute("alignment")) {
         QByteArray bytes = attris.value("alignment").toString().toLatin1();
         QMetaEnum menum;
         conf->mAlignment = (Qt::Alignment)menum.keysToValue(bytes);
-    }
+    }*/
     reader->skipCurrentElement();
     return ;
 }
