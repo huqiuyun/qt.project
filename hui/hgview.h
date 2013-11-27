@@ -59,7 +59,7 @@ public:
 
     /** add widget to owner layout */
     virtual int  addWidget(QWidget* widget);
-    virtual int  insertWidget(QWidget* widget ,const HLayoutIndex& index);
+    virtual int  insertWidget(QWidget* widget ,const HLayoutConf& conf);
     virtual bool removeWidget(QWidget* widget) ;
 
     //property
@@ -81,7 +81,7 @@ protected:
     virtual void construct(){}
     virtual void resizeEvent(QResizeEvent *event);
     virtual bool nativeEvent(const QByteArray & eventType, void * message, long * result);
-    virtual void drawBackground(QPainter *painter, const QRectF &rect);
+ //   virtual void drawBackground(QPainter *painter, const QRectF &rect);
 signals:
     void resized();
 

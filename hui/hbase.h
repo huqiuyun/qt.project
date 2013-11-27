@@ -133,35 +133,51 @@ private:
 };
 Q_DECLARE_METATYPE(HAnchor)
 
-class H_API HLayoutIndex
+class H_API HLayoutConf
 {
 public:
-    explicit HLayoutIndex() :
+    explicit HLayoutConf() :
         mIndex(-1),
-        mColumn(-1)
+        mColumn(-1),
+        mStretch(0),
+        mAlignment(0)
     {
     }
 
-    explicit HLayoutIndex(int index) :
+    explicit HLayoutConf(int index) :
         mIndex(index),
-        mColumn(-1)
+        mColumn(-1),
+        mStretch(0),
+        mAlignment(0)
     {
     }
 
-    explicit HLayoutIndex(int row,int col) :
+    explicit HLayoutConf(int row,int col) :
         mIndex(row),
-        mColumn(col)
+        mColumn(col),
+        mStretch(0),
+        mAlignment(0)
     {
     }
 public:
     int pos() const { return mIndex;}
     int row() const { return mIndex;}
     int column() const { return mColumn;}
+
+    // for QBoxLayout
+    int stretch() const { return mStretch;}
+    void setStretch(int stretch) {mStretch = stretch;}
+    void setAlignment(Qt::Alignment align) { mAlignment = align;}
+    Qt::Alignment alignment() const { return mAlignment; }
 private:
+    friend class HuiReader;
     int mIndex; // for HBOX,VBOX, grid row
     int mColumn;
+
+    int mStretch; // for QBoxLayout
+    Qt::Alignment mAlignment;
 };
-Q_DECLARE_METATYPE(HLayoutIndex)
+Q_DECLARE_METATYPE(HLayoutConf)
 
 /** if create object class , need clsname AND styleid */
 class HObjectInfo

@@ -31,6 +31,7 @@ public:
     enum HObjectType
     {
         OBJTYPE(Unk) = 0,
+        OBJTYPE(HLayoutConf),
         OBJTYPE(QObject),
         OBJTYPE(HStyle),
         OBJTYPE(HGSceneStyle),
@@ -64,6 +65,7 @@ public:
         OBJTYPE(QSlider) = 517,
         OBJTYPE(QDialog),
         OBJTYPE(QTextEdit),
+        OBJTYPE(QDockWidget),
 
         OBJTYPE(HQWidget),
         OBJTYPE(HGView),

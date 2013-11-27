@@ -45,7 +45,7 @@ public:
 
     /** add widget to owner layout */
     virtual int addWidget(QWidget* widget);
-    virtual int insertWidget(QWidget* widget ,const HLayoutIndex& layIndex);
+    virtual int insertWidget(QWidget* widget ,const HLayoutConf& conf);
     virtual bool removeWidget(QWidget* widget) ;
 
     //property

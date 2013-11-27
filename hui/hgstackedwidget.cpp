@@ -152,11 +152,11 @@ QGraphicsWidget* HGStackedWidget::widgetAtByName( const QString& objectName ) co
     return NULL;
 }
 
-int HGStackedWidget::insertGWidget(QGraphicsWidget* widget, const HLayoutIndex& index)
+int HGStackedWidget::insertGWidget(QGraphicsWidget* widget, const HLayoutConf& conf)
 {
     Q_D( HGStackedWidget );
 
-    int idx = index.pos();
+    int idx = conf.pos();
     if (idx == -1) {
         idx = d->m_widgetList.size();
     }
@@ -178,7 +178,7 @@ int HGStackedWidget::insertGWidget(QGraphicsWidget* widget, const HLayoutIndex& 
 
 int HGStackedWidget::addGWidget(QGraphicsWidget* widget)
 {
-    return insertGWidget(widget,HLayoutIndex(d_func()->m_widgetList.size()));
+    return insertGWidget(widget,HLayoutConf(d_func()->m_widgetList.size()));
 }
 
 bool HGStackedWidget::removeGWidget(QGraphicsWidget* widget )

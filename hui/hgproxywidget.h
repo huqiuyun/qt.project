@@ -15,7 +15,7 @@ public:
 
     bool isHGProxyWidget() const { return true; }
 protected:
-    void paintWindowFrame(QPainter *painter, const QStyleOptionGraphicsItem *option,QWidget *widget);
+ //   void paintWindowFrame(QPainter *painter, const QStyleOptionGraphicsItem *option,QWidget *widget);
 };
 
 #endif // HGPROXYWIDGET_H

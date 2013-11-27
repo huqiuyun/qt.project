@@ -150,11 +150,11 @@ int HQWidget::addWidget(QWidget* widget)
     return -1;
 }
 
-int HQWidget::insertWidget(QWidget* widget ,const HLayoutIndex& layIndex)
+int HQWidget::insertWidget(QWidget* widget ,const HLayoutConf& conf)
 {
     Q_D(HQWidget);
     if (d->mLayoutStyle)
-        return d->mLayoutStyle->insertWidget(widget,layIndex);
+        return d->mLayoutStyle->insertWidget(widget,conf);
     return -1;
 }
 

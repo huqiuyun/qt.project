@@ -264,11 +264,11 @@ int HGWidget::addItem(QGraphicsLayoutItem* item)
     return -1;
 }
 
-int HGWidget::insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& layIndex)
+int HGWidget::insertItem(QGraphicsLayoutItem* item, const HLayoutConf& conf)
 {
     Q_D(HGWidget);
     if (d->mLayoutStyle)
-        return d->mLayoutStyle->insertItem(item,layIndex);
+        return d->mLayoutStyle->insertItem(item,conf);
     return -1;
 }
 
@@ -282,10 +282,10 @@ bool HGWidget::removeItem(QGraphicsLayoutItem* item)
 
 int HGWidget::addGWidget(QGraphicsWidget* widget)
 {
-    return insertGWidget(widget,HLayoutIndex());
+    return insertGWidget(widget,HLayoutConf());
 }
 
-int HGWidget::insertGWidget(QGraphicsWidget* widget ,const HLayoutIndex& index)
+int HGWidget::insertGWidget(QGraphicsWidget* widget ,const HLayoutConf& index)
 {
     return insertItem(widget,index);
 }
@@ -297,10 +297,10 @@ bool HGWidget::removeGWidget(QGraphicsWidget* widget)
 
 int HGWidget::addWidget(QWidget* widget)
 {
-    return insertWidget(widget,HLayoutIndex());
+    return insertWidget(widget,HLayoutConf());
 }
 
-int HGWidget::insertWidget(QWidget* widget ,const HLayoutIndex& index)
+int HGWidget::insertWidget(QWidget* widget ,const HLayoutConf& index)
 {
     QGraphicsProxyWidget* proxy = widget->graphicsProxyWidget();
     if (!proxy) {

@@ -155,19 +155,47 @@ void HQLayoutStyle::setLayoutType(HEnums::HLayoutType type)
 int HQLayoutStyle::addWidget(QWidget* widget)
 {
     Q_UNUSED(widget);
-    return insertWidget(widget,HLayoutIndex());
+    return insertWidget(widget,HLayoutConf());
 }
 
-int HQLayoutStyle::insertWidget(QWidget* widget ,const HLayoutIndex& index)
+int HQLayoutStyle::insertWidget(QWidget* widget ,const HLayoutConf& conf)
 {
     Q_UNUSED(widget);
-    Q_UNUSED(index);
-    if (layout()) {
-        layout()->addWidget(widget);
-        layout()->setAlignment(widget,alignment());
-        return 0;
+    Q_UNUSED(conf);
+
+    if (!layout())
+        return -1;
+
+    switch (layoutType()) {
+    case HEnums::kVBox:
+    case HEnums::kHBox:
+    case HEnums::kVBoxBottomTop:
+    case HEnums::kVBoxTopBottom: //=kVBox
+    case HEnums::kHBoxLeftRight: //=kHBox
+    case HEnums::kHBoxRightLeft: {
+        QBoxLayout* l = static_cast<QBoxLayout*>(layout());
+        l->insertWidget(conf.pos(),widget,conf.stretch(),conf.alignment());
+        if (conf.alignment()==0) l->setAlignment(widget,alignment());
+        break;
     }
-    return -1;
+    case HEnums::kGrid: {
+        QGridLayout* l = static_cast<QGridLayout*>(layout());
+        l->addWidget(widget,conf.pos(),conf.column(),conf.alignment());
+        if (conf.alignment()==0) l->setAlignment(widget,alignment());
+        break;
+    }
+    case HEnums::kStacked: {
+        QStackedLayout* l = static_cast<QStackedLayout*>(layout());
+        l->insertWidget(conf.pos(),widget);
+        l->setAlignment(widget, (conf.alignment()==0)?alignment():conf.alignment());
+        break;
+    }
+    default: {
+        Q_ASSERT(0);
+        return -1;
+    }
+    }
+    return 0;
 }
 
 bool HQLayoutStyle::removeWidget(QWidget* widget)

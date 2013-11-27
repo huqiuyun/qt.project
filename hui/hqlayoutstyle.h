@@ -34,7 +34,7 @@ public:
     void setAlignment(QWidget* w, Qt::Alignment align);
     /** add widget to owner layout */
     virtual int  addWidget(QWidget* widget);
-    virtual int  insertWidget(QWidget* widget ,const HLayoutIndex& index);
+    virtual int  insertWidget(QWidget* widget ,const HLayoutConf& conf);
     virtual bool removeWidget(QWidget* widget);
 
     virtual HBaseStyle* clone();

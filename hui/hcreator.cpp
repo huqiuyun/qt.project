@@ -205,6 +205,17 @@ IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QTextEdit,HuiCreator)
     return hSetObjectT<QTextEdit>(objinfo,new QTextEdit(parent));
 }
 
+IMPLEMENT_QWIDGET_STATIC_CREATE_DEFINED(QDockWidget,HuiCreator)
+{
+    Q_UNUSED(objinfo);
+    Q_UNUSED(parent);
+
+    param.error()= qy::kHOk;
+    param.type() =USEOBJTYPE(QDockWidget);
+    return hSetObjectT<QDockWidget>(objinfo,new QDockWidget(parent));
+}
+
+// create based qgraphicsitem
 IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsEllipseItem,HuiCreator)
 {
     Q_UNUSED(objinfo);

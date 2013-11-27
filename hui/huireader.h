@@ -45,10 +45,12 @@ private:
     /** for widget xml */
     void createWidgetWithXmlReader(HuiTask* HuiTask, QXmlStreamReader* reader, long* hr);
     bool createWidget(HuiTask* HuiTask,const HClassInfo& clsinfo, long *hr);
+    void readLayoutConf(QXmlStreamReader* reader,HLayoutConf* conf);
 
     /** for style xml <style></style>*/
     void styleFileLink(HuiTask* task,QXmlStreamReader* reader);
     void createStyleWithXmlReader(HuiTask *task, QXmlStreamReader* reader, long* hr);
+    void createObjWithXmlReader(HuiTask* task,QXmlStreamReader* reader, long *hr);
 
     void createSceneWithXmlReader(HuiTask* HuiTask,QXmlStreamReader* reader, long *hr);
 
@@ -75,6 +77,7 @@ private:
     const QLatin1String kXmlStyleId;
     const QLatin1String kXmlFile;
     const QLatin1String kXmlMain;
+    const QLatin1String kXmlLayoutConf;
     const QLatin1String kPrexSkip;
     const QLatin1String kPrexProxy;
     friend class HStyle;

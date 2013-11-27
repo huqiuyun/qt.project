@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
  <hui version="1.0">
   <property id="resize">400,600</property>
-  <!-- proxy:method  :skip the layout, And parent execute to do invoke method
+  <!-- proxy:method  :skip the layout, And proxy object execute to do invoke method
        skip:method   :skip the layout, And owner execute to do invoke method
   <!-->
   <property id="skip:resize">400,600</property>
+  <!-- not spport <!-->
   <invoke method="proxy:fun">
      <arg type="bool"></arg>
      <arg type="string"></arg>

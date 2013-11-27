@@ -8,7 +8,7 @@ HLayoutStyle::HLayoutStyle(QObject* parent) :
 {
     mLayoutType = HEnums::kNone;
     mSpacing = 0;
-    mAlignment = Qt::AlignCenter;
+    mAlignment = 0;
     mObjType = USEOBJTYPE(HLayoutStyle);
 }
 
@@ -17,7 +17,7 @@ HLayoutStyle::HLayoutStyle(const HObjectInfo& objinfo,QObject* parent) :
 {
     mLayoutType = HEnums::kNone;
     mSpacing = 0;
-    mAlignment = Qt::AlignCenter;
+    mAlignment = 0;
     mObjType = USEOBJTYPE(HLayoutStyle);
 }
 

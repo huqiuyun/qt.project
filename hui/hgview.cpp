@@ -24,7 +24,6 @@ HGViewPrivate::~HGViewPrivate()
 
 void HGViewPrivate::init()
 {
-    //保证每个frame必定有名字
     static int s_index = 0;
     QString name = "NoGView" + QString::number(s_index++);
     q_ptr->setObjectName(name);
@@ -236,6 +235,7 @@ bool HGView::nativeEvent(const QByteArray & eventType, void * message, long * re
     return d_func()->mFrameStyle->nativeEvent(eventType,message,result);
 }
 
+/*
 void HGView::drawBackground(QPainter *painter, const QRectF &rect)
 {
     Q_D(HGView);
@@ -245,7 +245,7 @@ void HGView::drawBackground(QPainter *painter, const QRectF &rect)
     else {
         QGraphicsView::drawBackground(painter,rect);
     }
-}
+}*/
 
 /** add widget to owner layout */
 int HGView::addWidget(QWidget* widget)
@@ -256,11 +256,11 @@ int HGView::addWidget(QWidget* widget)
     return -1;
 }
 
-int HGView::insertWidget(QWidget* widget ,const HLayoutIndex& index)
+int HGView::insertWidget(QWidget* widget ,const HLayoutConf& conf)
 {
     Q_D(HGView);
     if (d->mLayoutStyle)
-        return d->mLayoutStyle->insertWidget(widget,index);
+        return d->mLayoutStyle->insertWidget(widget,conf);
     return -1;
 }
 

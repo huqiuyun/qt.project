@@ -35,9 +35,9 @@
     <!-- <!-->
     <obj class="HQLayoutStyle" name="" styleid="qlayoutId">
        <property id="layoutType">kVBox</property>
-       <property id="alignment"></property>
+       <property id="alignment">Qt::AlignLeft</property>
        <property id="margins"></property>
-       <property id="spacing">1</property>
+       <property id="spacing">6</property>
     </obj>
 
     <!-- <!-->
@@ -55,28 +55,22 @@
        <property id="imagePath"></property>
        <property id="color">200,200,20</property>
     </obj>
+
     <!-- <!-->
     <obj class="HGWidgetStyle" name="" styleid="gwidgetId">
        <property id="styleSheet"></property>
-       <property id="backgroundStyle">
-         <class class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId"/>
-       </property>
-       <property id="layoutStyle">
-         <class class="HGLayoutStyle" name="layoutStyle" styleid="glayoutId"/>
-       </property>
+       <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId"/>
+       <obj id="layoutStyle" class="HGLayoutStyle" name="layoutStyle" styleid="glayoutId"/>
     </obj>
+
     <!-- <!-->
     <obj class="HFrameStyle" name="" styleid="framewindowId">
        <property id="windowFlags">Qt::Window</property>
        <property id="styleSheet"></property>
-
-       <property id="layoutStyle">
-        <class class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId"/>
-       </property>
-       <property id="sceneStyle">
-        <class class="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
-       </property>
+       <obj id="layoutStyle" class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId"/>
+       <obj id="sceneStyle" class="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
     </obj>
+
  </style>
 
 </hui>

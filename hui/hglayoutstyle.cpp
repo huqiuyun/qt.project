@@ -169,10 +169,10 @@ void HGLayoutStyle::setLayoutType(HEnums::HLayoutType type)
 
 int HGLayoutStyle::addItem(QGraphicsLayoutItem* item)
 {
-    return insertItem(item,HLayoutIndex());
+    return insertItem(item,HLayoutConf());
 }
 
-int HGLayoutStyle::insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& index)
+int HGLayoutStyle::insertItem(QGraphicsLayoutItem* item, const HLayoutConf& conf)
 {
     if (!layout()) return -1;
 
@@ -180,13 +180,13 @@ int HGLayoutStyle::insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& ind
     case HEnums::kVBox:
     case HEnums::kHBox: {
         QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(layout());
-        l->insertItem(index.pos(),item);
+        l->insertItem(conf.pos(),item);
         l->setAlignment(item,alignment());
         break;
     }
     case HEnums::kGrid: {
         QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(layout());
-        l->addItem(item,index.pos(),index.column(),alignment());
+        l->addItem(item,conf.pos(),conf.column(),alignment());
         break;
     }
     case HEnums::kAnchor: {
@@ -197,7 +197,7 @@ int HGLayoutStyle::insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& ind
     default:
         return -1;
     }
-    return index.pos();
+    return conf.pos();
 }
 
 bool HGLayoutStyle::removeItem(QGraphicsLayoutItem *item)
@@ -227,10 +227,10 @@ bool HGLayoutStyle::removeItem(QGraphicsLayoutItem *item)
 
 int HGLayoutStyle::addGWidget(QGraphicsWidget* widget)
 {
-    return insertGWidget(widget,HLayoutIndex());
+    return insertGWidget(widget,HLayoutConf());
 }
 
-int HGLayoutStyle::insertGWidget(QGraphicsWidget* widget, const HLayoutIndex& index)
+int HGLayoutStyle::insertGWidget(QGraphicsWidget* widget, const HLayoutConf& index)
 {
     return insertItem(widget,index);
 }

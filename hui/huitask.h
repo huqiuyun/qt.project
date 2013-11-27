@@ -133,6 +133,7 @@ private:
     void installStyle();
     void deleteStyle();
     void addScene(bool& main);
+    void addLayout(HPropertyProxy* proxy,bool isUse);
     void addWidget(HPropertyProxy* proxy,bool isUse);
     void addWidgetToList();
 
@@ -143,7 +144,7 @@ private:
     void setFlagsWithHGItem(QGraphicsItem* parent);
 
     static void execSkipProperty(HuiTask* task,HPropertyProxy* proxy,bool isUse);
-    static void setProperty(QObject* obj, const QString& id, const QString& attr,bool isUse);
+    static bool setProperty(QObject* obj, const QString& id, const QString& attr,bool isUse);
 
     template<class OBJ>
     inline OBJ* objCast() {
@@ -164,9 +165,11 @@ private:
     HuiTask *mChild;
     HStyle  *mStyle;
     QString  mXmlPath;
-
     QList<QWidget*> mWidgets;
     QList<HIdValue> mPropertys;
+    // for layout
+    HLayoutConf    mLayoutConf;
+    QList<HIdValue> mLayoutPropertys;
 };
 
 #endif // HUITASK_H

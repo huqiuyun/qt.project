@@ -16,9 +16,7 @@
      </obj>
 
      <obj class="HGWidgetStyle" name="" styleid="gwidgetId2">
-       <property id="backgroundStyle">
-         <class class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
-       </property>
+       <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
      </obj>
 
     <obj class="HGLayoutStyle" name="" styleid="glayoutId3">
@@ -30,12 +28,8 @@
 
      <obj class="HGWidgetStyle" name="" styleid="gwidgetId3">
        <property id="styleSheet"></property>
-       <property id="backgroundStyle">
-         <class class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
-       </property>
-       <property id="layoutStyle">
-         <class class="HGLayoutStyle" name="layoutStyle" styleid="glayoutId3"/>
-       </property>
+       <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
+       <obj id="layoutStyle" class="HGLayoutStyle" name="layoutStyle" styleid="glayoutId3"/>
      </obj>
 
      <obj class="HQLayoutStyle" name="" styleid="qlayoutId3">
@@ -48,9 +42,7 @@
      <obj class="HFrameStyle" name="" styleid="gwidgetframeId">
         <property id="windowFlags">0</property>
         <property id="styleSheet"></property>
-        <property id="layoutStyle">
-         <class class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId3"/>
-        </property>
+        <obj id="layoutStyle" class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId3"/>
      </obj>
 
    </style>

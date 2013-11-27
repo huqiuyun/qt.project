@@ -10,23 +10,7 @@ HPropertyProxy::HPropertyProxy()
 {
 }
 
-bool HPropertyProxy::handlerQWidget(QWidget* obj, int objType/* @see HEnums::HObjectType*/,
-                                    const QString& id, const QString& val)
-{
-    return handlerDefQWidget(obj,objType,id,val);
-}
-
-bool HPropertyProxy::handlerGWidget(QGraphicsWidget* obj,int objType, const QString& id, const QString& val)
-{
-    return handlerDefGWidget(obj,objType,id,val);;
-}
-
-bool HPropertyProxy::handlerGItem(QGraphicsItem* obj,int objType, const QString& id, const QString& val)
-{
-    return handlerDefGItem(obj,objType,id,val);
-}
-
-bool HPropertyProxy::handlerDefQWidget(QWidget *obj, int objType, const QString& id, const QString &val)
+bool HPropertyProxy::handlerQWidget(QWidget *obj, int objType, const QString& id, const QString &val)
 {
     Q_UNUSED(obj);
     Q_UNUSED(objType);
@@ -58,7 +42,7 @@ bool HPropertyProxy::handlerDefQWidget(QWidget *obj, int objType, const QString&
     return true;
 }
 
-bool HPropertyProxy::handlerDefGWidget(QGraphicsWidget *obj, int objType, const QString& id, const QString &val)
+bool HPropertyProxy::handlerGWidget(QGraphicsWidget *obj, int objType, const QString& id, const QString &val)
 {
     Q_UNUSED(obj);
     Q_UNUSED(objType);
@@ -68,7 +52,7 @@ bool HPropertyProxy::handlerDefGWidget(QGraphicsWidget *obj, int objType, const 
     return false;
 }
 
-bool HPropertyProxy::handlerDefGItem(QGraphicsItem *obj, int objType, const QString& id, const QString &val)
+bool HPropertyProxy::handlerGItem(QGraphicsItem *obj, int objType, const QString& id, const QString &val)
 {
     Q_UNUSED(obj);
     Q_UNUSED(objType);

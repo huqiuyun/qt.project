@@ -27,7 +27,7 @@ public:
     /**
       * @param global true,then save it to share
     */
-    QSharedPointer<HBaseStyle> create(const char* styleid, const char* clsname);
+    QSharedPointer<HBaseStyle> create(const HClassInfo& cls);
     /** if styleid prex is "private."*/
     QSharedPointer<HBaseStyle> itemAt(const char* styleid) const;
     bool addItem(const char* styleid, QSharedPointer<HBaseStyle> item);

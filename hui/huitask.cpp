@@ -154,6 +154,12 @@ void HuiTask::addScene(bool& main)
     deleteChild();
 }
 
+void HuiTask::addLayout(HPropertyProxy* proxy,bool isUse)
+{
+    addWidget(proxy,isUse);
+    //set layout property
+}
+
 void HuiTask::addWidget(HPropertyProxy* proxy,bool isUse)
 {
     Q_UNUSED(proxy);
@@ -166,17 +172,17 @@ void HuiTask::addWidget(HPropertyProxy* proxy,bool isUse)
             HQWidget* widget = objCast<HQWidget>();
 
             if (mFlags.isXmlLayout)
-                widget->addWidget(mChild->objCast<QWidget>());
+                widget->insertWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
         }
         else if(isHGView()) {
             HGView* widget = objCast<HGView>();
             if (mFlags.isXmlLayout)
-                widget->addWidget(mChild->objCast<QWidget>());
+                widget->insertWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
         }
         else if(isHGWidget()) {
             HGWidget* widget = objCast<HGWidget>();
             if (mFlags.isXmlLayout) {
-                widget->addWidget(mChild->objCast<QWidget>());
+                widget->insertWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
             }
             else {
                 //exception
@@ -189,7 +195,7 @@ void HuiTask::addWidget(HPropertyProxy* proxy,bool isUse)
         if (isHGWidget()) {
             HGWidget* widget = objCast<HGWidget>();
             if (mFlags.isXmlLayout)
-                widget->addGWidget(mChild->objCast<QGraphicsWidget>());
+                widget->insertGWidget(mChild->objCast<QGraphicsWidget>(),mChild->mLayoutConf);
         }
     }
     execSkipProperty(mChild,proxy,isUse);
@@ -199,32 +205,32 @@ void HuiTask::addWidget(HPropertyProxy* proxy,bool isUse)
 void HuiTask::execSkipProperty(HuiTask* task,HPropertyProxy* proxy,bool isUse)
 {
     if (!task) return ;
-    if (QObject* obj = task->qObject())
-    {// set property
-        QList<HIdValue>::iterator iter = task->mPropertys.begin();
-        while (iter != task->mPropertys.end()) {
-            if (proxy && iter->mProxy) {
-                bool handler = false;
 
-                if (task->isQWidget())
-                    handler = proxy->handlerQWidget(task->qWidget(),task->mObjType,iter->mId,iter->mVal.toString());
+    QObject* obj = task->qObject(); // obj maybe is NULL , QGraphicsItem is not based QObject
+    QList<HIdValue>::iterator iter = task->mPropertys.begin();
+    while (iter != task->mPropertys.end()) {
 
-                else if(task->isGWidget())
-                    handler = proxy->handlerGWidget(task->gWidget(),task->mObjType,iter->mId,iter->mVal.toString());
+        if (proxy && iter->mProxy) {
+            bool handler = false;
 
-                else if(task->isGraphicsItem())
-                    handler = proxy->handlerGItem(task->gItem(),task->mObjType,iter->mId,iter->mVal.toString());
+            if (task->isQWidget())
+                handler = proxy->handlerQWidget(task->qWidget(),task->mObjType,iter->mId,iter->mVal.toString());
 
-                if (!handler)
-                    setProperty(obj, iter->mId, iter->mVal.toString(),isUse);
-            }
-            else{
+            else if(task->isGWidget())
+                handler = proxy->handlerGWidget(task->gWidget(),task->mObjType,iter->mId,iter->mVal.toString());
+
+            else if(task->isGraphicsItem()) // it is not QObject , then obj is NULL
+                handler = proxy->handlerGItem(task->gItem(),task->mObjType,iter->mId,iter->mVal.toString());
+
+            if (!handler)
                 setProperty(obj, iter->mId, iter->mVal.toString(),isUse);
-            }
-            ++iter;
         }
-        task->mPropertys.clear();
+        else{
+            setProperty(obj, iter->mId, iter->mVal.toString(),isUse);
+        }
+        ++iter;
     }
+    task->mPropertys.clear();
 }
 
 void HuiTask::addWidgetToList()
@@ -313,9 +319,9 @@ void HuiTask::setFlagsWithHGItem(QGraphicsItem* parent)
 }
 
 
-void HuiTask::setProperty(QObject* obj, const QString& id, const QString& attr,bool isUse)
+bool HuiTask::setProperty(QObject* obj, const QString& id, const QString& attr,bool isUse)
 {
-    if (!obj) return;
+    if (!obj) return false;
 
     QByteArray cid = id.toLatin1();
     int idx = obj->metaObject()->indexOfProperty(cid.constData());
@@ -333,8 +339,11 @@ void HuiTask::setProperty(QObject* obj, const QString& id, const QString& attr,b
         else {
             obj->setProperty(cid,HFACTORY->convertString(0, attr, &hr));
         }
-        return;
+        return true;
     }
-    if(isUse)
+    else if(isUse) {
         obj->setProperty(cid,attr);
+        return true;
+    }
+    return false;
 }

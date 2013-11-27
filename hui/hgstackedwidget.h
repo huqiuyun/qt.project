@@ -39,9 +39,9 @@ public:
     ~HGStackedWidget();
 
 public:
-    virtual bool isGLayout() { return true;}
+    bool isGLayout() { return true;}
     int  addGWidget(QGraphicsWidget* item);
-    int  insertGWidget(QGraphicsWidget* item, const HLayoutIndex& index);
+    int  insertGWidget(QGraphicsWidget* item, const HLayoutConf& conf);
     bool removeGWidget(QGraphicsWidget* item);
 
     void removeAt( int index );

@@ -47,6 +47,7 @@
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsTextItem>
 #include <QMargins>
+#include <QDockWidget>
 
 Q_DECLARE_METATYPE(QMargins)
 
@@ -102,6 +103,7 @@ public:
     DECLARE_QWIDGET_STATIC_CREATE(QSlider);
     DECLARE_QWIDGET_STATIC_CREATE(QDialog);
     DECLARE_QWIDGET_STATIC_CREATE(QTextEdit);
+    DECLARE_QWIDGET_STATIC_CREATE(QDockWidget);
     //graphicsitem
     DECLARE_GITEM_STATIC_CREATE(QGraphicsEllipseItem);
     DECLARE_GITEM_STATIC_CREATE(QGraphicsLineItem);
@@ -231,6 +233,7 @@ const HRegisterQWidget s_qwidgets[] =
     REG_QWIDGET_EX(QSplitter),
     REG_QWIDGET_EX(QSlider),
     REG_QWIDGET_EX(QDialog),
+    REG_QWIDGET_EX(QDockWidget),
     {NULL,NULL}
 };
 

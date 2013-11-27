@@ -8,10 +8,7 @@
    <widget class="HGWidget" name="" styleid="gwidgetId">
       <layout file=":/xml/main.glayout.xml"/>
    </widget>
-   <widget class="QGraphicsLineItem" name="" styleid="undefined">
-     <property id="proxy:skip:"></property>
-     <invoke method="proxy:skip:"></invoke>
-   </widget>
+   <widget class="QGraphicsLineItem" name="" styleid="undefined" />
    <widget class="QGraphicsPixmapItem" name="" styleid="undefined"/>
  </scene>
 

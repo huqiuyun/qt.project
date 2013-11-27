@@ -29,23 +29,23 @@ std::string HStyle::prex(const std::string& cls, bool& pri)
     return (pri) ? cls.substr(sizeof(char)*sizeof(prex)) : cls;
 }
 
-QSharedPointer<HBaseStyle> HStyle::create(const char* styleid,const char* clsname)
+QSharedPointer<HBaseStyle> HStyle::create(const HClassInfo& cls)
 {
-    HClassInfo cls(clsname, styleid, "");
-
-    if(0==cls.mStyleId.mId.find("undefined")) {
+    if(cls.mStyleId.size()< 2||0==cls.mStyleId.mId.find("undefined")) {
         return QSharedPointer<HBaseStyle>(NULL);
     }
-    QSharedPointer<HBaseStyle> item = itemAt(styleid);
-    if (item)
-        return item;
+    QSharedPointer<HBaseStyle> item = itemAt(cls.mStyleId.data());
+    if (item) return item;
 
-    HCreateParam param;
-    QSharedPointer<HBaseStyle> css(static_cast<HBaseStyle*>(HFACTORY->createObject(cls,NULL,param)));
-    if (css.data()) {
-        mStyle.insert(styleid,css);
+    if (cls.mClsName.size() > 2) {
+        HCreateParam param;
+        QSharedPointer<HBaseStyle> css(static_cast<HBaseStyle*>(HFACTORY->createObject(cls,NULL,param)));
+        if (css.data()) {
+            mStyle.insert(cls.mStyleId.data(),css);
+        }
+        return css;
     }
-    return css;
+    return QSharedPointer<HBaseStyle>();
 }
 
 QSharedPointer<HBaseStyle> HStyle::itemAt(const char* styleid) const

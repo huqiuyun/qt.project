@@ -56,16 +56,16 @@ public:
 
     /** add item to owner layout */
     virtual int  addItem(QGraphicsLayoutItem* item);
-    virtual int  insertItem(QGraphicsLayoutItem* item, const HLayoutIndex& index);
+    virtual int  insertItem(QGraphicsLayoutItem* item, const HLayoutConf& conf);
     virtual bool removeItem(QGraphicsLayoutItem* item);
 
     virtual int  addGWidget(QGraphicsWidget* item);
-    virtual int  insertGWidget(QGraphicsWidget* item, const HLayoutIndex& index);
+    virtual int  insertGWidget(QGraphicsWidget* item, const HLayoutConf& conf);
     virtual bool removeGWidget(QGraphicsWidget* item);
 
     /** add widget to owner layout */
     virtual int  addWidget(QWidget* widget);
-    virtual int  insertWidget(QWidget* widget ,const HLayoutIndex& index);
+    virtual int  insertWidget(QWidget* widget ,const HLayoutConf& conf);
     virtual bool removeWidget(QWidget* widget);
     // property
 public:
