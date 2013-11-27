@@ -2,7 +2,8 @@
 #define HGLAYOUTSTYLE_H
 
 #include "hlayoutstyle.h"
-
+#include <QPointer>
+#include <QList>
 class HGWidget;
 class QWidget;
 class QGraphicsLayoutItem;
@@ -46,8 +47,13 @@ public:
     virtual int  insertGWidget(QGraphicsWidget* item, const HLayoutConf& conf);
     virtual bool removeGWidget(QGraphicsWidget* item);
 
+    virtual bool addChildGWidget(QGraphicsWidget* widget ,const HLayoutConf& conf);
+    virtual void removeChildGWidget(QGraphicsWidget* widget);
+
+    virtual void resizeEvent(const QSize& );
     virtual HBaseStyle* clone();
 protected:
+    HChildWidgetList<QGraphicsWidget> mChilds;
     HGWidget* mWidget;
 };
 

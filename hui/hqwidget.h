@@ -48,6 +48,9 @@ public:
     virtual int insertWidget(QWidget* widget ,const HLayoutConf& conf);
     virtual bool removeWidget(QWidget* widget) ;
 
+    virtual bool addChildWidget(QWidget* widget ,const HLayoutConf& conf);
+    virtual void removeChildWidget(QWidget* widget);
+
     //property
 public:
     bool isHQWidget() const { return true;}

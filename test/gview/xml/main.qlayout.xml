@@ -13,34 +13,35 @@
           <property id="proxy:fixedHeight">60</property>
           <property id="proxy:fixedWidth">100</property>
           <property id="proxy:noSystemBackground">1</property>
-          <layoutConf row="0" col="0" alignment="Qt::AlignRight"/>
+          <ltconf row="0" col="0" alignment="Qt::AlignRight"/>
   </widget>
 
   <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text1</property>
           <property id="icon"></property>
           <property id="proxy:fixedHeight">48</property>
-          <layoutConf row="1" col="0" />
+          <ltconf row="1" col="0" />
   </widget>
 
   <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text2</property>
           <property id="icon"></property>
-          <layoutConf row="2" col="0" />
+          <ltconf row="2" col="0" stretch="2"/>
   </widget>
 
   <widget class="QRadioButton" name="" styleid="undefined">
           <property id="text">text1</property>
           <property id="icon"></property>
           <property id="checked">1</property>
-          <layoutConf row="3" col="0" />
+          <ltconf row="3" col="0" />
   </widget>
 
   <widget class="QLineEdit" name="" styleid="undefined">
           <property id="text">I am a QLineEdit</property>
           <property id="icon"></property>
           <property id="proxy:fixedHeight">32</property>
-          <layoutConf row="4" col="0" />
+          <!--property id="echoMode">QLineEdit::Password</property><!-->
+          <ltconf row="4" col="0" />
   </widget>
 
 </layout>

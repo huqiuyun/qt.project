@@ -61,9 +61,19 @@
       <property id="skip:alignment">Qt::AlignCenter</property>
    </widget>
 
-   <widget class="HGWidget" name="" styleid="gwidgetId2">
-      <style/>
+   <widget class="HGWidget" name="" styleid="gwidgetId4">
+      <style>
+       <obj class="HGWidgetStyle" name="" styleid="gwidgetId4">
+          <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
+          <obj id="layoutStyle" class="HGLayoutStyle" name="" styleid="childid"/>
+      </obj>
+      </style>
       <property id="color">100,40,200</property>
+      <widget class="HGWidget" name="" styleid="gwidgetId2">
+         <style/>
+         <property id="color">140,140,140</property>
+         <ltconf margins="4,10,-4,-10"/>
+      </widget>
    </widget>
 
    <widget class="HGWidget" name="" styleid="gwidgetId2">

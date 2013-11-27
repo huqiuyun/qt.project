@@ -14,8 +14,6 @@ public:
     explicit HGProxyWidget(const HObjectInfo& objinfo, QGraphicsItem* parent = NULL);
 
     bool isHGProxyWidget() const { return true; }
-protected:
- //   void paintWindowFrame(QPainter *painter, const QStyleOptionGraphicsItem *option,QWidget *widget);
 };
 
 #endif // HGPROXYWIDGET_H

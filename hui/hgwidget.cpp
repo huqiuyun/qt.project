@@ -8,7 +8,7 @@
 #include "hfactory.h"
 #include "hgproxywidget.h"
 #include "private/hgwidget_p.h"
-
+#include <QGraphicsSceneEvent>
 #include <QGraphicsLayoutItem>
 #include <QGraphicsProxyWidget>
 #include <QWidget>
@@ -326,6 +326,21 @@ bool HGWidget::removeWidget(QWidget* widget)
     return removeGWidget(proxy);
 }
 
+bool HGWidget::addChildGWidget(QGraphicsWidget* item, const HLayoutConf& conf)
+{
+    Q_D(HGWidget);
+    if (d->mLayoutStyle)
+        return d->mLayoutStyle->addChildGWidget(item,conf);
+    return false;
+}
+
+void HGWidget::removeChildGWidget(QGraphicsWidget* item)
+{
+    Q_D(HGWidget);
+    if (d->mLayoutStyle)
+        d->mLayoutStyle->removeChildGWidget(item);
+}
+
 /** the object is alignment in parent layout */
 Qt::Alignment HGWidget::alignment() const
 {
@@ -355,5 +370,12 @@ void HGWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     if (d->mBackgroundStyle) {
         d->mBackgroundStyle->draw(painter,rect().toRect());
     }
-    QGraphicsWidget::paint(painter,option,widget);
+}
+
+void HGWidget::resizeEvent(QGraphicsSceneResizeEvent *event)
+{
+    Q_UNUSED(event);
+    Q_D(HGWidget);
+    if (d->mLayoutStyle)
+        d->mLayoutStyle->resizeEvent(event->newSize().toSize());
 }

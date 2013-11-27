@@ -9,6 +9,7 @@
 #include "hgscenestyle.h"
 #include "hpropertyproxy.h"
 #include "huitask.h"
+#include "hcreator.h"
 #include <QWidget>
 #include <QGraphicsItem>
 #include <QGraphicsWidget>
@@ -33,8 +34,7 @@ HuiReader::HuiReader(HPropertyProxy* proxy) :
     kXmlName("name"),
     kXmlStyleId("styleid"),
     kXmlFile("file"),
-    kXmlMain("main"),
-    kXmlLayoutConf("layoutConf"),
+    kXmlLayoutConf("ltconf"),
     kPrexSkip("skip:"),
     kPrexProxy("proxy:")
 {
@@ -230,7 +230,7 @@ bool HuiReader::startWithXmlReader(HuiTask* task, QXmlStreamReader* reader)
                 if (task->canCreateWidget()) {
                     createWidgetWithXmlReader(task,reader,&hr);
                     //to do add widget to list
-                    task->addWidgetToList();
+                    task->addWidget(mPropertyProxy,isUseProperty());
                 }
                 else {
                     reader->skipCurrentElement();
@@ -338,20 +338,27 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
 void HuiReader::readLayoutConf(QXmlStreamReader* reader,HLayoutConf* conf)
 {
     QXmlStreamAttributes attris = reader->attributes();
-    conf->mIndex = attris.value("row").toInt();
+
+    if (attris.hasAttribute("row"))
+        conf->mConf.row = attris.value("row").toInt();
 
     if (attris.hasAttribute("col"))
-        conf->mColumn= attris.value("col").toInt();
+        conf->mConf.col= attris.value("col").toInt();
 
     if (attris.hasAttribute("stretch"))
-        conf->mStretch = attris.value("stretch").toInt();
+        conf->setStretch(attris.value("stretch").toInt());
 
     //?
-/*    if (attris.hasAttribute("alignment")) {
-        QByteArray bytes = attris.value("alignment").toString().toLatin1();
-        QMetaEnum menum;
-        conf->mAlignment = (Qt::Alignment)menum.keysToValue(bytes);
-    }*/
+    if (attris.hasAttribute("alignment")) {
+        conf->setAlignment((Qt::Alignment)attris.value("alignment").toInt());
+    }
+
+    if (attris.hasAttribute("margins")) {
+        long hr = -1;
+        QVariant val = HuiCreator::convertQVariant_QMargins(attris.value("margins").toString(),&hr);
+        conf->fromMargins(val.value<QMargins>());
+    }
+
     reader->skipCurrentElement();
     return ;
 }
@@ -385,10 +392,7 @@ void HuiReader::createWidgetWithXmlReader(HuiTask* task, QXmlStreamReader* reade
                 readProperty(reader,child->qObject(),child->mPropertys);
             }
             else if (reader->name() == kXmlLayoutConf) {
-                if (task->flags().isXmlLayout)
-                    readLayoutConf(reader,&child->mLayoutConf);
-                else
-                    reader->skipCurrentElement();
+                readLayoutConf(reader,&child->mLayoutConf);
             }
             else if (reader->name() == kXmlLayout) {
                 if (child->canCreateLayout()) {
@@ -482,8 +486,6 @@ void HuiReader::createLayoutWithXmlReader(HuiTask* task,QXmlStreamReader* reader
 void HuiReader::createSceneWithXmlReader(HuiTask* task,QXmlStreamReader* reader, long *hr)
 {
     task->flags().isXmlScene = 1;
-    QXmlStreamAttributes attris = reader->attributes();
-    bool main = (attris.value(kXmlMain) == QLatin1String("true"));
 
     reader->readNext();
     while (!reader->atEnd() && !reader->hasError()) {
@@ -492,7 +494,7 @@ void HuiReader::createSceneWithXmlReader(HuiTask* task,QXmlStreamReader* reader,
             if (reader->name() == kXmlWidget) {
                 //todo try create child widget
                 createWidgetWithXmlReader(task,reader,hr);
-                task->addScene(main);
+                task->addScene();
             }
             else {//other ignore
                 reader->skipCurrentElement();

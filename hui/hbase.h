@@ -7,6 +7,8 @@
 #include <QLatin1String>
 #include <QVariant>
 #include <QMetaType>
+#include <QMargins>
+#include <QList>
 #include <QSharedPointer>
 
 /** stylid , objectname, classname */
@@ -108,6 +110,52 @@ public:
         mProxy(proxy){}
 };
 
+template<class WIDGET>
+class HChildWidget
+{
+public:
+    HChildWidget(WIDGET* w, const QMargins& m) :
+        widget(w),
+        margins(m)
+    {}
+    QPointer<WIDGET> widget;
+    QMargins margins;
+};
+
+template<class WIDGET>
+class HChildWidgetList
+{
+    typedef HChildWidget<WIDGET> VALUE;
+    QList<VALUE> mChilds;
+public:
+    HChildWidgetList(){
+    }
+
+    int count() const {
+        return mChilds.count();
+    }
+
+    const VALUE& at(int idx) const
+    {
+        return mChilds.at(idx);
+    }
+
+    int at(const WIDGET* w) {
+        for (int i=0; i<mChilds.count();i++)
+            if (mChilds.at(i).widget == w) return i;
+        return -1;
+    }
+
+    void  add(WIDGET* w,const QMargins& m) {
+        mChilds.append(VALUE(w,m));
+    }
+
+    void remove(WIDGET* w) {
+        int idx = at(w);
+        if (idx!=-1) mChilds.removeAt(idx);
+    }
+};
+
 typedef struct tagHAnchorItem
 {
     Qt::AnchorPoint first;
@@ -136,46 +184,71 @@ Q_DECLARE_METATYPE(HAnchor)
 class H_API HLayoutConf
 {
 public:
-    explicit HLayoutConf() :
-        mIndex(-1),
-        mColumn(-1),
-        mStretch(0),
-        mAlignment(0)
+    HLayoutConf()
     {
     }
 
-    explicit HLayoutConf(int index) :
-        mIndex(index),
-        mColumn(-1),
-        mStretch(0),
-        mAlignment(0)
+    HLayoutConf(int index)
     {
+        mConf.use = true;
+        mConf.row = index;
+        mConf.col = -1;
     }
 
-    explicit HLayoutConf(int row,int col) :
-        mIndex(row),
-        mColumn(col),
-        mStretch(0),
-        mAlignment(0)
+    HLayoutConf(int row,int col)
     {
+        mConf.use = true;
+        mConf.row = row;
+        mConf.col = col;
     }
 public:
-    int pos() const { return mIndex;}
-    int row() const { return mIndex;}
-    int column() const { return mColumn;}
+    int pos() const { return mConf.row;}
+    int row() const { return mConf.row;}
+    int column() const { return mConf.col;}
 
     // for QBoxLayout
-    int stretch() const { return mStretch;}
-    void setStretch(int stretch) {mStretch = stretch;}
-    void setAlignment(Qt::Alignment align) { mAlignment = align;}
-    Qt::Alignment alignment() const { return mAlignment; }
-private:
-    friend class HuiReader;
-    int mIndex; // for HBOX,VBOX, grid row
-    int mColumn;
+    int stretch() const {
+        return mConf.cf0;
+    }
 
-    int mStretch; // for QBoxLayout
-    Qt::Alignment mAlignment;
+    void setStretch(int stretch) {
+        mConf.cf0 = stretch;
+    }
+
+    void setAlignment(Qt::Alignment align) {
+        mConf.cf1 = (int)align;
+    }
+
+    Qt::Alignment alignment() const {
+        return (Qt::Alignment)mConf.cf1;
+    }
+
+    void fromMargins(const QMargins& m) {
+        mConf.use = true;
+        mConf.row = m.left();
+        mConf.col = m.top();
+        mConf.cf0 = m.right();
+        mConf.cf1 = m.bottom();
+    }
+
+    QMargins toMargins() const {
+        return QMargins(mConf.row,mConf.col,mConf.cf0,mConf.cf1);
+    }
+
+    struct Conf {
+        bool use;
+        int  row; // for HBOX,VBOX, grid row , QMargins.left
+        int  col; // QMargins.top
+        int  cf0; // for QBoxLayout stretch, QMargins.right
+        int  cf1; // for QBoxLayout Alignment, QMargins.bottom
+        Conf() {
+            use = false;
+            row = col = -1;
+            cf0 = 0;
+            cf1 = 0;
+        }
+    };
+    Conf mConf;
 };
 Q_DECLARE_METATYPE(HLayoutConf)
 

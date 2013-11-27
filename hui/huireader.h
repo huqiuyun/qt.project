@@ -76,7 +76,6 @@ private:
     const QLatin1String kXmlName;
     const QLatin1String kXmlStyleId;
     const QLatin1String kXmlFile;
-    const QLatin1String kXmlMain;
     const QLatin1String kXmlLayoutConf;
     const QLatin1String kPrexSkip;
     const QLatin1String kPrexProxy;

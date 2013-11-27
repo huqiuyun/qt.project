@@ -2,6 +2,8 @@
 #define HQLAYOUTSTYLE_H
 
 #include "hlayoutstyle.h"
+#include <QPointer>
+#include <QList>
 
 class QWidget;
 class QLayout;
@@ -37,8 +39,13 @@ public:
     virtual int  insertWidget(QWidget* widget ,const HLayoutConf& conf);
     virtual bool removeWidget(QWidget* widget);
 
+    virtual bool addChildWidget(QWidget* widget ,const HLayoutConf& conf);
+    virtual void removeChildWidget(QWidget* widget);
+
+    virtual void resizeEvent(const QSize& );
     virtual HBaseStyle* clone();
 protected:
+    HChildWidgetList<QWidget> mChilds;
     QWidget* mWindow;
 };
 

@@ -2,6 +2,7 @@
 #define HLAYOUTSTYLE_H
 
 #include "hbasestyle.h"
+
 class QGraphicsLayoutItem;
 class QWidget;
 
@@ -34,7 +35,8 @@ public:
     virtual void setSpacing(int s);
     virtual int spacing() const;
 
-    void doConstruct();
+    virtual void doConstruct();
+    virtual void resizeEvent(const QSize& ){}
 protected:
     void copyTo(HBaseStyle* obj);
 

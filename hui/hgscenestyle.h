@@ -45,10 +45,10 @@ public:
     bool hasScene() const;
     HGScene* scene() const;
 
-    bool addGWidget(HGWidget* widget,bool main=false);
+    bool addGWidget(HGWidget* widget,const HLayoutConf& conf);
     void removeGWidget(HGWidget* widget);
 
-    bool addItem(QGraphicsItem* item);
+    bool addItem(QGraphicsItem* item,const HLayoutConf& conf);
     void removeItem(QGraphicsItem* item);
 
 public:

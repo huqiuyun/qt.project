@@ -3,14 +3,14 @@
 #include "hgwidget.h"
 #include <QPointer>
 #include <QGraphicsView>
+#include <QList>
 
 class HGSceneStylePrivate
 {
 public:
     HGSceneStylePrivate() :
         mView(NULL),
-        mScene(NULL),
-        mMWidget(NULL)
+        mScene(NULL)
     {
         mSizePolicy = QSizePolicy::Fixed;
         mAlignment = Qt::AlignCenter;
@@ -18,7 +18,7 @@ public:
 
     QGraphicsView *mView;
     HGScene *mScene;
-    QPointer<HGWidget> mMWidget;
+    HChildWidgetList<HGWidget> mChilds;
     Qt::Alignment mAlignment;
     QBrush mForegroundBrush;
     QBrush mBackgroundBrush;
@@ -150,10 +150,38 @@ void HGSceneStyle::reSize(const QRectF& rect)
 
     if (sizePolicy() == QSizePolicy::Fixed) {
         d->mView->setSceneRect(rect);
-        if (d->mMWidget)
-            d->mMWidget->setGeometry(rect);
     }
+
     //other items adjust rect
+    QSize s(rect.width(),rect.height());
+    for (int i = 0; i < d->mChilds.count();i++) {
+
+        const HChildWidget<HGWidget>* iter = &d->mChilds.at(i);
+
+        QRectF rc(QPoint(0,0),s);
+
+        if (iter->margins.left()<0)
+            rc.setLeft( s.width() + iter->margins.left());
+        if (iter->margins.left()>0)
+            rc.setLeft(iter->margins.left());
+
+        if (iter->margins.right()<0)
+            rc.setRight(s.width() + iter->margins.right());
+        else if(iter->margins.right()>0)
+            rc.setRight(iter->margins.right());
+
+        if (iter->margins.top()<0)
+            rc.setTop( s.height() + iter->margins.top());
+        else if (iter->margins.top()>0)
+            rc.setTop(iter->margins.top());
+
+        if (iter->margins.bottom()<0)
+            rc.setBottom(s.height() + iter->margins.bottom());
+        else if(iter->margins.bottom()>0)
+            rc.setBottom(iter->margins.bottom());
+
+        iter->widget->setGeometry(rc);
+    }
 }
 
 void HGSceneStyle::doConstruct()
@@ -168,14 +196,16 @@ HBaseStyle* HGSceneStyle::clone()
     return style;
 }
 
-bool HGSceneStyle::addGWidget(HGWidget* widget,bool main)
+bool HGSceneStyle::addGWidget(HGWidget* widget,const HLayoutConf& conf)
 {
-    Q_UNUSED(main);
+    Q_UNUSED(conf);
     Q_D(HGSceneStyle);
     if (hasScene()) {
-        if (main)
-            d->mMWidget = widget;
         d->mScene->addItem(widget);
+
+        if (-1 == d->mChilds.at(widget))
+            d->mChilds.add(widget,conf.toMargins());
+
         return true;
     }
     return false;
@@ -186,11 +216,13 @@ void HGSceneStyle::removeGWidget(HGWidget* widget)
     Q_D(HGSceneStyle);
     if (hasScene()) {
         d->mScene->removeItem(widget);
+        d->mChilds.remove(widget);
     }
 }
 
-bool HGSceneStyle::addItem(QGraphicsItem* item)
+bool HGSceneStyle::addItem(QGraphicsItem* item,const HLayoutConf& conf)
 {
+    Q_UNUSED(conf);
     Q_D(HGSceneStyle);
     if (hasScene()) {
         d->mScene->addItem(item);

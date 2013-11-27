@@ -62,6 +62,9 @@ public:
     virtual int  insertWidget(QWidget* widget ,const HLayoutConf& conf);
     virtual bool removeWidget(QWidget* widget) ;
 
+    virtual bool addChildWidget(QWidget* widget ,const HLayoutConf& conf);
+    virtual void removeChildWidget(QWidget* widget);
+
     //property
 public:
     bool isHGView() const { return true;}
@@ -81,7 +84,7 @@ protected:
     virtual void construct(){}
     virtual void resizeEvent(QResizeEvent *event);
     virtual bool nativeEvent(const QByteArray & eventType, void * message, long * result);
- //   virtual void drawBackground(QPainter *painter, const QRectF &rect);
+    virtual void drawBackground(QPainter *painter, const QRectF &rect);
 signals:
     void resized();
 

@@ -9,13 +9,18 @@ QT       += core gui xml
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = hui
-TEMPLATE = app
+TEMPLATE = lib
+
+
+CONFIG(debug, debug|release) {
+     DESTDIR = ../../bin/debug
+} else {
+     DESTDIR = ../../bin/release
+}
 
 DEFINES += BUILD_HFW
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    hcore.cpp \
+SOURCES += hcore.cpp \
     hbase.cpp \
     hfactory.cpp \
     hunknown.cpp \
@@ -44,14 +49,7 @@ SOURCES += main.cpp\
     hpropertyproxy.cpp \
     hfontstyle.cpp
 
-
-
-win32:{
-SOURCES +=
-}
-
-HEADERS  += mainwindow.h \
-    hconfig.h \
+HEADERS  += hconfig.h \
     hcore.h \
     hbase.h \
     private/hcore_p.h \
@@ -66,7 +64,6 @@ HEADERS  += mainwindow.h \
     hframestyle.h \
     huireader.h \
     hsystem.h \
-    hmaintest.h \
     hcreator.h \
     private/hgwidget_p.h \
     hgwidget.h \
@@ -93,10 +90,5 @@ HEADERS  += mainwindow.h \
     huitask.h \
     hpropertyproxy.h \
     hfontstyle.h
-
-FORMS    += mainwindow.ui
-
-RESOURCES += \
-    hmaintest.qrc
 
 OTHER_FILES +=

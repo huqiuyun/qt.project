@@ -132,10 +132,9 @@ private:
 
     void installStyle();
     void deleteStyle();
-    void addScene(bool& main);
+    void addScene();
     void addLayout(HPropertyProxy* proxy,bool isUse);
     void addWidget(HPropertyProxy* proxy,bool isUse);
-    void addWidgetToList();
 
     int  findFunc(const char* clsname);
     bool hasProperty(QObject* object, const char* key);

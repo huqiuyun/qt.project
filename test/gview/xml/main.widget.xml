@@ -34,17 +34,18 @@
          <property id="windowFlags">Qt::Window</property>
          <property id="styleSheet"></property>
          <obj id="layoutStyle" class="HQLayoutStyle" name="layoutStyle" styleid="my.qvbox.layoutId"/>
-         <obj id="sceneStyle" class="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
        </obj>
        <obj class="HQLayoutStyle" name="" styleid="my.qvbox.layoutId">
           <property id="layoutType">kVBox</property>
           <property id="alignment">0</property>
-          <property id="margins"></property>
+          <property id="margins">0,140,0,0</property>
           <property id="spacing">2</property>
        </obj>
    </style>
-   <property id="resize">400,600</property>
+
+   <property id="resize">700,500</property>
    <property id="windowTitle">test1-hgview</property>
+
    <layout>
       <widget class="QTextEdit" name=""  styleid="undefined">
         <property id="plainText">I am QTextEdit</property>

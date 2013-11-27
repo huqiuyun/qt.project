@@ -166,6 +166,21 @@ bool HQWidget::removeWidget(QWidget* widget)
     return false;
 }
 
+bool HQWidget::addChildWidget(QWidget* widget ,const HLayoutConf& conf)
+{
+    Q_D(HQWidget);
+    if (d->mLayoutStyle)
+        return d->mLayoutStyle->addChildWidget(widget,conf);
+    return false;
+}
+
+void HQWidget::removeChildWidget(QWidget* widget)
+{
+    Q_D(HQWidget);
+    if (d->mLayoutStyle)
+        d->mLayoutStyle->removeChildWidget(widget);
+}
+
 void HQWidget::setFixedSize(const QSize &s)
 {
     QWidget::setFixedSize(s);
@@ -229,9 +244,9 @@ HGWidget* HQWidget::parentGWidget() const
 void HQWidget::doConstruct()
 {
     Q_D(HQWidget);
-    if (d->mFrameStyle) {
+    if (d->mFrameStyle)
        d->mFrameStyle->init();
-    }
+
     construct();
 }
 
@@ -241,6 +256,9 @@ void HQWidget::resizeEvent(QResizeEvent *event)
     if (d->mFrameStyle) {
         d->mFrameStyle->resizeEvent(event);
     }
+    if (d->mLayoutStyle)
+        d->mLayoutStyle->resizeEvent(event->size());
+
     emit resized();
 }
 

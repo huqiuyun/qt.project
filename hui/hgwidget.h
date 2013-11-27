@@ -67,6 +67,10 @@ public:
     virtual int  addWidget(QWidget* widget);
     virtual int  insertWidget(QWidget* widget ,const HLayoutConf& conf);
     virtual bool removeWidget(QWidget* widget);
+
+    virtual bool addChildGWidget(QGraphicsWidget* item, const HLayoutConf& conf);
+    virtual void removeChildGWidget(QGraphicsWidget* item);
+
     // property
 public:
     int height() const;
@@ -100,7 +104,7 @@ protected:
     void doConstruct();
     virtual void construct(){}
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
-
+    virtual void resizeEvent(QGraphicsSceneResizeEvent *event);
 protected:
     template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
     HGWidget(HGWidgetPrivate& dd,QGraphicsItem* parent);

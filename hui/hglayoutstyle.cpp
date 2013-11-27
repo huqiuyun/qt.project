@@ -240,6 +240,54 @@ bool HGLayoutStyle::removeGWidget(QGraphicsWidget* widget)
     return removeItem(widget);
 }
 
+bool HGLayoutStyle::addChildGWidget(QGraphicsWidget* widget ,const HLayoutConf& conf)
+{
+    if (!conf.mConf.use || !widget)
+        return false;
+
+    if (-1 == mChilds.at(widget))
+        mChilds.add(widget,conf.toMargins());
+
+    return true;
+}
+
+void HGLayoutStyle::removeChildGWidget(QGraphicsWidget* widget)
+{
+    mChilds.remove(widget);
+}
+
+void HGLayoutStyle::resizeEvent(const QSize& s)
+{
+    for (int i = 0; i < mChilds.count();i++) {
+
+        const HChildWidget<QGraphicsWidget>* iter = &mChilds.at(i);
+
+        QRectF rc(QPoint(0,0),s);
+
+        if (iter->margins.left()<0)
+            rc.setLeft( s.width() + iter->margins.left());
+        if (iter->margins.left()>0)
+            rc.setLeft(iter->margins.left());
+
+        if (iter->margins.right()<0)
+            rc.setRight(s.width() + iter->margins.right());
+        else if(iter->margins.right()>0)
+            rc.setRight(iter->margins.right());
+
+        if (iter->margins.top()<0)
+            rc.setTop( s.height() + iter->margins.top());
+        else if (iter->margins.top()>0)
+            rc.setTop(iter->margins.top());
+
+        if (iter->margins.bottom()<0)
+            rc.setBottom(s.height() + iter->margins.bottom());
+        else if(iter->margins.bottom()>0)
+            rc.setBottom(iter->margins.bottom());
+
+        iter->widget->setGeometry(rc);
+    }
+}
+
 HBaseStyle* HGLayoutStyle::clone()
 {
     HGLayoutStyle* style = new HGLayoutStyle(HObjectInfo(styleId(),""),parent());

@@ -126,31 +126,24 @@ void HuiTask::deleteStyle()
     }
 }
 
-void HuiTask::addScene(bool& main)
+void HuiTask::addScene()
 {
-    Q_UNUSED(main);
     if (!mChild) {
         return ;
     }
-    if(mChild->isHGWidget()) {
-        if (isHGView()) {
-            HGView* widget = objCast<HGView>();
-            widget->sceneStyle()->addGWidget(mChild->objCast<HGWidget>(),main);
+
+    if (isHGView()) {
+        if(mChild->isHGWidget()) {
+            objCast<HGView>()->sceneStyle()->addGWidget(mChild->objCast<HGWidget>(),mChild->mLayoutConf);
         }
-        else {
-            Q_ASSERT(0);
-        }
-    }
-    else if(mChild->isGraphicsItem()){
-        if (isHGView()) {
-            HGView* widget = objCast<HGView>();
-            widget->sceneStyle()->addItem(mChild->objCast<QGraphicsItem>());
-        }
-        else {
-            Q_ASSERT(0);
+        else if(mChild->isGraphicsItem()) {
+            objCast<HGView>()->sceneStyle()->addItem(mChild->objCast<QGraphicsItem>(),mChild->mLayoutConf);
         }
     }
-    main = false;
+    else {
+        Q_ASSERT(0);
+    }
+
     deleteChild();
 }
 
@@ -166,26 +159,37 @@ void HuiTask::addWidget(HPropertyProxy* proxy,bool isUse)
     if (!mChild) {
         return ;
     }
-    //add new widget to layout
     if (mChild->isQWidget()) {
-        if (isHQWidget()) {
-            HQWidget* widget = objCast<HQWidget>();
+        if (isQWidget()) {
+            if (mFlags.isXmlLayout) {
 
-            if (mFlags.isXmlLayout)
-                widget->insertWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
-        }
-        else if(isHGView()) {
-            HGView* widget = objCast<HGView>();
-            if (mFlags.isXmlLayout)
-                widget->insertWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
+                if (isHQWidget()) {
+                    objCast<HQWidget>()->insertWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
+                }
+                else if(isHGView()) {
+                    objCast<HGView>()->insertWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
+                }
+                else Q_ASSERT(0);
+            }
+            else
+            {// parant And child
+                mWidgets.push_back(mChild->objCast<QWidget>());
+
+                if (isHQWidget()) {
+                    objCast<HQWidget>()->addChildWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
+                }
+                else if(isHGView()) {
+                    objCast<HGView>()->addChildWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
+                }
+                else Q_ASSERT(0);
+            }
         }
         else if(isHGWidget()) {
-            HGWidget* widget = objCast<HGWidget>();
-            if (mFlags.isXmlLayout) {
-                widget->insertWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
+            if (mFlags.isXmlLayout) { // for proxywidget
+                objCast<HGWidget>()->insertWidget(mChild->objCast<QWidget>(),mChild->mLayoutConf);
             }
-            else {
-                //exception
+            else {//exception
+                Q_ASSERT(0);
             }
         }
         else{// not support
@@ -193,10 +197,14 @@ void HuiTask::addWidget(HPropertyProxy* proxy,bool isUse)
     }
     else if(mChild->isGWidget()) {
         if (isHGWidget()) {
-            HGWidget* widget = objCast<HGWidget>();
-            if (mFlags.isXmlLayout)
-                widget->insertGWidget(mChild->objCast<QGraphicsWidget>(),mChild->mLayoutConf);
+            if (mFlags.isXmlLayout) {
+                objCast<HGWidget>()->insertGWidget(mChild->objCast<QGraphicsWidget>(),mChild->mLayoutConf);
+            }
+            else {// parent And child
+                objCast<HGWidget>()->addChildGWidget(mChild->objCast<QGraphicsWidget>(),mChild->mLayoutConf);
+            }
         }
+        else Q_ASSERT(0);
     }
     execSkipProperty(mChild,proxy,isUse);
     deleteChild();
@@ -232,30 +240,6 @@ void HuiTask::execSkipProperty(HuiTask* task,HPropertyProxy* proxy,bool isUse)
     }
     task->mPropertys.clear();
 }
-
-void HuiTask::addWidgetToList()
-{
-    if (!mChild) {
-        return ;
-    }
-
-    if (isQWidget())
-    {
-        if (mChild->isQWidget()) {
-            mWidgets.push_back(mChild->objCast<QWidget>());
-        }
-        else {
-            //exception
-            Q_ASSERT(0);
-        }
-    }
-    else if (isHGWidget()) {
-        // not support ?
-    }
-    //
-    deleteChild();
-}
-
 
 bool HuiTask::hasProperty(QObject* object, const char* key)
 {

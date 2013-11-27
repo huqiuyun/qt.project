@@ -4,12 +4,14 @@
  <!-- Only support based QGraphicsScene
       add QGraphicsItem to QGraphicsScene
  <!-->
- <scene main="true">
+ <scene>
    <widget class="HGWidget" name="" styleid="gwidgetId">
       <layout file=":/xml/main.glayout.xml"/>
+      <ltconf margins="0,0,0,0" />
    </widget>
-   <widget class="QGraphicsLineItem" name="" styleid="undefined" />
-   <widget class="QGraphicsPixmapItem" name="" styleid="undefined"/>
+   <widget class="HGWidget" name="" styleid="gwidgetId">
+      <ltconf margins="10,-160,-10,0" />
+   </widget>
  </scene>
 
 </hui>

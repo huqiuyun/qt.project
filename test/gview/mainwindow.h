@@ -19,7 +19,6 @@ public:
 
 private:
     void init();
-    Ui::MainWindow *ui;
     HMainTest* mainTest;
 };
 

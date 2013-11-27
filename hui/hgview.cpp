@@ -223,10 +223,12 @@ void HGView::resizeEvent(QResizeEvent *event)
         d->mFrameStyle->resizeEvent(event);
     }
 
-    if (d->mSceneStyle) {
-        QRect rect(QPoint(0, 0), event->size());
-        d->mSceneStyle->reSize(rect);
-    }
+    if (d->mSceneStyle)
+        d->mSceneStyle->reSize(QRect(QPoint(0, 0), event->size()));
+
+    if (d->mLayoutStyle)
+        d->mLayoutStyle->resizeEvent(event->size());
+
     emit resized();
 }
 
@@ -235,17 +237,13 @@ bool HGView::nativeEvent(const QByteArray & eventType, void * message, long * re
     return d_func()->mFrameStyle->nativeEvent(eventType,message,result);
 }
 
-/*
+
 void HGView::drawBackground(QPainter *painter, const QRectF &rect)
 {
     Q_D(HGView);
-    if (d->mBackgroundStyle) {
+    if (d->mBackgroundStyle)
         d->mBackgroundStyle->draw(painter,rect.toRect());
-    }
-    else {
-        QGraphicsView::drawBackground(painter,rect);
-    }
-}*/
+}
 
 /** add widget to owner layout */
 int HGView::addWidget(QWidget* widget)
@@ -270,6 +268,22 @@ bool HGView::removeWidget(QWidget* widget)
     if (d->mLayoutStyle)
         return d->mLayoutStyle->removeWidget(widget);
     return false;
+}
+
+bool HGView::addChildWidget(QWidget* widget ,const HLayoutConf& conf)
+{
+    Q_D(HGView);
+    if (d->mLayoutStyle)
+        return d->mLayoutStyle->addChildWidget(widget,conf);
+
+    return false;
+}
+
+void HGView::removeChildWidget(QWidget* widget)
+{
+    Q_D(HGView);
+    if (d->mLayoutStyle)
+        d->mLayoutStyle->removeChildWidget(widget);
 }
 
 /** the object is alignment in parent layout */
