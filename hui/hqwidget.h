@@ -51,6 +51,7 @@ public:
     virtual bool addChildWidget(QWidget* widget ,const HLayoutConf& conf);
     virtual void removeChildWidget(QWidget* widget);
 
+    static void setWindowAttribute(QWidget* window,const QString& attribute);
     //property
 public:
     bool isHQWidget() const { return true;}

@@ -45,8 +45,6 @@ public:
     virtual QRect calcClientRect(const QRect &frameRect) const;
     virtual bool  nativeEvent(const QByteArray & eventType, void * message, long * result);
 
-private:
-    void _setWindowAttribute();
 protected:
     QWidget  *mWindow;
     Qt::WindowFlags mWinFlags;

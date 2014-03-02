@@ -1,5 +1,5 @@
 #include "hframestyle.h"
-#include <QWidget>
+#include "hqwidget.h"
 
 IMPLEMENT_OBJECT_STATIC_CREATE(HFrameStyle)
 HFrameStyle::HFrameStyle(QObject *parent) :
@@ -75,7 +75,7 @@ QString HFrameStyle::windowAttribute() const
 void HFrameStyle::setWindowAttribute(const QString& a)
 {
     mWindowAttribute = a;
-    _setWindowAttribute();
+    HQWidget::setWindowAttribute(mWindow,a);
 }
 
 void HFrameStyle::copyTo(HBaseStyle* obj)
@@ -106,24 +106,7 @@ void  HFrameStyle::init()
     if (hasStyleSheet()) {
         mWindow->setStyleSheet(styleSheet());
     }
-    _setWindowAttribute();
-}
-
-void HFrameStyle::_setWindowAttribute()
-{
-    if (!mWindow) return;
-
-    QStringList list = mWindowAttribute.split("|");
-    for(int i=0; i< list.size();i++) {
-        QString attr = list.at(i);
-        QStringList item = attr.split(":");
-        if (item.size()>=2)
-        {
-            int val = item.at(0).toInt();
-            if (val>=0 && val < Qt::WA_AttributeCount)
-                mWindow->setAttribute((Qt::WidgetAttribute)val,(item.at(1)==QLatin1String("true")));
-        }
-    }
+    HQWidget::setWindowAttribute(mWindow,mWindowAttribute);
 }
 
 void HFrameStyle::resizeEvent(QResizeEvent *event)

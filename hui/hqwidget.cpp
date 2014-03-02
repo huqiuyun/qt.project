@@ -236,6 +236,23 @@ void HQWidget::setAlignment(Qt::Alignment align)
     }
 }
 
+
+void HQWidget::setWindowAttribute(QWidget* window,const QString& attribute)
+{
+    if (!window) return;
+    QStringList list = attribute.split("|");
+    for(int i=0; i< list.size();i++) {
+        QString attr = list.at(i);
+        QStringList item = attr.split(":");
+        if (item.size()>=2)
+        {
+            int val = item.at(0).toInt();
+            if (val>=0 && val < Qt::WA_AttributeCount)
+                window->setAttribute((Qt::WidgetAttribute)val,(item.at(1)==QLatin1String("true")));
+        }
+    }
+}
+
 HGWidget* HQWidget::parentGWidget() const
 {
     QObject* p = parent();

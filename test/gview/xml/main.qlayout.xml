@@ -12,7 +12,12 @@
           <property id="icon"></property>
           <property id="proxy:fixedHeight">60</property>
           <property id="proxy:fixedWidth">100</property>
-          <property id="proxy:noSystemBackground">1</property>
+          <!-- 120:true|4:false|78:true
+               120=Qt::WA_TranslucentBackground
+               4=Qt::WA_OpaquePaintEvent
+               78=Qt::WA_AcceptDrops
+          <!-->
+          <property id="proxy:winowAttribute"></property>
           <ltconf row="0" col="0" alignment="Qt::AlignRight"/>
   </widget>
 

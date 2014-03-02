@@ -67,6 +67,11 @@
        <property id="windowFlags">Qt::Tool|Qt::FramelessWindowHint</property>
        <property id="styleSheet"></property>
        <property id="windowOpacity">1</property>
+       <!-- 120:true|4:false|78:true
+            120=Qt::WA_TranslucentBackground
+            4=Qt::WA_OpaquePaintEvent
+            78=Qt::WA_AcceptDrops
+       <!-->
        <property id="windowAttribute">120:true</property>
        <obj id="layoutStyle" class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId"/>
        <obj id="sceneStyle" class="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
