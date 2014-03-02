@@ -13,6 +13,7 @@ class H_API HFrameStyle : public HWidgetStyle
     Q_PROPERTY( Qt::WindowFlags windowFlags READ windowFlags WRITE setWindowFlags )
     Q_PROPERTY( QString styleSheet READ styleSheet WRITE setStyleSheet)
     Q_PROPERTY(	HClassInfo sceneStyle READ sceneStyle WRITE setSceneStyle)
+    Q_PROPERTY(	QString windowAttribute READ windowAttribute WRITE setWindowAttribute)
 public:
     explicit HFrameStyle(QObject *parent = 0);
     explicit HFrameStyle(const HObjectInfo& objinfo, QObject *parent = 0);
@@ -31,6 +32,9 @@ public:
     void setSceneStyle(const HClassInfo& cls);
     HClassInfo sceneStyle() const;
 
+    QString windowAttribute() const;
+    void setWindowAttribute(const QString& a);
+
     void setWindow(QWidget* view);
 
 public:
@@ -41,11 +45,14 @@ public:
     virtual QRect calcClientRect(const QRect &frameRect) const;
     virtual bool  nativeEvent(const QByteArray & eventType, void * message, long * result);
 
+private:
+    void _setWindowAttribute();
 protected:
     QWidget  *mWindow;
     Qt::WindowFlags mWinFlags;
     HClassInfo mSceneStyle;
     QString mStyleSheet;
+    QString mWindowAttribute; // "int:0|int:1" @see QWidget::setAttribute
 };
 
 #endif // HFRAMESTYLE_H

@@ -2,11 +2,17 @@
 #include "hresourcemgr.h"
 #include "hstyle.h"
 #include "hcore.h"
+#include "hdraw.h"
 #include "private/hbackgroundstyle_p.h"
 #include <QPainter>
 
 
 IMPLEMENT_OBJECT_STATIC_CREATE(HBackgroundStyle)
+
+void HBackgroundStylePrivate::calcuTile()
+{
+    HDraw::cacluImageTile(mImage,mImageTile);
+}
 
 HBackgroundStyle::HBackgroundStyle(QObject *parent) :
     HBaseStyle(parent),
@@ -43,13 +49,16 @@ QString HBackgroundStyle::imagePath() const
 
 void HBackgroundStyle::setImage(const QPixmap& image)
 {
-    mImage = image;
+    Q_D(HBackgroundStyle);
+    d->mImage = image;
+    //to do calculate tile
+    d->calcuTile();
     emit backgroundChanged(0);
 }
 
  QPixmap HBackgroundStyle::image() const
  {
-     return mImage;
+     return d_func()->mImage;
  }
 
 void HBackgroundStyle::setColor(const QColor& rgb)
@@ -107,6 +116,27 @@ void HBackgroundStyle::setBackgroundBrush(const QBrush& brush)
     d_func()->mBackgroundBrush = brush;
 }
 
+
+bool HBackgroundStyle::sysTile() const
+{
+    return d_func()->mImageTile.mSys;
+}
+
+void HBackgroundStyle::setSysTile(bool sys)
+{
+    d_func()->mImageTile.mSys = sys;
+}
+
+HImageTile HBackgroundStyle::tileImage() const
+{
+    return d_func()->mImageTile;
+}
+
+void HBackgroundStyle::setImageTile(const HImageTile& t)
+{
+    d_func()->mImageTile = t;
+}
+
 void HBackgroundStyle::copyTo(HBaseStyle* obj)
 {
     Q_D(HBackgroundStyle);
@@ -119,6 +149,7 @@ void HBackgroundStyle::copyTo(HBaseStyle* obj)
     style->setColor(d->mColor);
     style->setColorized(d->mColorized);
     style->setBackgroundBrush(d->mBackgroundBrush);
+    style->setImageTile(d->mImageTile);
 
     HBaseStyle::copyTo(obj);
 }
@@ -131,26 +162,30 @@ HBaseStyle* HBackgroundStyle::clone()
     return style;
 }
 
-void HBackgroundStyle::draw(QPainter * painter, const QRect &rect)
+void HBackgroundStyle::draw(QPainter * painter, const QRect &rect, int index)
 {
-    Q_UNUSED(painter);
-    Q_UNUSED(rect);
+    drawColor(painter,rect,index);
+    drawImage(painter,rect,index);
+}
 
-    //draw
-    if(mImage.isNull()) {
-        drawColor(painter,rect);
-        return ;
+void HBackgroundStyle::drawColor(QPainter* painter,const QRect& rect, int index)
+{
+    Q_UNUSED(index);
+    Q_D(HBackgroundStyle);
+
+    if (d->mColor.isValid()) {
+        HDraw draw;
+        draw.paint(painter, rect, d->mColorized.isValid()?d->mColorized:d->mColor, d->mMargins);
     }
 }
 
-void HBackgroundStyle::drawColor(QPainter* painter,const QRect& rect)
+void HBackgroundStyle::drawImage(QPainter* painter,const QRect& rect, int index)
 {
-    Q_UNUSED(painter);
-    Q_UNUSED(rect);
     Q_D(HBackgroundStyle);
-
-    if (!d->mColor.isValid()) return ;
-    painter->fillRect(rect,d->mColor);
+    if (!d->mImage.isNull()) {
+        HDraw draw;
+        draw.paint(painter, rect, d->mImage, d->mMargins, d->mImageTile, index);
+    }
 }
 
 void HBackgroundStyle::on_colorChanged(const QColor& rgb)
@@ -164,13 +199,14 @@ void HBackgroundStyle::colorChanged(const QColor& rgb)
     Q_D(HBackgroundStyle);
 
     int type = 0;
-    if (!mImage.isNull()) {
-        if (mResMgr->colorizeWithPixmap(mImage)) {
+    if (!d->mImage.isNull()) {
+        if (mResMgr->colorizeWithPixmap(d->mImage)) {
             type = 1;
         }
     }
     else if (d->mImagePath.size()>1) {
-        mImage = mResMgr->loadPixmap(d->mImagePath);
+        d->mImage = mResMgr->loadPixmap(d->mImagePath);
+        d->calcuTile();
         type = 1;
     }
     if (d->mColor.isValid()) {

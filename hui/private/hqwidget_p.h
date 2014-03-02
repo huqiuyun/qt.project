@@ -23,6 +23,7 @@ protected:
     friend class HQWidget;
     HQWidget  *q_ptr;
     QSharedPointer<HFrameStyle>      mFrameStyle;
+    QSharedPointer<HBackgroundStyle> mBackgroundStyle;
     QSharedPointer<HQLayoutStyle>    mLayoutStyle;
 };
 

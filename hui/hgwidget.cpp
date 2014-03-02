@@ -365,10 +365,10 @@ void HGWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(painter);
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    Q_D(HGWidget);
 
+    Q_D(HGWidget);
     if (d->mBackgroundStyle) {
-        d->mBackgroundStyle->draw(painter,rect().toRect());
+        d->mBackgroundStyle->draw(painter,rect().toRect(),HEnums::kStateDefaultTile);
     }
 }
 

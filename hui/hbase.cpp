@@ -53,3 +53,69 @@ void HAnchor::operator << (const QByteArray& bytes)
         memcpy((void*)&mItems[0], bytes.data(), sizeof(mItems));
     }
 }
+
+void debugTile(const HTile& t)
+{
+    qDebug("--xLeft:%d,%d",t.mLeft.p0,t.mLeft.p1);
+    qDebug("--xMid:%d,%d",t.mMid.p0,t.mMid.p1);
+    qDebug("--xRight:%d,%d",t.mRight.p0,t.mRight.p1);
+    qDebug("--y:%d,%d\n",t.mY.p0,t.mY.p1);
+}
+
+
+void HImageTile::initX(int x0, int x1)
+{
+    m9Tile.initX(mWidth,x0,x1);
+}
+
+void HImageTile::initY(int y0, int y1)
+{
+    m9Tile.initY(mHeight,y0,y1);
+}
+
+bool HImageTile::next(int idx)
+{
+    int hori = idx%mHoriLine;
+    int vert = idx/mHoriLine;
+    if (vert>=mVertLine)
+    {
+        return false;
+    }
+    int w = mWidth*hori;
+    int h = mHeight*vert;
+    m9Tile.offsetX(w+hori);
+    m9Tile.offsetY(h+vert);
+    return true;
+}
+
+void HImageTile::sysTile()
+{
+    if (mSys) {
+        divX();
+        divY();
+    }
+}
+
+void HImageTile::divX()
+{
+    int x = (mWidth-3);
+    if (x<=0) return;
+    x = x/2;
+    initX(x,x+2);
+}
+
+void HImageTile::divY()
+{
+    int y = (mHeight-3);
+    if (y<=0) return;
+    y = y/2;
+    initY(y,y+2);
+}
+
+void HImageTile::debug() const
+{
+    qDebug("HImageTile width=%d,height=%d,horiLine=%d,vertLine=%d",mWidth,mHeight,mHoriLine,mVertLine);
+    debugTile(m9Tile.mOne);
+    debugTile(m9Tile.mTwo);
+    debugTile(m9Tile.mThree);
+}

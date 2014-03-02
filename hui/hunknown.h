@@ -168,7 +168,7 @@ public:
 };
 
 //声明 IHUnknown 接口函数
-#define DECLARE_IHUNKNOWN()                                  \
+#define DECLARE_IHUNKNOWN()                                   \
     virtual long queryInterface(QY_REFID riid, void** ppv)  { \
     return GetOwner()->queryInterface(riid,ppv);}             \
     virtual ulong addRef() {                                  \

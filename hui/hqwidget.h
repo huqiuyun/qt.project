@@ -65,7 +65,8 @@ public:
 protected:
     void doConstruct();
     virtual void construct(){}
-    virtual void resizeEvent(QResizeEvent *event);
+    virtual void resizeEvent(QResizeEvent *);
+    virtual void paintEvent(QPaintEvent*);
     virtual bool nativeEvent(const QByteArray & eventType, void * message, long * result);
 
 signals:

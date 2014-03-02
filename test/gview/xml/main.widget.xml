@@ -27,58 +27,12 @@
      </widget>
 <!-->
 
- <widget class="HQWidget" name="main" styleid="my.framewindow.test1">
-   <!-- style is private <!-->
-   <style>
-      <obj class="HFrameStyle" name="" styleid="my.framewindow.test1">
-         <property id="windowFlags">Qt::Window</property>
-         <property id="styleSheet"></property>
-         <obj id="layoutStyle" class="HQLayoutStyle" name="layoutStyle" styleid="my.qvbox.layoutId"/>
-       </obj>
-       <obj class="HQLayoutStyle" name="" styleid="my.qvbox.layoutId">
-          <property id="layoutType">kVBox</property>
-          <property id="alignment">0</property>
-          <property id="margins">0,140,0,0</property>
-          <property id="spacing">2</property>
-       </obj>
-   </style>
+ <widget class="HQWidget" name="main" styleid="framewindowId">
 
    <property id="resize">700,500</property>
    <property id="windowTitle">test1-hgview</property>
 
-   <layout>
-      <widget class="QTextEdit" name=""  styleid="undefined">
-        <property id="plainText">I am QTextEdit</property>
-        <property id="layoutConf"></property>
-      </widget>
-      <widget class="QTextBrowser" name="" styleid="undefined">
-        <property id="plainText">I am QTextBrowser></property>
-        <property id="readOnly">0</property>
-      </widget>
-      <widget class="QWidget" name="" styleid="undefined">
-         <property id="proxy:fixedHeight">10</property>
-      </widget>
-   </layout>
 </widget>
 
- <widget class="HQWidget" name="main" styleid="my.framewindow.test2">
-   <style>
-     <obj class="HFrameStyle" name="" styleid="my.framewindow.test2">
-       <property id="windowFlags">Qt::Window</property>
-       <property id="styleSheet"></property>
-       <obj id="layoutStyle" class="HQLayoutStyle" name="layoutStyle" styleid="my.qgrid.layoutId"/>
-    </obj>
-    <obj class="HQLayoutStyle" name="" styleid="my.qgrid.layoutId">
-       <property id="layoutType">kGrid</property>
-       <property id="alignment"></property>
-       <property id="margins">4,4,4,4</property>
-       <property id="spacing">6</property>
-    </obj>
-   </style>
-
-   <property id="resize">600,400</property>
-   <property id="windowTitle">test2-hqwidget</property>
-   <layout file=":/xml/main.qlayout.xml"/>
- </widget>
 
 </hui>

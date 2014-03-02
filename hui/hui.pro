@@ -18,7 +18,7 @@ CONFIG(debug, debug|release) {
      DESTDIR = ../../bin/release
 }
 
-DEFINES += BUILD_HFW
+DEFINES += BUILD_HUI
 
 SOURCES += hcore.cpp \
     hbase.cpp \
@@ -47,7 +47,8 @@ SOURCES += hcore.cpp \
     hgproxywidget.cpp \
     huitask.cpp \
     hpropertyproxy.cpp \
-    hfontstyle.cpp
+    hfontstyle.cpp \
+    hdraw.cpp
 
 HEADERS  += hconfig.h \
     hcore.h \
@@ -89,6 +90,7 @@ HEADERS  += hconfig.h \
     hgproxywidget.h \
     huitask.h \
     hpropertyproxy.h \
-    hfontstyle.h
+    hfontstyle.h \
+    hdraw.h
 
 OTHER_FILES +=

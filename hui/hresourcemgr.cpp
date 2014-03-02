@@ -3,6 +3,7 @@
 #include <QList>
 
 typedef QList<HResourceHandler*> RES_HANDLERS;
+typedef QMap<qint64,HImageTile> TILEMap;
 class HResourceMgrPrivate
 {
 public:
@@ -18,8 +19,10 @@ public:
             ++iter;
         }
         mHandlers.clear();
+        mTiles.clear();
     }
     RES_HANDLERS mHandlers;
+    TILEMap mTiles;
 };
 
 HResourceMgr::HResourceMgr(QObject *parent) :
@@ -103,3 +106,28 @@ QByteArray HResourceMgr::loadData(const QString& path)
     }
     return bytes;
 }
+
+bool HResourceMgr::findImageTile(qint64 key,HImageTile* tile)
+{
+    Q_D(HResourceMgr);
+    TILEMap::iterator iter = d->mTiles.find(key);
+    if (iter != d->mTiles.end()) {
+        if (tile)
+            *tile = iter.value();
+        return true;
+    }
+    return false;
+}
+
+void HResourceMgr::addImageTile(qint64 key,const HImageTile& tile)
+{
+    Q_D(HResourceMgr);
+    d->mTiles[key] = tile;
+}
+
+void HResourceMgr::removeImageTile(qint64 key)
+{
+    Q_D(HResourceMgr);
+    d->mTiles.remove(key);
+}
+

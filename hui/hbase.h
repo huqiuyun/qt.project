@@ -252,6 +252,182 @@ public:
 };
 Q_DECLARE_METATYPE(HLayoutConf)
 
+class HTileP
+{
+public:
+    HTileP()
+    {
+        p0 = p1 = 0;
+    }
+    int p0;
+    int p1;
+};
+Q_DECLARE_METATYPE(HTileP)
+
+class HTile
+{
+public:
+    HTile()
+    {
+    }
+
+    HTile(const HTile& t)
+    {
+        *this = t;
+    }
+
+    HTile& operator=(const HTile& t)
+    {
+        mLeft = t.mLeft;
+        mMid = t.mMid;
+        mRight = t.mRight;
+        mY = t.mY;
+        return *this;
+    }
+
+    void initX(int w, int x0, int x1)
+    {
+        if (x0>w) x0=w;
+        if (x1>w) x1=w;
+
+        mLeft.p0=0;
+        mLeft.p1=x0;
+
+        mMid.p0 = x0+1;
+        mMid.p1 = x1;
+
+        mRight.p0 = x1+1;
+        mRight.p1 = w;
+    }
+
+    void offsetX(int x)
+    {
+        mLeft.p0+=x;
+        mLeft.p1+=x;
+
+        mMid.p0+=x;
+        mMid.p1+=x;
+
+        mRight.p0+=x;
+        mRight.p1+=x;
+    }
+
+    void initY(int y0,int y1)
+    {
+        mY.p0 = y0;
+        mY.p1 = y1;
+    }
+
+    void offsetY(int y)
+    {
+        mY.p0+=y;
+        mY.p1+=y;
+    }
+
+    int height() const
+    {
+        return (mY.p1-mY.p0);
+    }
+
+    bool onlyOne() const
+    {
+        return (mMid.p0>=mMid.p1 &&mRight.p0>=mRight.p1);
+    }
+    HTileP mLeft;
+    HTileP mMid;
+    HTileP mRight;
+    HTileP mY;
+};
+Q_DECLARE_METATYPE(HTile)
+
+class H9Tile
+{
+public:
+    H9Tile()
+    {}
+
+    H9Tile(const H9Tile& t)
+    {
+        *this = t;
+    }
+    H9Tile& operator=(const H9Tile& t)
+    {
+        mOne = t.mOne;
+        mTwo = t.mTwo;
+        mThree = t.mThree;
+        return *this;
+    }
+
+    void initX(int w, int x0, int x1)
+    {
+        mOne.initX(w,x0,x1);
+        mTwo.initX(w,x0,x1);
+        mThree.initX(w,x0,x1);
+    }
+
+    void offsetX(int x)
+    {
+        mOne.offsetX(x);
+        mTwo.offsetX(x);
+        mThree.offsetX(x);
+    }
+
+    void initY(int h,int y0, int y1)
+    {
+        if (y0>h) y0=h;
+        if (y1>h) y1=h;
+        mOne.initY(0,y0);
+        mTwo.initY(y0+1,y1);
+        mThree.initY(y1+1,h);
+    }
+
+    void offsetY(int y)
+    {
+        mOne.offsetY(y);
+        mTwo.offsetY(y);
+        mThree.offsetY(y);
+    }
+
+    bool onlyOne() const
+    {
+        return (mTwo.height()<=0&&mThree.height()<=0);
+    }
+
+    HTile mOne;
+    HTile mTwo;
+    HTile mThree;
+};
+Q_DECLARE_METATYPE(H9Tile)
+
+class H_API HImageTile
+{
+public:
+    HImageTile()
+    {
+        mSys = false;
+        mWidth = mHeight = 0;
+        mHoriLine = mVertLine = 1;
+    }
+
+    void initX(int x0, int x1);
+    void initY(int y0, int y1);
+    bool next(int idx);
+    void sysTile();
+    void divX();
+    void divY();
+
+    // printf info
+    void debug() const;
+
+    bool mSys;
+    int mWidth; //per tile width
+    int mHeight;//per tile height
+    int mHoriLine;
+    int mVertLine;
+    H9Tile m9Tile;
+};
+Q_DECLARE_METATYPE(HImageTile)
+
 /** if create object class , need clsname AND styleid */
 class HObjectInfo
 {

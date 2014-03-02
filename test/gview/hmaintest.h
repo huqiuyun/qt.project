@@ -26,6 +26,8 @@
 #include <hgscenestyle.h>
 #include <hgscene.h>
 #include <hpropertyproxy.h>
+#include <hdraw.h>
+
 class HMainTest
 {
 public:

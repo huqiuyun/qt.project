@@ -116,6 +116,22 @@ public:
         kCssDragFlag = 1 << 15,
         kCssEnd
     };
+
+    enum HWidgetState
+    {
+        kStateNormal        = 0x00000000,
+        kStateOver          = 0x00000001,
+        kStatePressed       = 0x00000002,
+        kStateFoucs         = 0x00000004,
+        kStateDisable       = 0x00000008,
+        kStateCheckNormal   = 0x00000010, //check(radio) box
+        kStateCheckOver     = 0x00000020,
+        kStateCheckPressed  = 0x00000040,
+        kStateCheckFocus    = 0x00000080,
+        kStateCheckDisable  = 0x00000100,
+
+        kStateDefaultTile   = 0x00010000
+    };
 }; //end class
 
 #endif // HENUMS_H

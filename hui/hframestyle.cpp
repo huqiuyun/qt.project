@@ -37,7 +37,6 @@ Qt::WindowFlags HFrameStyle::windowFlags() const
     return mWinFlags;
 }
 
-
 bool HFrameStyle::hasStyleSheet() const
 {
     return (mStyleSheet.size() > 1);
@@ -68,6 +67,17 @@ HClassInfo HFrameStyle::sceneStyle() const
     return mSceneStyle;
 }
 
+QString HFrameStyle::windowAttribute() const
+{
+    return mWindowAttribute;
+}
+
+void HFrameStyle::setWindowAttribute(const QString& a)
+{
+    mWindowAttribute = a;
+    _setWindowAttribute();
+}
+
 void HFrameStyle::copyTo(HBaseStyle* obj)
 {
     HFrameStyle* style = static_cast<HFrameStyle*>(obj);
@@ -76,6 +86,7 @@ void HFrameStyle::copyTo(HBaseStyle* obj)
     style->setWindowFlags(mWinFlags);
     style->setStyleSheet(mStyleSheet);
     style->setSceneStyle(mSceneStyle);
+    style->setWindowAttribute(mWindowAttribute);
     HWidgetStyle::copyTo(obj);
 }
 
@@ -89,10 +100,29 @@ HBaseStyle* HFrameStyle::clone()
 
 void  HFrameStyle::init()
 {
+    qDebug("HFrameStyle::init");
     mWindow->setWindowFlags(windowFlags());
 
     if (hasStyleSheet()) {
         mWindow->setStyleSheet(styleSheet());
+    }
+    _setWindowAttribute();
+}
+
+void HFrameStyle::_setWindowAttribute()
+{
+    if (!mWindow) return;
+
+    QStringList list = mWindowAttribute.split("|");
+    for(int i=0; i< list.size();i++) {
+        QString attr = list.at(i);
+        QStringList item = attr.split(":");
+        if (item.size()>=2)
+        {
+            int val = item.at(0).toInt();
+            if (val>=0 && val < Qt::WA_AttributeCount)
+                mWindow->setAttribute((Qt::WidgetAttribute)val,(item.at(1)==QLatin1String("true")));
+        }
     }
 }
 

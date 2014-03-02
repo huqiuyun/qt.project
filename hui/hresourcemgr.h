@@ -1,7 +1,7 @@
 #ifndef HRESOURCEMGR_H
 #define HRESOURCEMGR_H
 
-#include "hconfig.h"
+#include "hbase.h"
 #include <QPixmap>
 #include <QByteArray>
 
@@ -25,6 +25,9 @@ public:
     bool colorizeWithPixmap(QPixmap& pixmap);
     bool colorizeWithColor(const QColor& color);
 
+    bool findImageTile(qint64 key,HImageTile* tile);
+    void addImageTile(qint64 key,const HImageTile& tile);
+    void removeImageTile(qint64 key);
 signals:
     void colorChanged(const QColor& rgb);
 

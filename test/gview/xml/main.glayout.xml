@@ -12,7 +12,8 @@
    <!-->
    <style>
      <obj class="HBackgroundStyle" name="" styleid="backgroundId2">
-       <property id="color">200,20,200</property>
+       <property id="sysTile">true</property>
+       <property id="imagePath">:/theme/bg.png</property>
      </obj>
 
      <obj class="HGWidgetStyle" name="" styleid="gwidgetId2">
@@ -28,7 +29,6 @@
 
      <obj class="HGWidgetStyle" name="" styleid="gwidgetId3">
        <property id="styleSheet"></property>
-       <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
        <obj id="layoutStyle" class="HGLayoutStyle" name="layoutStyle" styleid="glayoutId3"/>
      </obj>
 
@@ -49,7 +49,7 @@
 
    <widget class="HGWidget" name="" styleid="gwidgetId3">
       <style/>
-      <property id="color">160,16,16</property>
+      <property id="color"></property>
       <property id="openGraphicsItemFlag">16</property>
       <layout>
         <widget class="HQWidget" name="" styleid="gwidgetframeId">

@@ -4,28 +4,22 @@
 #include "hctypes.h"
 #include "herror.h"
 #include <QObject>
+#include <QtGlobal>
 
-#if defined(WIN32)
+#define H_DECL_EXPORT Q_DECL_EXPORT
+#define H_DECL_IMPORT Q_DECL_IMPORT
 
-#ifdef QT_DLL
-    #include <QtGlobal>
-    #define H_DECL_EXPORT Q_DECL_EXPORT
-    #define H_DECL_IMPORT Q_DECL_IMPORT
-#else
-    #define H_DECL_EXPORT __declspec(dllexport)
-    #define H_DECL_IMPORT __declspec(dllimport)
-#endif
+# ifdef HUI_DLL
 
-#else // other platform
-    #define H_DECL_EXPORT
-    #define H_DECL_IMPORT
-#endif
+#   ifdef BUILD_HUI
+#     define H_API H_DECL_EXPORT
+#   else
+#     define H_API H_DECL_IMPORT
+#   endif // BUILD_HUI
 
-#  ifdef BUILD_HUI
-#    define H_API H_DECL_EXPORT
-#  else
-#    define H_API H_DECL_IMPORT
-#  endif // BUILD_HUI
+# else
+#    define H_API
+#endif // HUI_DLL
 
 #define hDelete(h)  if (h) { delete (h); (h)= NULL;}
 #define hDelete2(h) if (h) { delete[] (h); (h)= NULL;}

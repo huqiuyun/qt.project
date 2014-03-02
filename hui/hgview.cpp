@@ -106,9 +106,9 @@ HGView::~HGView()
 void HGView::doConstruct()
 {
     Q_D(HGView);
-    if (d->mFrameStyle) {
+    if (d->mFrameStyle)
        d->mFrameStyle->init();
-    }
+
     construct();
 }
 
@@ -237,12 +237,11 @@ bool HGView::nativeEvent(const QByteArray & eventType, void * message, long * re
     return d_func()->mFrameStyle->nativeEvent(eventType,message,result);
 }
 
-
 void HGView::drawBackground(QPainter *painter, const QRectF &rect)
 {
     Q_D(HGView);
     if (d->mBackgroundStyle)
-        d->mBackgroundStyle->draw(painter,rect.toRect());
+        d->mBackgroundStyle->draw(painter,rect.toRect(),0);
 }
 
 /** add widget to owner layout */

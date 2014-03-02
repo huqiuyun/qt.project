@@ -57,6 +57,13 @@ void HQWidgetPrivate::initStyle(const HStyle* style)
         mLayoutStyle->backup(style);
         mLayoutStyle->setWindow(q_ptr);
     }
+    if (framestyle->hasBackgroundStyle()) {
+        HCreateParam param;
+        HClassInfo cls = framestyle->backgroundStyle();
+        HBackgroundStyle* back = static_cast<HBackgroundStyle*>(HFACTORY->createObject(cls,q_ptr,param));
+        mBackgroundStyle = QSharedPointer<HBackgroundStyle>(back);
+        mBackgroundStyle->backup(style);
+    }
 }
 
 IMPLEMENT_QWIDGET_STATIC_CREATE(HQWidget,HQWidget,USEOBJTYPE(HQWidget))
@@ -260,6 +267,15 @@ void HQWidget::resizeEvent(QResizeEvent *event)
         d->mLayoutStyle->resizeEvent(event->size());
 
     emit resized();
+}
+
+void HQWidget::paintEvent(QPaintEvent*)
+{
+    Q_D(HQWidget);
+    if (d->mBackgroundStyle) {
+        QPainter painter(this);
+        d->mBackgroundStyle->draw(&painter,rect(),HEnums::kStateDefaultTile);
+    }
 }
 
 bool HQWidget::nativeEvent(const QByteArray & eventType, void * message, long * result)

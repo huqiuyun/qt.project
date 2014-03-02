@@ -7,8 +7,7 @@
         <file>xml/main.scene.xml</file>
         <file>xml/main.widget.xml</file>
         <file>xml/main.qlayout.xml</file>
-    </qresource>
-    <qresource prefix="/">
-        <file>theme/mm.jpg</file>
+        <file>theme/bg.png</file>
+        <file>theme/bg1.png</file>
     </qresource>
 </RCC>

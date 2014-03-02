@@ -20,6 +20,7 @@ class H_API HBackgroundStyle : public HBaseStyle
     Q_PROPERTY( QString imagePath READ imagePath WRITE setImagePath )
     Q_PROPERTY( QColor color READ color WRITE setColor )
     Q_PROPERTY( QBrush backgroundBrush READ backgroundBrush WRITE setBackgroundBrush )
+    Q_PROPERTY( bool sysTile READ sysTile WRITE setSysTile )
 
 public:
     explicit HBackgroundStyle(QObject *parent = 0);
@@ -51,11 +52,16 @@ public:
     QBrush backgroundBrush() const;
     void setBackgroundBrush(const QBrush& brush);
 
+    bool sysTile() const;
+    void setSysTile(bool sys);
+    HImageTile tileImage() const;
+    void setImageTile(const HImageTile& t);
 public:
     virtual HBaseStyle* clone();
     virtual void copyTo(HBaseStyle* obj);
-    virtual void draw(QPainter * painter, const QRect &rect);
-    virtual void drawColor(QPainter* painter,const QRect& rect);
+    virtual void draw(QPainter * painter, const QRect &rect, int index);
+    virtual void drawColor(QPainter* painter,const QRect& rect, int index);
+    virtual void drawImage(QPainter* painter,const QRect& rect, int index);
 
 signals:
     /** @param type = 0, unk
@@ -74,7 +80,6 @@ protected:
 
 protected:
     HBackgroundStylePrivate* d_ptr;
-    QPixmap mImage;
     HResourceMgr* mResMgr;
 };
 

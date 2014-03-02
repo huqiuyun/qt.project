@@ -29,7 +29,7 @@
     <obj class="HGSceneStyle" name="" styleid="sceneId">
        <property id="alignment"></property>
        <property id="sizePolicy">QSizePolicy::Fixed</property>
-       <property id="foregroundBrush">color|100,100,100,200</property>
+
     </obj>
 
     <!-- <!-->
@@ -52,8 +52,7 @@
     <obj class="HBackgroundStyle" name="" styleid="backgroundId">
        <property id="alignment">Qt::AlignLeft|Qt::AlignTop</property>
        <property id="margins">1,1,1,1</property>
-       <property id="imagePath"></property>
-       <property id="color">200,20,200</property>
+       <property id="imagePath">:/theme/bg1.png</property>
     </obj>
 
     <!-- <!-->
@@ -65,10 +64,13 @@
 
     <!-- <!-->
     <obj class="HFrameStyle" name="" styleid="framewindowId">
-       <property id="windowFlags">Qt::Window</property>
+       <property id="windowFlags">Qt::Tool|Qt::FramelessWindowHint</property>
        <property id="styleSheet"></property>
+       <property id="windowOpacity">1</property>
+       <property id="windowAttribute">120:true</property>
        <obj id="layoutStyle" class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId"/>
        <obj id="sceneStyle" class="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
+       <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId"/>
     </obj>
 
  </style>
