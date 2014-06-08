@@ -1,0 +1,4 @@
+#ifndef QKEDUCHANNEL_H
+#define QKEDUCHANNEL_H
+
+#endif // QKEDUCHANNEL_H
