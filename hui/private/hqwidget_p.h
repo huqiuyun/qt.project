@@ -2,8 +2,9 @@
 #define HGWIDGET_P_H
 
 #include "hbase.h"
-#include "hqlayoutstyle.h"
+#include "hqlayout.h"
 
+class HImageStyle;
 class HQWidget;
 class HFrameStyle;
 class HStyle;
@@ -18,13 +19,15 @@ private:
     void init();
     bool installStyle(const HStyle* style);
     void initStyle(const HStyle* style);
-
+    void initFontStyle(const HStyle* style,const char* styleid);
+protected:
+    virtual void onInitStyle(const HStyle*){}
 protected:
     friend class HQWidget;
     HQWidget  *q_ptr;
-    QSharedPointer<HFrameStyle>      mFrameStyle;
-    QSharedPointer<HBackgroundStyle> mBackgroundStyle;
-    QSharedPointer<HQLayoutStyle>    mLayoutStyle;
+    HQLayout*    mLayout;
+    QSharedPointer<HFrameStyle>  mFrameStyle;
+    QSharedPointer<HImageStyle>  mBkgStyle;
 };
 
 #endif // HGWIDGET_P_H

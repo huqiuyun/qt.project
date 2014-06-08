@@ -1,4 +1,4 @@
-#include "huiReader.h"
+#include "huireader.h"
 #include "hgwidget.h"
 #include "hgview.h"
 #include "hcore.h"
@@ -6,10 +6,12 @@
 #include "hfactory.h"
 #include "hqwidget.h"
 #include "hresourcemgr.h"
-#include "hgscenestyle.h"
+#include "hgsceneitem.h"
 #include "hpropertyproxy.h"
 #include "huitask.h"
 #include "hcreator.h"
+#include "hglayout.h"
+#include "hqlayout.h"
 #include <QWidget>
 #include <QGraphicsItem>
 #include <QGraphicsWidget>
@@ -17,10 +19,46 @@
 #include <QXmlStreamReader>
 #include <QMetaEnum>
 #include <QDir>
+#include <QMetaProperty>
+
+class HuiNextKey
+{
+public:
+    HuiNextKey()
+    {
+        task = NULL;
+        fnTask = NULL;
+        obj = NULL;
+        fnObject = NULL;
+    }
+    explicit HuiNextKey(HuiTask* t,fnReaderTask fT, QObject* o, fnReaderObject fO)
+    {
+        task = t;
+        fnTask = fT;
+        obj = o;
+        fnObject = fO;
+    }
+    HuiNextKey(const HuiNextKey& key)
+    {
+        *this = key;
+    }
+    HuiNextKey& operator = (const HuiNextKey& key)
+    {
+        task = key.task;
+        fnTask = key.fnTask;
+        obj = key.obj;
+        fnObject = key.fnObject;
+        return *this;
+    }
+    HuiTask* task;
+    fnReaderTask fnTask;
+
+    QObject* obj;
+    fnReaderObject fnObject;
+};
 
 HuiReader::HuiReader(HPropertyProxy* proxy) :
     mPropertyProxy(proxy),
-    mUseProperty(false),
     kXmlHui("hui"),
     kXmlVersion("version"),
     kXmlLayout("layout"),
@@ -34,9 +72,17 @@ HuiReader::HuiReader(HPropertyProxy* proxy) :
     kXmlName("name"),
     kXmlStyleId("styleid"),
     kXmlFile("file"),
-    kXmlLayoutConf("ltconf"),
+    kXmlLayoutConfig("ltconfig"),
+    kXmlLayoutVBox("vbox"),
+    kXmlLayoutHBox("hbox"),
+    kXmlLayoutGrid("grid"),
+    kXmlLayoutAnchor("anchor"),
     kPrexSkip("skip:"),
-    kPrexProxy("proxy:")
+    kPrexProxy("proxy:"),
+    kXmlInvoke("invoke"),
+    kXmlMethod("method"),
+    kXmlArg("arg"),
+    kXmlType("type")
 {
 }
 
@@ -80,6 +126,7 @@ QList<QWidget*> HuiReader::createWidget(const QString& xml, const QString& xmlpa
     //todo push task to queue
     HuiTask task;
 
+    task.flags().isQObject = 1;
     task.flags().isQWidget = 1;
     task.setFlagsWithQWidget(parent);
 
@@ -98,6 +145,7 @@ QList<QWidget*> HuiReader::createWidget(const char* data, QWidget *parent)
     //todo push task to queue
     HuiTask task;
 
+    task.flags().isQObject = 1;
     task.flags().isQWidget = 1;
     task.setFlagsWithQWidget(parent);
 
@@ -118,6 +166,7 @@ bool HuiReader::createChild(const QString& xml, const QString& xmlpath, HGWidget
     //todo push task to queue
     HuiTask task;
 
+    task.flags().isQObject = 1;
     task.flags().isGWidget = 1;
     task.setFlagsWithHGWidget(parent);
 
@@ -136,6 +185,7 @@ bool HuiReader::createChild(const char* data, HGWidget *parent)
     //todo push task to queue
     HuiTask task;
 
+    task.flags().isQObject = 1;
     task.flags().isGWidget = 1;
     task.setFlagsWithHGWidget(parent);
 
@@ -151,7 +201,7 @@ bool HuiReader::createChild(const QString& xml, const QString& xmlpath, HGView* 
 
     //todo push task to queue
     HuiTask task;
-
+    task.flags().isQObject = 1;
     task.flags().isQWidget =  1;
     task.setFlagsWithQWidget(parent);
 
@@ -169,7 +219,7 @@ bool HuiReader::createChild(const char* data, HGView *parent)
 
     //todo push task to queue
     HuiTask task;
-
+    task.flags().isQObject = 1;
     task.flags().isQWidget =  1;
     task.setFlagsWithQWidget(parent);
 
@@ -182,6 +232,10 @@ bool HuiReader::createChild(const char* data, HGView *parent)
 bool HuiReader::createWithTask(HuiTask* task, const char* data)
 {
     QXmlStreamReader reader(data);
+    if (reader.hasError()) {
+        Q_ASSERT(0);
+        return false;
+    }
     return startWithXmlReader(task,&reader);
 }
 
@@ -190,8 +244,12 @@ bool HuiReader::createWithTask(HuiTask* task, const QString& xml, const QString&
     QByteArray bytes;
     if (!loadXml(bytes, xml, xmlpath))
         return false;
-    //
+
     QXmlStreamReader reader(bytes);
+    if (reader.hasError()) {
+        Q_ASSERT(0);
+        return false;
+    }
     return startWithXmlReader(task,&reader);
 }
 
@@ -210,7 +268,6 @@ bool HuiReader::startWithXmlReader(HuiTask* task, QXmlStreamReader* reader)
                     if (!attri.hasAttribute(kXmlVersion)) {
                         return false;
                     }
-                    mUseProperty = ((attri.value("useproperty") == QLatin1String("true")));
                     ok = true;
                 }
                 else{
@@ -219,7 +276,7 @@ bool HuiReader::startWithXmlReader(HuiTask* task, QXmlStreamReader* reader)
             }
             else if (reader->name() == kXmlStyle) {
                 if (task->canCreateStyle()) {
-                    createStyleWithXmlReader(task,reader,&hr);
+                    readStyleWithXmlReader(reader,task,&hr);
                     task->installStyle();
                 }
                 else {
@@ -228,9 +285,9 @@ bool HuiReader::startWithXmlReader(HuiTask* task, QXmlStreamReader* reader)
             }
             else if (reader->name() == kXmlWidget) {
                 if (task->canCreateWidget()) {
-                    createWidgetWithXmlReader(task,reader,&hr);
+                    createWidgetWithXmlReader(reader,task,&hr);
                     //to do add widget to list
-                    task->addWidget(mPropertyProxy,isUseProperty());
+                    task->addWidget(mPropertyProxy);
                 }
                 else {
                     reader->skipCurrentElement();
@@ -238,22 +295,30 @@ bool HuiReader::startWithXmlReader(HuiTask* task, QXmlStreamReader* reader)
             }
             else if (reader->name() == kXmlLayout) {
                 if (task->canCreateLayout()) {
-                    createLayoutWithXmlReader(task,reader, &hr);
+                    readLayoutWithXmlReader(reader,task, &hr);
                 }
                 else {
+                    Q_ASSERT(0);
                     reader->skipCurrentElement();
                 }
             }
             else if (reader->name() == kXmlScene) {
                 if (task->canCreateScene()) {
-                    createSceneWithXmlReader(task, reader, &hr);
+                    HuiNextKeyMap next;
+                    next[kXmlWidget] = HuiNextKey(task,&HuiReader::addWidgetToSceneWithXmlReader,NULL,NULL);
+                    QSharedPointer<HGSceneItem> scene = createScene(task);
+                    readKeyWithXmlReader(reader,scene.data(), kXmlScene,next);
                 }
                 else {
+                    Q_ASSERT(0);
                     reader->skipCurrentElement();
                 }
             }
             else if(reader->name() == kXmlProperty) {
-                readProperty(reader, task->objCast<QObject>(),task->mPropertys);
+                readProperty(reader, task->qObject(), task->mPropertys);
+            }
+            else if(reader->name() == kXmlInvoke) {
+                readInvoke(reader,task->qObject());
             }
             else { //other name
                 reader->skipCurrentElement();
@@ -274,13 +339,15 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
     //todo create object
     switch(func) {
     case 0: {// HQWidget , HGView OR based QWidget
+        //qDebug("create QWidget classname=%s objname=%s",clsinfo.mClsName.data(),clsinfo.mObjName.data());
         HCreateParam param;
         QWidget* parent = task->qWidget();
         QWidget* widget = HFACTORY->createQWidget(clsinfo, parent, param);
         if (!param.hasError()) {
-            task->generateChild();
+            task->createChild();
             task->mChild->mObj = widget;
             task->mChild->mObjType = param.type();
+            task->mChild->flags().isQObject = 1;
             task->mChild->flags().isQWidget = 1;
             task->mChild->setFlagsWithQWidget(widget);
         }
@@ -291,6 +358,7 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
         break;
     }
     case 1: {//HGWidget
+        //qDebug("create HGWidget classname=%s objname=%s,styleid=%s",clsinfo.mClsName.data(),clsinfo.mObjName.data(),clsinfo.mStyleId.data());
         HCreateParam param;
         QGraphicsWidget* parent = task->gWidget();
         HGWidget* item = HFACTORY->createGWidget(clsinfo, parent, param);
@@ -298,9 +366,10 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
             Q_ASSERT(item->isWidget());
 
             item->setParent(parent);
-            task->generateChild();
+            task->createChild();
             task->mChild->mObj = item;
             task->mChild->mObjType = param.type();
+            task->mChild->flags().isQObject = 1;
             task->mChild->flags().isGWidget = 1;
             task->mChild->setFlagsWithHGWidget(item);
 
@@ -312,11 +381,11 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
         break;
     }
     case 2: {//QGraphicsItem
-
+        //qDebug("create QGraphicsItem classname=%s objname=%s styleid=%s",clsinfo.mClsName.data(),clsinfo.mObjName.data(),clsinfo.mStyleId.data());
         HCreateParam param;
         QGraphicsItem* item = HFACTORY->createGItem(clsinfo, task->gItem(), param);
         if (!param.hasError()) {
-            task->generateChild();
+            task->createChild();
             task->mChild->mObj = item;
             task->mChild->mObjType = param.type();
             task->mChild->flags().isQGItem = 1;
@@ -328,6 +397,22 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
         }
         break;
     }
+    case 3 :{
+        //qDebug("create object classname=%s objname=%s,styleid=%s",clsinfo.mClsName.data(),clsinfo.mObjName.data(),clsinfo.mStyleId.data());
+        HCreateParam param;
+        QObject* obj = HFACTORY->createObject(clsinfo, task->qObject(), param);
+        if (!param.hasError()) {
+            task->createChild();
+            task->mChild->mObj = obj;
+            task->mChild->mObjType = param.type();
+            task->mChild->flags().isQObject = 1;
+            *hr = param.error();
+        }
+        else {
+            Q_ASSERT(NULL==obj);
+        }
+        break;
+    }
     default: {// other QObject not support
         break;
     }
@@ -335,35 +420,7 @@ bool HuiReader::createWidget(HuiTask* task,const HClassInfo& clsinfo, long *hr)
     return (task->mChild && (task->mChild->mObj != NULL));
 }
 
-void HuiReader::readLayoutConf(QXmlStreamReader* reader,HLayoutConf* conf)
-{
-    QXmlStreamAttributes attris = reader->attributes();
-
-    if (attris.hasAttribute("row"))
-        conf->mConf.row = attris.value("row").toInt();
-
-    if (attris.hasAttribute("col"))
-        conf->mConf.col= attris.value("col").toInt();
-
-    if (attris.hasAttribute("stretch"))
-        conf->setStretch(attris.value("stretch").toInt());
-
-    //?
-    if (attris.hasAttribute("alignment")) {
-        conf->setAlignment((Qt::Alignment)attris.value("alignment").toInt());
-    }
-
-    if (attris.hasAttribute("margins")) {
-        long hr = -1;
-        QVariant val = HuiCreator::convertQVariant_QMargins(attris.value("margins").toString(),&hr);
-        conf->fromMargins(val.value<QMargins>());
-    }
-
-    reader->skipCurrentElement();
-    return ;
-}
-
-void HuiReader::createWidgetWithXmlReader(HuiTask* task, QXmlStreamReader* reader, long *hr)
+void HuiReader::createWidgetWithXmlReader(QXmlStreamReader* reader,HuiTask* task, long *hr)
 {
     // get class info attribute
     QXmlStreamAttributes attris = reader->attributes();
@@ -371,15 +428,18 @@ void HuiReader::createWidgetWithXmlReader(HuiTask* task, QXmlStreamReader* reade
                        attris.value(kXmlStyleId).toString(),
                        attris.value(kXmlName).toString());
     if (!clsinfo.isValid()) {
+        reader->skipCurrentElement();
         return;
     }
-    //todo create widget
+
     if (!createWidget(task,clsinfo,hr)) {
         Q_ASSERT(0);
+        reader->skipCurrentElement();
         return ;
     }
-    task->flags().isXmlWidget = 1;
 
+    //qDebug("HuiReader::create widget Begin");
+    task->flags().isXmlWidget = 1;
     HuiTask* child = task->mChild;
     child->mStyle = task->mStyle; // can use parent's style
     reader->readNext();
@@ -391,36 +451,60 @@ void HuiReader::createWidgetWithXmlReader(HuiTask* task, QXmlStreamReader* reade
             if (reader->name() == kXmlProperty) {// object property
                 readProperty(reader,child->qObject(),child->mPropertys);
             }
-            else if (reader->name() == kXmlLayoutConf) {
-                readLayoutConf(reader,&child->mLayoutConf);
+            else if (reader->name() == kXmlLayoutConfig) {
+                readKeyWithXmlReader(reader,&child->mLayoutConfig,kXmlLayoutConfig);
             }
-            else if (reader->name() == kXmlLayout) {
-                if (child->canCreateLayout()) {
-                    createLayoutWithXmlReader(child,reader,hr);
+            else if(reader->name() == kXmlInvoke) {
+                readInvoke(reader,child->qObject());
+            }
+
+            else if (reader->name() == kXmlLayoutVBox) {
+                HuiNextKeyMap next;
+                next[kXmlLayout] = HuiNextKey(child,&HuiReader::readLayoutWithXmlReader,NULL,NULL);
+                HLayout* layout = createLayout(child,HEnums::kVBox);
+                readKeyWithXmlReader(reader,layout, kXmlLayoutVBox,next);
+            }
+            else if (reader->name() == kXmlLayoutHBox) {
+                HuiNextKeyMap next;
+                next[kXmlLayout] = HuiNextKey(child,&HuiReader::readLayoutWithXmlReader,NULL,NULL);
+                HLayout* layout = createLayout(child,HEnums::kHBox);
+                readKeyWithXmlReader(reader,layout, kXmlLayoutHBox,next);
+            }
+            else if (reader->name() == kXmlLayoutGrid) {
+                HuiNextKeyMap next;
+                next[kXmlLayout] = HuiNextKey(child,&HuiReader::readLayoutWithXmlReader,NULL,NULL);
+                HLayout* layout = createLayout(child,HEnums::kGrid);
+                readKeyWithXmlReader(reader,layout, kXmlLayoutGrid,next);
+            }
+            else if (reader->name() == kXmlLayoutAnchor) {
+                HuiNextKeyMap next;
+                next[kXmlLayout] = HuiNextKey(child,&HuiReader::readLayoutWithXmlReader,NULL,NULL);
+                HLayout* layout = createLayout(child,HEnums::kAnchor);
+                readKeyWithXmlReader(reader,layout, kXmlLayoutAnchor,next);
+            }
+            else if (reader->name() == kXmlStyle) {
+                readStyleWithXmlReader(reader,child,hr);
+                child->installStyle();
+            }
+            else if (reader->name() == kXmlWidget) {
+                if (child->canCreateWidget()) {
+                    createWidgetWithXmlReader(reader,child,hr);
+                    child->addWidget(mPropertyProxy);
                 }
                 else {
                     Q_ASSERT(0);
                     reader->skipCurrentElement();
                 }
             }
-            else if (reader->name() == kXmlStyle) {
-                createStyleWithXmlReader(child,reader,hr);
-                child->installStyle();
-            }
-            else if (reader->name() == kXmlWidget) {
-                if (child->canCreateWidget()) {
-                    createWidgetWithXmlReader(child,reader,hr);
-                    child->addWidget(mPropertyProxy,isUseProperty());
-                }
-                else {
-                    reader->skipCurrentElement();
-                }
-            }
             else if (reader->name() == kXmlScene) {
                 if (child->canCreateScene()) {
-                    createSceneWithXmlReader(child,reader,hr);
+                    HuiNextKeyMap next;
+                    next[kXmlWidget] = HuiNextKey(child,&HuiReader::addWidgetToSceneWithXmlReader,NULL,NULL);
+                    QSharedPointer<HGSceneItem> scene = createScene(child);
+                    readKeyWithXmlReader(reader,scene.data(), kXmlScene,next);
                 }
                 else {
+                    Q_ASSERT(0);
                     reader->skipCurrentElement();
                 }
             }
@@ -434,10 +518,60 @@ void HuiReader::createWidgetWithXmlReader(HuiTask* task, QXmlStreamReader* reade
         reader->readNext();
     }
     task->flags().isXmlWidget = 0;
+    //qDebug("HuiReader::create widget End,child property size=%d",child->mPropertys.size());
     return;
 }
 
-void HuiReader::layoutFileLink(HuiTask* task,QXmlStreamReader* reader)
+HLayout* HuiReader::createLayout(HuiTask* task, HEnums::HLayoutType type)
+{
+    if (task->isHGWidget()) {
+        HGLayout* l = NULL;
+        HGWidget* w = task->objCast<HGWidget>();
+        if (w->layoutType() != type) {
+            l = new HGLayout(w);
+            l->setLayoutType(type);
+            w->setLayout(l);
+        }
+        else
+            l = w->layout();
+
+        task->flags().isGLayout = l?1:0;
+        return l;
+    }
+    else if(task->isHQWidget()) {
+        HQLayout* l = NULL;
+        HQWidget* w = task->objCast<HQWidget>();
+        if (w->layoutType() != type) {
+            task->flags().isQLayout = 1;
+            l = new HQLayout(w);
+            l->setLayoutType(type);
+            w->setLayout(l);
+
+        }
+        else
+            l = w->layout();
+
+        task->flags().isQLayout = l?1:0;
+        return l;
+    }
+    else if(task->isHGView()) {
+        HQLayout* l = NULL;
+        HGView* w = task->objCast<HGView>();
+        if (w->layoutType() != type) {
+            l = new HQLayout(w);
+            l->setLayoutType(type);
+            w->setLayout(l);
+        }
+        else
+            l = w->layout();
+
+        task->flags().isQLayout = l?1:0;
+        return l;
+    }
+    return NULL;
+}
+
+void HuiReader::layoutFileLink(QXmlStreamReader* reader,HuiTask* task)
 {// support file
     QXmlStreamAttributes attris = reader->attributes();
     if (!attris.hasAttribute(kXmlFile))
@@ -450,66 +584,56 @@ void HuiReader::layoutFileLink(HuiTask* task,QXmlStreamReader* reader)
     createWithTask(task,attris.value(kXmlFile).toString(),task->mXmlPath);
 }
 
-void HuiReader::createLayoutWithXmlReader(HuiTask* task,QXmlStreamReader* reader, long *hr)
-{// only one <layout></layout>
-    layoutFileLink(task,reader);
+void HuiReader::readLayoutWithXmlReader(QXmlStreamReader* reader,HuiTask* task, long *hr)
+{
+    Q_UNUSED(hr);
+    layoutFileLink(reader,task);
 
+    //qDebug("HuiReader::createLayout Begin");
     task->flags().isXmlLayout = 1;
-    reader->readNext();
-    while (!reader->atEnd() && !reader->hasError()) {
-        QXmlStreamReader::TokenType token = reader->tokenType();
-        if(token == QXmlStreamReader::StartElement) {
-            if (reader->name() == kXmlStyle) {
-                createStyleWithXmlReader(task,reader,hr);
-            }
-            else if (reader->name() == kXmlWidget) {
-                //todo try create child widget
-                createWidgetWithXmlReader(task,reader,hr);
-                task->addLayout(mPropertyProxy,isUseProperty());
-            }
-            else if(reader->name() == kXmlProperty) {
-                readProperty(reader, NULL, task->mLayoutPropertys);
-            }
-            else {
-                reader->skipCurrentElement();
-            }
-        }
-        else if(token == QXmlStreamReader::EndElement) {
-            if (reader->name() == kXmlLayout) break;
-        }
-        reader->readNext();
-    }
+
+    HuiNextKeyMap next;
+    next[kXmlStyle] = HuiNextKey(task,&HuiReader::readStyleWithXmlReader,NULL,NULL);
+    next[kXmlWidget] = HuiNextKey(task,&HuiReader::addWidgetToLayoutWithXmlReader,NULL,NULL);
+    readKeyWithXmlReader(reader,NULL,kXmlLayout,next);
+
     task->flags().isXmlLayout = 0;
-    return ;
+    //qDebug("HuiReader::createLayout End");
 }
 
-void HuiReader::createSceneWithXmlReader(HuiTask* task,QXmlStreamReader* reader, long *hr)
+void HuiReader::addWidgetToLayoutWithXmlReader(QXmlStreamReader* reader,HuiTask* task, long *hr)
+{// only one <layout></layout>
+    createWidgetWithXmlReader(reader,task,hr);
+    task->addLayout(mPropertyProxy);
+}
+
+QSharedPointer<HGSceneItem> HuiReader::createScene(HuiTask* task)
 {
+    QSharedPointer<HGSceneItem> scene;
+    HGView* view = task->objCast<HGView>();
+    scene = view->sceneItem();
+    if (!scene) {
+      scene = QSharedPointer<HGSceneItem>(new HGSceneItem(view));
+      view->setSceneItem(scene);
+    }
+    task->flags().isScene = 1;
+    return scene;
+}
+
+void HuiReader::addWidgetToSceneWithXmlReader(QXmlStreamReader* reader,HuiTask* task, long *hr)
+{
+    //qDebug("HuiReader::createScene");
     task->flags().isXmlScene = 1;
 
-    reader->readNext();
-    while (!reader->atEnd() && !reader->hasError()) {
-        QXmlStreamReader::TokenType token = reader->tokenType();
-        if(token == QXmlStreamReader::StartElement) {
-            if (reader->name() == kXmlWidget) {
-                //todo try create child widget
-                createWidgetWithXmlReader(task,reader,hr);
-                task->addScene();
-            }
-            else {//other ignore
-                reader->skipCurrentElement();
-            }
-        }
-        else if(token == QXmlStreamReader::EndElement) {
-            if (reader->name() == kXmlScene) break;
-        }
-        reader->readNext();
-    }
+    //todo try create one child widget
+    createWidgetWithXmlReader(reader,task,hr);
+    task->addScene();
+
     task->flags().isXmlScene = 0;
     return ;
 }
 
-void HuiReader::styleFileLink(HuiTask* task, QXmlStreamReader* reader)
+void HuiReader::styleFileLink(QXmlStreamReader* reader,HuiTask* task)
 {// support file link
     QXmlStreamAttributes attris = reader->attributes();
     if (!attris.hasAttribute(kXmlFile))
@@ -520,81 +644,103 @@ void HuiReader::styleFileLink(HuiTask* task, QXmlStreamReader* reader)
     createWithTask(task,attris.value(kXmlFile).toString(),task->mXmlPath);
 }
 
-void HuiReader::createObjWithXmlReader(HuiTask* task,QXmlStreamReader* reader, long *hr)
+void HuiReader::readStyleWithXmlReader(QXmlStreamReader* reader,HuiTask* task, long *hr)
 {
     Q_UNUSED(hr);
 
-    task->generateStyle();
-    QSharedPointer<HBaseStyle> styleobj;
-    {
-        QXmlStreamAttributes attris = reader->attributes();
-        HClassInfo cls(attris.value(kXmlClass).toString(),
-                       attris.value(kXmlStyleId).toString(),
-                       attris.value(kXmlName).toString());
-        styleobj = task->style()->create(cls);
-    }
+    styleFileLink(reader,task);
 
-    if (!styleobj) {
-        reader->skipCurrentElement();
-        return ;
-    }
-
-    reader->readNext();
-    while(!reader->hasError() && !reader->atEnd()) {
-        QXmlStreamReader::TokenType token = reader->tokenType();
-
-        if (token == QXmlStreamReader::StartElement) {
-
-            if (reader->name() == kXmlObj) {
-                QXmlStreamAttributes attris = reader->attributes();
-                QString id = attris.value(kXmlId).toString();
-                HClassInfo cls(attris.value(kXmlClass).toString(),
-                               attris.value(kXmlStyleId).toString(),
-                               attris.value(kXmlName).toString());
-
-                styleobj->setProperty(id.toLatin1(),cls.toQVariant());
-                reader->skipCurrentElement();
-            }
-            else if(reader->name() == kXmlProperty) {//one property
-                readProperty(reader, styleobj.data(), task->mPropertys);
-            }
-            else {
-                reader->skipCurrentElement();
-            }
-        }
-        else if (token == QXmlStreamReader::EndElement) {
-            if(reader->name() == kXmlObj)
-                break;
-        }
-        reader->readNext();
-    }
+    HuiNextKeyMap next;
+    next[kXmlObj] = HuiNextKey(task,&HuiReader::createStyleWithXmlReader,NULL,NULL);
+    readKeyWithXmlReader(reader,NULL,kXmlStyle,next);
 }
 
-void HuiReader::createStyleWithXmlReader(HuiTask* task,QXmlStreamReader* reader, long *hr)
+void HuiReader::createStyleWithXmlReader(QXmlStreamReader* reader,HuiTask* task, long *hr)
 {
-    styleFileLink(task,reader);
+    Q_UNUSED(hr);
 
+    //qDebug("HuiReader::createStyle Begin");
+    task->createStyle();
+
+    QSharedPointer<HBaseStyle> style;
+    QXmlStreamAttributes attr = reader->attributes();
+    HClassInfo cls(attr.value(kXmlClass).toString(),
+                   attr.value(kXmlStyleId).toString(),
+                   attr.value(kXmlName).toString());
+    style = task->style()->create(cls);
+    if (style) {
+        HuiNextKeyMap next;
+        next[kXmlObj] = HuiNextKey(NULL,NULL,style.data(),&HuiReader::readChildStyle);
+        readKeyWithXmlReader(reader,style.data(),kXmlObj,next);
+    }
+    else {
+        reader->skipCurrentElement();
+    }
+    //qDebug("HuiReader::createStyle End");
+    return ;
+}
+
+void HuiReader::readChildStyle(QXmlStreamReader* reader,QObject* obj)
+{
+    QXmlStreamAttributes attris = reader->attributes();
+    QString id = attris.value(kXmlId).toString();
+    HClassInfo cls(attris.value(kXmlClass).toString(),
+                   attris.value(kXmlStyleId).toString(),
+                   attris.value(kXmlName).toString());
+    QMetaObject::invokeMethod(obj,"addChild",Q_ARG(const QString&,id),Q_ARG(const HClassInfo&, cls));
+    reader->skipCurrentElement();
+}
+
+void HuiReader::readKeyWithXmlReader(QXmlStreamReader* reader,QObject* obj,const QLatin1String& endKey,
+                                     const QMap<QString,HuiNextKey>& next)
+{
+    QList<HIdValue> style_propertys;
     reader->readNext();
-
     while(!reader->hasError() && !reader->atEnd()) {
         QXmlStreamReader::TokenType token = reader->tokenType();
+
         if (token == QXmlStreamReader::StartElement) {
-            if (reader->name() == kXmlObj)
-                createObjWithXmlReader(task,reader,hr);
-            else
-                reader->skipCurrentElement();
+
+            if(reader->name() == kXmlProperty) {
+                readProperty(reader, obj, style_propertys);
+            }
+            else if(reader->name() == kXmlInvoke) {
+                readInvoke(reader,obj);
+            }
+            else {
+                HuiNextKeyMap::const_iterator iter = next.find(reader->name().toString());
+                if (iter != next.end()) {
+
+                    if(iter->fnObject && iter->obj) {
+                        (this->*(iter->fnObject))(reader,iter->obj);
+                    }
+                    else if(iter->fnTask && iter->task) {
+                        long hr = 0;
+                        (this->*(iter->fnTask))(reader,iter->task,&hr);
+                    }
+                    else
+                      reader->skipCurrentElement();
+                }
+                else {
+                    reader->skipCurrentElement();
+                }
+            }
         }
         else if (token == QXmlStreamReader::EndElement) {
-            if (reader->name() == kXmlStyle)
+            if(reader->name() == endKey)
                 break;
         }
         reader->readNext();
     }
-    return ;
+    HuiTask::setProperty(obj,style_propertys);
 }
 
 void HuiReader::readProperty(QXmlStreamReader* reader, QObject* obj, QList<HIdValue>& propertys)
 {
+    if (!obj) {
+        reader->skipCurrentElement();
+        return;
+    }
     QXmlStreamAttributes attris = reader->attributes();
     if(!attris.hasAttribute(kXmlId)) {
         reader->skipCurrentElement(); // skipping any child nodes
@@ -624,8 +770,8 @@ void HuiReader::readProperty(QXmlStreamReader* reader, QObject* obj, QList<HIdVa
                 if (skip||proxy) {
                     propertys.append(HIdValue(id,reader->text().toString(),proxy));
                 }
-                else if ( HuiTask::setProperty(obj,id,reader->text().toString(),isUseProperty())) {
-                    propertys.append(HIdValue(id,reader->text().toString(),proxy));
+                else if (!HuiTask::setProperty(obj,id,reader->text().toString())) {
+                    propertys.append(HIdValue(id,reader->text().toString(),true));
                 }
             }
         }
@@ -635,6 +781,111 @@ void HuiReader::readProperty(QXmlStreamReader* reader, QObject* obj, QList<HIdVa
         }
         reader->readNext();
     }
+}
+
+void HuiReader::readInvoke(QXmlStreamReader* reader,QObject* obj)
+{
+    if (!obj) {
+        reader->skipCurrentElement();
+        return;
+    }
+    QXmlStreamAttributes attris = reader->attributes();
+    QByteArray method = attris.value(kXmlMethod).toLocal8Bit();
+
+    QVector<QVariant> args;
+    reader->readNext();
+    while(!reader->atEnd() && !reader->hasError()) {
+        QXmlStreamReader::TokenType token = reader->tokenType();
+
+        if(token == QXmlStreamReader::StartElement) {
+            if (reader->name() == kXmlArg) {
+                readArg(reader,args);
+            }
+            else {
+                reader->skipCurrentElement();
+            }
+        }
+        else if (token == QXmlStreamReader::EndElement) {
+            if (reader->name() == kXmlInvoke)
+                break;
+        }
+        reader->readNext();
+    }
+    HuiTask::invoke(obj,method.data(),args);
+}
+
+void HuiReader::readArg(QXmlStreamReader* reader, QVector<QVariant>& args)
+{
+    QXmlStreamAttributes attris = reader->attributes(); 
+    QString argType = attris.value(kXmlType).toString();
+    if (argType.size()<3) {
+        reader->skipCurrentElement();
+        return ;
+    }
+    QString argValue;
+
+    reader->readNext();
+    while(!reader->atEnd() && !reader->hasError()) {
+        QXmlStreamReader::TokenType token = reader->tokenType();
+
+        if(token == QXmlStreamReader::StartElement) {
+            reader->skipCurrentElement();
+        }
+        else if (token == QXmlStreamReader::Characters) {// id , text = isWhitespace() or isCDATA()
+            if (!reader->isWhitespace()) {
+                argValue = reader->text().toString();
+            }
+        }
+        else if (token == QXmlStreamReader::EndElement) {
+            if (reader->name() == kXmlArg)
+                break;
+        }
+        reader->readNext();
+    }  
+    readArg(argType,argValue,args);
+}
+
+void HuiReader::readArg(const QString& type,const QString& argValue, QVector<QVariant>& args)
+{
+    long hr = -1;
+    if (type == QLatin1String("string"))
+        args.append(HuiCreator::convertQVariant_QString(argValue, &hr));
+
+    else if (type == QLatin1String("color"))
+        args.append(HuiCreator::convertQVariant_QColor(argValue, &hr));
+
+    if (type == QLatin1String("brush"))
+        args.append(HuiCreator::convertQVariant_QBrush(argValue, &hr));
+
+    else if (type == QLatin1String("margins"))
+        args.append(HuiCreator::convertQVariant_QMargins(argValue, &hr));
+
+    else if (type == QLatin1String("rect"))
+        args.append(HuiCreator::convertQVariant_QRect(argValue, &hr));
+
+    else if (type == QLatin1String("rectF"))
+        args.append(HuiCreator::convertQVariant_QRectF(argValue, &hr));
+
+    else if (type == QLatin1String("point"))
+        args.append(HuiCreator::convertQVariant_QPoint(argValue, &hr));
+
+    else if (type == QLatin1String("pointF"))
+        args.append(HuiCreator::convertQVariant_QPointF(argValue, &hr));
+
+    else if (type == QLatin1String("sizeF"))
+        args.append(HuiCreator::convertQVariant_QSizeF(argValue, &hr));
+
+    else if (type == QLatin1String("size"))
+        args.append(HuiCreator::convertQVariant_QSize(argValue, &hr));
+
+    else if (type == QLatin1String("int"))
+        args.append(HuiCreator::convertQVariant_int(argValue, &hr));
+
+    else if (type == QLatin1String("qreal"))
+        args.append(HuiCreator::convertQVariant_qreal(argValue, &hr));
+
+    else if (type == QLatin1String("bool"))
+        args.append(HuiCreator::convertQVariant_bool(argValue, &hr));
 }
 
 

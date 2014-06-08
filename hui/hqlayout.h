@@ -1,20 +1,18 @@
-#ifndef HQLAYOUTSTYLE_H
-#define HQLAYOUTSTYLE_H
+#ifndef HQLAYOUT_H
+#define HQLAYOUT_H
 
-#include "hlayoutstyle.h"
+#include "hlayout.h"
+#include "hlayoutconfig.h"
 #include <QPointer>
-#include <QList>
 
 class QWidget;
 class QLayout;
 
-class H_API HQLayoutStyle : public HLayoutStyle
+class H_API HQLayout : public HLayout
 {
 public:
-    explicit HQLayoutStyle(QObject *parent = 0);
-    explicit HQLayoutStyle(const HObjectInfo& objinfo, QObject *parent = 0);
+    explicit HQLayout(QObject *parent = 0);
 
-     DECLARE_OBJECT_STATIC_CREATE(HQLayoutStyle);
 public:
     void setWindow(QWidget* window);
     QLayout* layout() const;
@@ -36,17 +34,16 @@ public:
     void setAlignment(QWidget* w, Qt::Alignment align);
     /** add widget to owner layout */
     virtual int  addWidget(QWidget* widget);
-    virtual int  insertWidget(QWidget* widget ,const HLayoutConf& conf);
+    virtual int  insertWidget(QWidget* widget ,const HLayoutConfig& conf);
     virtual bool removeWidget(QWidget* widget);
 
-    virtual bool addChildWidget(QWidget* widget ,const HLayoutConf& conf);
+    virtual bool addChildWidget(QWidget* widget ,const HLayoutConfig& conf);
     virtual void removeChildWidget(QWidget* widget);
 
     virtual void resizeEvent(const QSize& );
-    virtual HBaseStyle* clone();
 protected:
-    HChildWidgetList<QWidget> mChilds;
+    HItemWidgets<QWidget> mChilds;
     QWidget* mWindow;
 };
 
-#endif // HQLAYOUTSTYLE_H
+#endif // HQLAYOUT_H

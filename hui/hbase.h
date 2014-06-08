@@ -9,6 +9,8 @@
 #include <QMetaType>
 #include <QMargins>
 #include <QList>
+#include <QVector>
+#include <QColor>
 #include <QSharedPointer>
 
 /** stylid , objectname, classname */
@@ -85,10 +87,16 @@ public:
 
     int objType() const {return mObjType;}
     const char* styleId() const { return mStyleId.data();}
+
+    static int objectIndex()
+    {
+        static int s_index = 0;
+        return s_index++;
+    }
 protected:
     template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
-    virtual void doConstruct(){}
-
+    void doConstruct() {construct();}
+    virtual void construct(){}
 protected:
     int mObjType;
     HString  mStyleId;
@@ -108,13 +116,26 @@ public:
         mId(id),
         mVal(val),
         mProxy(proxy){}
+
+    HIdValue(const HIdValue& v)
+    {
+        *this = v;
+    }
+
+    HIdValue& operator = (const HIdValue& v)
+    {
+        mId = v.mId;
+        mVal = v.mVal;
+        mProxy = v.mProxy;
+        return *this;
+    }
 };
 
 template<class WIDGET>
-class HChildWidget
+class HItemWidget
 {
 public:
-    HChildWidget(WIDGET* w, const QMargins& m) :
+    HItemWidget(WIDGET* w, const QMargins& m) :
         widget(w),
         margins(m)
     {}
@@ -123,12 +144,12 @@ public:
 };
 
 template<class WIDGET>
-class HChildWidgetList
+class HItemWidgets
 {
-    typedef HChildWidget<WIDGET> VALUE;
+    typedef HItemWidget<WIDGET> VALUE;
     QList<VALUE> mChilds;
 public:
-    HChildWidgetList(){
+    HItemWidgets(){
     }
 
     int count() const {
@@ -138,6 +159,23 @@ public:
     const VALUE& at(int idx) const
     {
         return mChilds.at(idx);
+    }
+
+    WIDGET* widgetAt(int idx) const
+    {
+        if (idx<0 || idx>= mChilds.count())
+            return NULL;
+        return mChilds.at(idx).widget;
+    }
+
+    WIDGET* widgetOf(const QString& name) const
+    {
+        for (int i=0; i<mChilds.count();i++) {
+            WIDGET* w = mChilds.at(i).widget;
+            if (w && w->objectName() == name)
+                return w;
+        }
+        return NULL;
     }
 
     int at(const WIDGET* w) {
@@ -152,7 +190,8 @@ public:
 
     void remove(WIDGET* w) {
         int idx = at(w);
-        if (idx!=-1) mChilds.removeAt(idx);
+        if (idx!=-1)
+            mChilds.removeAt(idx);
     }
 };
 
@@ -180,77 +219,6 @@ private:
     HAnchorItem_t mItems[4];
 };
 Q_DECLARE_METATYPE(HAnchor)
-
-class H_API HLayoutConf
-{
-public:
-    HLayoutConf()
-    {
-    }
-
-    HLayoutConf(int index)
-    {
-        mConf.use = true;
-        mConf.row = index;
-        mConf.col = -1;
-    }
-
-    HLayoutConf(int row,int col)
-    {
-        mConf.use = true;
-        mConf.row = row;
-        mConf.col = col;
-    }
-public:
-    int pos() const { return mConf.row;}
-    int row() const { return mConf.row;}
-    int column() const { return mConf.col;}
-
-    // for QBoxLayout
-    int stretch() const {
-        return mConf.cf0;
-    }
-
-    void setStretch(int stretch) {
-        mConf.cf0 = stretch;
-    }
-
-    void setAlignment(Qt::Alignment align) {
-        mConf.cf1 = (int)align;
-    }
-
-    Qt::Alignment alignment() const {
-        return (Qt::Alignment)mConf.cf1;
-    }
-
-    void fromMargins(const QMargins& m) {
-        mConf.use = true;
-        mConf.row = m.left();
-        mConf.col = m.top();
-        mConf.cf0 = m.right();
-        mConf.cf1 = m.bottom();
-    }
-
-    QMargins toMargins() const {
-        return QMargins(mConf.row,mConf.col,mConf.cf0,mConf.cf1);
-    }
-
-    struct Conf {
-        bool use;
-        int  row; // for HBOX,VBOX, grid row , QMargins.left
-        int  col; // QMargins.top
-        int  cf0; // for QBoxLayout stretch, QMargins.right
-        int  cf1; // for QBoxLayout Alignment, QMargins.bottom
-        Conf() {
-            use = false;
-            row = col = -1;
-            cf0 = 0;
-            cf1 = 0;
-        }
-    };
-    Conf mConf;
-};
-Q_DECLARE_METATYPE(HLayoutConf)
 
 class HTileP
 {

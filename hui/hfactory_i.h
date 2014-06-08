@@ -64,7 +64,7 @@ struct HRegisterConvert
     HConvertQvariant2StringCB fnQvar2String;
 };
 
-struct  IHFactory
+struct IHFactory
 {
     virtual long coRegisterUnknown(const HRegisterUnknown* com) = 0;
     virtual long coUnRegisterUnknown(const HGuid* guid) = 0;

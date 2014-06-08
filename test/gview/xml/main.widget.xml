@@ -13,16 +13,21 @@
     3. If parent is QGraphicWidget,then child only is based GraphicsWidget.
      @exmaple,create failure:
      <widget class="HGWidget" styleid="undefined">
-       <widget class="HQWidget" name="" styleid="gwidgetId"/>
+       <widget class="HQWidget" name="" styleid="qwidgetId"/>
      </widget>
 
-     @exmaple, create success, it can be in the <layout>, but parent need be layout style:
+     @exmaple, create success, it can be in the <layout>, but parent need has layout style:
      <widget class="HGWidget" name="" styleid="gwidgetId">
         <style>
             @see main.style.xml , HGWidgetStyle
         </style>
         <layout>
-          <widget class="HQWidget" name="" styleid="undefined"/>
+          <widget class="HQWidget" name="" styleid="undefined">
+             <ltconfig>
+               <property id="index">0</property>
+               <obj id="proxyWidget" class="undefined" name="" styleid="gwidgetId"/>
+             </ltconfig>
+          </widget>
         </layout>
      </widget>
 <!-->

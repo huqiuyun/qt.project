@@ -38,97 +38,42 @@ public:
 
     DECLARE_OBJECT_STATIC_CREATE(HFontStyle);
 public:
-    inline void setFamily(const QString & f) {
-        mFont.setFamily(f);
-    }
+    void setFamily(const QString & f);
+    void setPointSize(int s);
+    void setPointSizeF(qreal s);
+    void setPixelSize(int s);
+    void setWeight(int w);
+    void setBold(bool b);
+    void setItalic(bool i);
+    void setUnderline(bool under);
+    void setOverline(bool line);
+    void setStrikeOut(bool strike);
+    void setFixedPitch(bool pitch);
+    void setKerning(bool k);
+    void setStyleStrategy(QFont::StyleStrategy s);
+    void setStretch(int s);
+    void setWordSpacing(qreal spacing);
 
-    inline void setPointSize(int s) {
-        mFont.setPointSize(s);
-    }
+    void setCapitalization(QFont::Capitalization c);
+    void setStyleHint(QFont::StyleHint style);
 
-    inline void setPointSizeF(qreal s) {
-        mFont.setPointSizeF(s);
-    }
-
-    inline void setPixelSize(int s) {
-        mFont.setPixelSize(s);
-    }
-
-    inline void setWeight(int w) {
-        mFont.setWeight(w);
-    }
-
-    inline void setBold(bool b) {
-        mFont.setBold(b);
-    }
-
-    inline void setItalic(bool i){
-        mFont.setItalic(i);
-    }
-
-    inline void setUnderline(bool under) {
-        mFont.setUnderline(under);
-    }
-
-    inline void setOverline(bool line) {
-        mFont.setOverline(line);
-    }
-
-    inline void setStrikeOut(bool strike) {
-        mFont.setStrikeOut(strike);
-    }
-
-    inline void setFixedPitch(bool pitch) {
-        mFont.setFixedPitch(pitch);
-    }
-
-    inline void setKerning(bool k) {
-        mFont.setKerning(k);
-    }
-
-    inline void setStyleStrategy(QFont::StyleStrategy s) {
-        mFont.setStyleStrategy(s);
-    }
-
-    inline void setStretch(int s) {
-        mFont.setStretch(s);
-    }
-
-    inline void setWordSpacing(qreal spacing){
-        mFont.setWordSpacing(spacing);
-    }
-
-    inline void setCapitalization(QFont::Capitalization c) {
-        mFont.setCapitalization(c);
-    }
-
-    inline void setStyleHint(QFont::StyleHint style) {
-        mFont.setStyleHint(style);
-    }
-
-    inline void setHintingPreference(QFont::HintingPreference hintingPreference) {
-        mFont.setHintingPreference(hintingPreference);
-    }
+    void setHintingPreference(QFont::HintingPreference hintingPreference);
 
     // is raw mode still needed?
-    inline void setRawMode(bool mode) {
-        mFont.setRawMode(mode);
-    }
+    void setRawMode(bool mode);
 
     // needed for X11
-    inline void setRawName(const QString & name) {
-        mFont.setRawName(name);
-    }
+    void setRawName(const QString & name);
 
     // for property need to parser result , format:  type(int)|spacing(qreal)
     void setLetterSpacing(const QString& letter);
-    inline void setLetterSpacing(QFont::SpacingType type, qreal spacing){
-        mFont.setLetterSpacing(type,spacing);
-    }
+    void setLetterSpacing(QFont::SpacingType type, qreal spacing);
 
-    QFont font() const {
-        return mFont;
-    }
+    void  setFont(const QFont& f);
+    QFont font() const;
+
+    void copyTo(HBaseStyle* obj);
+    HBaseStyle* clone();
 protected:
     QFont mFont;
 };

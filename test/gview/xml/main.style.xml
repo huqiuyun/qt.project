@@ -4,14 +4,14 @@
  <style>
 
     <obj class="HFontStyle" name="" styleid="fontId">
-       <property id="family"></property>
+       <property id="family">雅黑</property>
        <property id="pointSize"></property>
        <property id="pointSizeF"></property>
-       <property id="pixelSize"></property>
+       <property id="pixelSize">40</property>
        <property id="weight"></property>
-       <property id="bold"></property>
-       <property id="italic"></property>
-       <property id="underline"></property>
+       <property id="bold">true</property>
+       <property id="italic">true</property>
+       <property id="underline">true</property>
        <property id="overline"></property>
        <property id="strikeOut"></property>
        <property id="fixedPitch"></property>
@@ -26,56 +26,109 @@
        <property id="rawName"></property>
     </obj>
 
-    <obj class="HGSceneStyle" name="" styleid="sceneId">
-       <property id="alignment"></property>
-       <property id="sizePolicy">QSizePolicy::Fixed</property>
-
+    <obj class="HColorStyle" name="" styleid="colorId">
+       <invoke method="setColor">
+         <arg type="int">0</arg>
+         <arg type="color">200,0,200</arg>
+       </invoke>
+       <invoke method="setColor">
+         <arg type="int">1</arg>
+         <arg type="color">200,200,200</arg>
+       </invoke>
     </obj>
 
     <!-- <!-->
-    <obj class="HQLayoutStyle" name="" styleid="qlayoutId">
-       <property id="layoutType">kVBox</property>
-       <property id="alignment">Qt::AlignLeft</property>
-       <property id="margins"></property>
-       <property id="spacing">6</property>
-    </obj>
-
-    <!-- <!-->
-    <obj class="HGLayoutStyle" name="" styleid="glayoutId">
-       <property id="layoutType">kVBox</property>
-       <property id="alignment"></property>
-       <property id="margins">0,0,0,0</property>
-       <property id="spacing">6</property>
-    </obj>
-
-    <!-- <!-->
-    <obj class="HBackgroundStyle" name="" styleid="backgroundId">
+    <obj class="HImageStyle" name="" styleid="backgroundId">
+       <property id="imageStyle">ColorOnly</property>
        <property id="alignment">Qt::AlignLeft|Qt::AlignTop</property>
        <property id="margins">1,1,1,1</property>
-       <property id="imagePath">:/theme/bg1.png</property>
+       <property id="imagePath"></property>
+       <property id="color">0,192,192</property>
+       <!-- color|20,20,20,0
+            image|:/theme/bg.png
+       <!-->
+       <property id="brush"></property>
     </obj>
 
     <!-- <!-->
     <obj class="HGWidgetStyle" name="" styleid="gwidgetId">
-       <property id="styleSheet"></property>
-       <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId"/>
-       <obj id="layoutStyle" class="HGLayoutStyle" name="layoutStyle" styleid="glayoutId"/>
+       <property id="windowAttribute"></property>
+       <obj id="backgroundStyle" class="HImageStyle" name="" styleid="backgroundId"/>
     </obj>
 
-    <!-- <!-->
+    <!-- for HGView object <!-->
     <obj class="HFrameStyle" name="" styleid="framewindowId">
-       <property id="windowFlags">Qt::Tool|Qt::FramelessWindowHint</property>
-       <property id="styleSheet"></property>
-       <property id="windowOpacity">1</property>
+       <property id="windowFlags">Qt::Tool</property>
+
        <!-- 120:true|4:false|78:true
             120=Qt::WA_TranslucentBackground
             4=Qt::WA_OpaquePaintEvent
             78=Qt::WA_AcceptDrops
        <!-->
        <property id="windowAttribute">120:true</property>
-       <obj id="layoutStyle" class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId"/>
-       <obj id="sceneStyle" class="HGSceneStyle" name="sceneStyle" styleid="sceneId"/>
-       <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId"/>
+       <obj id="sceneStyle" class="HGSceneStyle" name="" styleid="sceneId"/>
+       <obj id="backgroundStyle" class="HImageStyle" name="" styleid="backgroundId"/>
+    </obj>
+
+    <!-- 水平滚动条<!-->
+    <obj class="HImageStyle" name="" styleid="ghscrollbar.backgroundId">
+       <property id="imageStyle">ColorOnly</property>
+       <property id="color">10,10,10</property>
+    </obj>
+
+    <obj class="HImageStyle" name="" styleid="ghscrollbar.sliderId">
+       <property id="imageStyle">ColorOnly</property>
+       <property id="color">200,200,200</property>
+    </obj>
+
+    <obj class="HImageStyle" name="" styleid="ghscrollbar.leftArrowId">
+       <property id="imageStyle">ColorOnly</property>
+       <property id="color">100,100,100</property>
+    </obj>
+
+    <obj class="HImageStyle" name="" styleid="ghscrollbar.rightArrowId">
+       <property id="imageStyle">ColorOnly</property>
+       <property id="color">100,100,100</property>
+    </obj>
+
+    <obj class="HGWidgetStyle" name="hscrollbar" styleid="hui.ghscrollbar">
+      <obj id="backgroundStyle" class="HImageStyle" name="" styleid="ghscrollbar.backgroundId"/>
+      <obj id="sliderStyle" class="HImageStyle" name="" styleid="ghscrollbar.sliderId"/>
+      <obj id="leftArrowStyle" class="HImageStyle" name="" styleid="ghscrollbar.leftArrowId"/>
+      <obj id="rightArrowStyle" class="HImageStyle" name="" styleid="ghscrollbar.rightArrowId"/>
+    </obj>
+
+    <!-- 垂直滚动条 <!-->
+    <obj class="HImageStyle" name="" styleid="gvscrollbar.backgroundId">
+       <property id="imageStyle">ColorOnly</property>
+       <property id="color">192,192,192</property>
+    </obj>
+    <obj class="HImageStyle" name="" styleid="gvscrollbar.sliderId">
+       <property id="imageStyle">ColorOnly</property>
+       <property id="color">19,19,19</property>
+    </obj>
+
+    <obj class="HImageStyle" name="" styleid="gvscrollbar.leftArrowId">
+       <property id="imageStyle">ColorOnly</property>
+       <property id="color">192,19,192</property>
+    </obj>
+
+    <obj class="HImageStyle" name="" styleid="gvscrollbar.rightArrowId">
+       <property id="imageStyle">ColorOnly</property>
+       <property id="color">192,19,192</property>
+    </obj>
+
+    <obj class="HImageStyle" name="" styleid="gvscrollbar.leftWorkingId">
+       <property id="imageStyle">ColorOnly</property>
+       <property id="color">100,100,192</property>
+    </obj>
+
+    <obj class="HGWidgetStyle" name="vscrollbar" styleid="hui.gvscrollbar">
+      <obj id="backgroundStyle" class="HImageStyle" name="" styleid="gvscrollbar.backgroundId"/>
+      <obj id="sliderStyle" class="HImageStyle" name="" styleid="gvscrollbar.sliderId"/>
+      <obj id="leftWorkingStyle" class="HImageStyle" name="" styleid="gvscrollbar.leftWorkingId"/>
+      <obj id="leftArrowStyle" class="HImageStyle" name="" styleid="gvscrollbar.leftArrowId"/>
+      <obj id="rightArrowStyle" class="HImageStyle" name="" styleid="gvscrollbar.rightArrowId"/>
     </obj>
 
  </style>

@@ -14,6 +14,7 @@ public:
 
     /** @state widget's state @see HWidgetState*/
     void  paint(QPainter* painter,const QRect& rect,const QColor& color, const QMargins& m);
+    void  paint(QPainter* painter,const QRect& rect,const QBrush& br, const QMargins& m);
 
     /** @state widget's state @see HWidgetState*/
     void  paint(QPainter* painter,const QRect& rect,const QPixmap& image, const QMargins& m , const HImageTile& tile,int idx);

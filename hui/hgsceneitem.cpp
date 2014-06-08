@@ -1,14 +1,15 @@
-#include "hgscenestyle.h"
+#include "hgsceneitem.h"
 #include "hgscene.h"
 #include "hgwidget.h"
+#include "hlayoutconfig.h"
 #include <QPointer>
 #include <QGraphicsView>
 #include <QList>
 
-class HGSceneStylePrivate
+class HGSceneItemPrivate
 {
 public:
-    HGSceneStylePrivate() :
+    HGSceneItemPrivate() :
         mView(NULL),
         mScene(NULL)
     {
@@ -18,37 +19,28 @@ public:
 
     QGraphicsView *mView;
     HGScene *mScene;
-    HChildWidgetList<HGWidget> mChilds;
+    HItemWidgets<HGWidget> mChilds;
     Qt::Alignment mAlignment;
     QBrush mForegroundBrush;
     QBrush mBackgroundBrush;
     QSizePolicy::Policy mSizePolicy;
 };
 
-//HGSceneStyle
-IMPLEMENT_OBJECT_STATIC_CREATE(HGSceneStyle)
-
-HGSceneStyle::HGSceneStyle(QObject *parent) :
-    HBaseStyle(parent),
-    d_ptr(new HGSceneStylePrivate())
+//HGSceneItem
+HGSceneItem::HGSceneItem(QObject *parent) :
+    QObject(parent),
+    d_ptr(new HGSceneItemPrivate())
 {
 }
 
-HGSceneStyle::HGSceneStyle(const HObjectInfo& objinfo,QObject* parent) :
-    HBaseStyle(objinfo,parent),
-    d_ptr(new HGSceneStylePrivate())
-{
-    mObjType = USEOBJTYPE(HGSceneStyle);
-}
-
-HGSceneStyle::~HGSceneStyle()
+HGSceneItem::~HGSceneItem()
 {
     hDelete(d_ptr);
 }
 
-void HGSceneStyle::setGView(QGraphicsView* view)
+void HGSceneItem::setGView(QGraphicsView* view)
 {
-    Q_D(HGSceneStyle);
+    Q_D(HGSceneItem);
     if (!d->mScene)
         d->mScene = new HGScene(this);
 
@@ -68,83 +60,70 @@ void HGSceneStyle::setGView(QGraphicsView* view)
 }
 
 /** set alignment in scene */
-Qt::Alignment HGSceneStyle::alignment() const
+Qt::Alignment HGSceneItem::alignment() const
 {
     return d_func()->mAlignment;
 }
 
-void HGSceneStyle::setAlignment(Qt::Alignment align)
+void HGSceneItem::setAlignment(Qt::Alignment align)
 {
     d_func()->mAlignment = align;
 }
 
-QSizePolicy::Policy HGSceneStyle::sizePolicy() const
+QSizePolicy::Policy HGSceneItem::sizePolicy() const
 {
     return d_func()->mSizePolicy;
 }
 
-void HGSceneStyle::setSizePolicy(QSizePolicy::Policy policy)
+void HGSceneItem::setSizePolicy(QSizePolicy::Policy policy)
 {
     d_func()->mSizePolicy = policy;
 }
 
-bool HGSceneStyle::hasForegroundBrush() const
+bool HGSceneItem::hasForegroundBrush() const
 {
     return (d_func()->mForegroundBrush.style() != Qt::NoBrush);
 }
 
-QBrush HGSceneStyle::foregroundBrush() const
+QBrush HGSceneItem::foregroundBrush() const
 {
     return d_func()->mForegroundBrush;
 }
 
-void HGSceneStyle::setForegroundBrush(const QBrush& brush)
+void HGSceneItem::setForegroundBrush(const QBrush& brush)
 {
     d_func()->mForegroundBrush = brush;
 }
 
 // scene
-bool HGSceneStyle::hasBackgroundBrush() const
+bool HGSceneItem::hasBackgroundBrush() const
 {
     return (d_func()->mBackgroundBrush.style() != Qt::NoBrush);
 }
 
-QBrush HGSceneStyle::backgroundBrush() const
+QBrush HGSceneItem::backgroundBrush() const
 {
     return d_func()->mBackgroundBrush;
 }
 
-void HGSceneStyle::setBackgroundBrush(const QBrush& brush)
+void HGSceneItem::setBackgroundBrush(const QBrush& brush)
 {
     d_func()->mBackgroundBrush = brush;
 }
 
-void HGSceneStyle::copyTo(HBaseStyle* obj)
-{
-    Q_D(HGSceneStyle);
-    HGSceneStyle* style = static_cast<HGSceneStyle*>(obj);
-    if (!style) return ;
-
-    style->setAlignment(d->mAlignment);
-    style->setBackgroundBrush(d->mBackgroundBrush);
-    style->setForegroundBrush(d->mForegroundBrush);
-    style->setSizePolicy(d->mSizePolicy);
-    HBaseStyle::copyTo(obj);
-}
-
-bool HGSceneStyle::hasScene() const
+bool HGSceneItem::hasScene() const
 {
     return d_func()->mScene != NULL;
 }
 
-HGScene* HGSceneStyle::scene() const
+HGScene* HGSceneItem::scene() const
 {
     return d_func()->mScene;
 }
 
-void HGSceneStyle::reSize(const QRectF& rect)
+void HGSceneItem::reSize(const QRectF& rect)
 {
-    Q_D(HGSceneStyle);
+    Q_D(HGSceneItem);
     if (!d->mView)
         return ;
 
@@ -156,7 +135,7 @@ void HGSceneStyle::reSize(const QRectF& rect)
     QSize s(rect.width(),rect.height());
     for (int i = 0; i < d->mChilds.count();i++) {
 
-        const HChildWidget<HGWidget>* iter = &d->mChilds.at(i);
+        const HItemWidget<HGWidget>* iter = &d->mChilds.at(i);
 
         QRectF rc(QPoint(0,0),s);
 
@@ -184,46 +163,34 @@ void HGSceneStyle::reSize(const QRectF& rect)
     }
 }
 
-void HGSceneStyle::doConstruct()
-{
-}
-
-HBaseStyle* HGSceneStyle::clone()
-{
-    HGSceneStyle* style = new HGSceneStyle(HObjectInfo(styleId(),""),parent());
-    copyTo(style);
-
-    return style;
-}
-
-bool HGSceneStyle::addGWidget(HGWidget* widget,const HLayoutConf& conf)
+bool HGSceneItem::addGWidget(HGWidget* widget,const HLayoutConfig& conf)
 {
     Q_UNUSED(conf);
-    Q_D(HGSceneStyle);
+    Q_D(HGSceneItem);
     if (hasScene()) {
         d->mScene->addItem(widget);
 
         if (-1 == d->mChilds.at(widget))
-            d->mChilds.add(widget,conf.toMargins());
+            d->mChilds.add(widget,conf.margins());
 
         return true;
     }
     return false;
 }
 
-void HGSceneStyle::removeGWidget(HGWidget* widget)
+void HGSceneItem::removeGWidget(HGWidget* widget)
 {
-    Q_D(HGSceneStyle);
+    Q_D(HGSceneItem);
     if (hasScene()) {
         d->mScene->removeItem(widget);
         d->mChilds.remove(widget);
     }
 }
 
-bool HGSceneStyle::addItem(QGraphicsItem* item,const HLayoutConf& conf)
+bool HGSceneItem::addItem(QGraphicsItem* item,const HLayoutConfig& conf)
 {
     Q_UNUSED(conf);
-    Q_D(HGSceneStyle);
+    Q_D(HGSceneItem);
     if (hasScene()) {
         d->mScene->addItem(item);
         return true;
@@ -231,12 +198,25 @@ bool HGSceneStyle::addItem(QGraphicsItem* item,const HLayoutConf& conf)
     return false;
 }
 
-void HGSceneStyle::removeItem(QGraphicsItem* item)
+void HGSceneItem::removeItem(QGraphicsItem* item)
 {
-    Q_D(HGSceneStyle);
+    Q_D(HGSceneItem);
     if (hasScene()) {
         d->mScene->removeItem(item);
     }
 }
 
+HGWidget* HGSceneItem::widgetAt(int index)
+{
+    Q_D(HGSceneItem);
+
+    return d->mChilds.widgetAt(index);
+}
+
+HGWidget* HGSceneItem::widgetOf(const QString& name)
+{
+    Q_D(HGSceneItem);
+
+    return d->mChilds.widgetOf(name);
+}
 

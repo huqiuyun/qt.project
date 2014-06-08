@@ -7,8 +7,9 @@
 
 class HQWidgetPrivate;
 class HFrameStyle;
-class HBackgroundStyle;
-class HQLayoutStyle;
+class HImageStyle;
+class HQLayout;
+class HLayoutConfig;
 class HStyle;
 class HGWidget;
 
@@ -22,21 +23,24 @@ class H_API HQWidget : public QWidget, public HObject
     Q_PROPERTY( QSize resize WRITE resizeEx )
     Q_PROPERTY( bool isHQWidget READ isHQWidget)
     Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
-
+    Q_PROPERTY( int indexOfBkgImage READ indexOfBkgImage WRITE setIndexOfBkgmage )
 public:
-    explicit HQWidget(QWidget *parent = 0);
     explicit HQWidget(const HObjectInfo& objinfo, QWidget* parent = NULL);
     ~HQWidget();
 
     DECLARE_QWIDGET_STATIC_CREATE(HQWidget);
 public:
     Q_INVOKABLE void installStyle(const HStyle* style);
+    Q_INVOKABLE void initFontStyle(const char* styleid,const HStyle* style=NULL);
 
     void setFrameStyle(QSharedPointer<HFrameStyle> style);
     QSharedPointer<HFrameStyle> frameStyle() const;
 
-    void setLayoutStyle(QSharedPointer<HQLayoutStyle> style);
-    QSharedPointer<HQLayoutStyle> layoutStyle() const;
+    void setBackgroundStyle(QSharedPointer<HImageStyle> style);
+    QSharedPointer<HImageStyle> backgroundStyle() const;
+
+    void setLayout(HQLayout* l);
+    HQLayout* layout() const;
 
     HEnums::HLayoutType layoutType() const;
 
@@ -45,13 +49,12 @@ public:
 
     /** add widget to owner layout */
     virtual int addWidget(QWidget* widget);
-    virtual int insertWidget(QWidget* widget ,const HLayoutConf& conf);
+    virtual int insertWidget(QWidget* widget ,const HLayoutConfig& conf);
     virtual bool removeWidget(QWidget* widget) ;
 
-    virtual bool addChildWidget(QWidget* widget ,const HLayoutConf& conf);
+    virtual bool addChildWidget(QWidget* widget ,const HLayoutConfig& conf);
     virtual void removeChildWidget(QWidget* widget);
 
-    static void setWindowAttribute(QWidget* window,const QString& attribute);
     //property
 public:
     bool isHQWidget() const { return true;}
@@ -63,9 +66,13 @@ public:
     /** the object is alignment in parent layout */
     Qt::Alignment alignment() const;
     void setAlignment(Qt::Alignment align);
+
+    void setIndexOfBkgmage(int index);
+    int indexOfBkgImage() const;
+    virtual QRect rectOfBackgroundImage() const;
+
 protected:
-    void doConstruct();
-    virtual void construct(){}
+    virtual void construct();
     virtual void resizeEvent(QResizeEvent *);
     virtual void paintEvent(QPaintEvent*);
     virtual bool nativeEvent(const QByteArray & eventType, void * message, long * result);
@@ -75,7 +82,6 @@ signals:
 
 protected:
     template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
-    HQWidget(HQWidgetPrivate& dd,QWidget* parent);
     HQWidget(HQWidgetPrivate& dd,const HObjectInfo& objinfo,QWidget* parent);
     HQWidgetPrivate* d_ptr;
 };

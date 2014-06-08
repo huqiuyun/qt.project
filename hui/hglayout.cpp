@@ -1,29 +1,25 @@
-#include "hglayoutStyle.h"
+#include "hglayout.h"
 #include "hgwidget.h"
 #include <QWidget>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsAnchorLayout>
 #include <QGraphicsGridLayout>
 
-//HGLayoutStyle
-IMPLEMENT_OBJECT_STATIC_CREATE(HGLayoutStyle)
-
-HGLayoutStyle::HGLayoutStyle(QObject* parent) :
-    HLayoutStyle(parent),
+//HGLayout
+HGLayout::HGLayout(QObject* parent) :
+    HLayout(parent),
     mWidget(NULL)
 {
-    mObjType = USEOBJTYPE(HGLayoutStyle);
 }
 
-HGLayoutStyle::HGLayoutStyle(const HObjectInfo& objinfo,QObject* parent) :
-    HLayoutStyle(objinfo,parent),
-    mWidget(NULL)
+HGLayout::~HGLayout()
 {
-    mObjType = USEOBJTYPE(HGLayoutStyle);
+
 }
 
-void HGLayoutStyle::setWidget(HGWidget* widget)
+void HGLayout::setWidget(HGWidget* widget)
 {
+    //qDebug("HGLayout::setWidget");
     mWidget = widget;
 
     //todo create layout object
@@ -32,14 +28,14 @@ void HGLayoutStyle::setWidget(HGWidget* widget)
     setSpacing(mSpacing);
 }
 
-QGraphicsLayout* HGLayoutStyle::layout() const
+QGraphicsLayout* HGLayout::layout() const
 {
-    return mWidget?mWidget->layout():NULL;
+    return mWidget?mWidget->QGraphicsWidget::layout():NULL;
 }
 
-void HGLayoutStyle::setSpacing(int s)
+void HGLayout::setSpacing(int s)
 {
-    HLayoutStyle::setSpacing(s);
+    HLayout::setSpacing(s);
 
     QGraphicsLayout* ll = layout();
     if (!ll) return ;
@@ -66,12 +62,12 @@ void HGLayoutStyle::setSpacing(int s)
     }
 }
 
-int HGLayoutStyle::spacing() const
+int HGLayout::spacing() const
 {
-    return HLayoutStyle::spacing();
+    return HLayout::spacing();
 }
 
-QMargins HGLayoutStyle::margins() const
+QMargins HGLayout::margins() const
 {
     if (layout()) {
         qreal left = 0;
@@ -81,25 +77,25 @@ QMargins HGLayoutStyle::margins() const
         layout()->getContentsMargins(&left, &top, &right, &bottom);
         return QMargins(left, top, right, bottom);
     }
-    return HLayoutStyle::margins();
+    return HLayout::margins();
 }
 
-void HGLayoutStyle::setMargins(const QMargins& m)
+void HGLayout::setMargins(const QMargins& m)
 {
     if (layout()) {
         layout()->setContentsMargins(m.left(), m.top(), m.right(), m.bottom());
     }
-    HLayoutStyle::setMargins(m);
+    HLayout::setMargins(m);
 }
 
-Qt::Alignment HGLayoutStyle::alignment() const
+Qt::Alignment HGLayout::alignment() const
 {
-    return HLayoutStyle::alignment();
+    return HLayout::alignment();
 }
 
-void HGLayoutStyle::setAlignment(Qt::Alignment align)
+void HGLayout::setAlignment(Qt::Alignment align)
 {
-    HLayoutStyle::setAlignment(align);
+    HLayout::setAlignment(align);
 
     if (!layout()) return ;
 
@@ -110,7 +106,7 @@ void HGLayoutStyle::setAlignment(Qt::Alignment align)
         setAlignment(l->itemAt(i), align);
 }
 
-void HGLayoutStyle::setAlignment(QGraphicsLayoutItem* item, Qt::Alignment align)
+void HGLayout::setAlignment(QGraphicsLayoutItem* item, Qt::Alignment align)
 {
     QGraphicsLayout* ll = layout();
     if (!ll)  return ;
@@ -126,7 +122,7 @@ void HGLayoutStyle::setAlignment(QGraphicsLayoutItem* item, Qt::Alignment align)
     }
 }
 
-Qt::Alignment HGLayoutStyle::alignment(QGraphicsLayoutItem* item) const
+Qt::Alignment HGLayout::alignment(QGraphicsLayoutItem* item) const
 {
     QGraphicsLayout* ll = layout();
     if (ll) {
@@ -141,9 +137,9 @@ Qt::Alignment HGLayoutStyle::alignment(QGraphicsLayoutItem* item) const
     return alignment();
 }
 
-void HGLayoutStyle::setLayoutType(HEnums::HLayoutType type)
+void HGLayout::setLayoutType(HEnums::HLayoutType type)
 {
-    HLayoutStyle::setLayoutType(type);
+    HLayout::setLayoutType(type);
 
     if (!mWidget) return;
 
@@ -162,17 +158,18 @@ void HGLayoutStyle::setLayoutType(HEnums::HLayoutType type)
         layout = new QGraphicsAnchorLayout(mWidget);
         break;
     default:
+        qDebug("HGLayout not layout=%d",type);
         return ;
     }
-    mWidget->setLayout(layout);
+    mWidget->QGraphicsWidget::setLayout(layout);
 }
 
-int HGLayoutStyle::addItem(QGraphicsLayoutItem* item)
+int HGLayout::addItem(QGraphicsLayoutItem* item)
 {
-    return insertItem(item,HLayoutConf());
+    return insertItem(item,HLayoutConfig());
 }
 
-int HGLayoutStyle::insertItem(QGraphicsLayoutItem* item, const HLayoutConf& conf)
+int HGLayout::insertItem(QGraphicsLayoutItem* item, const HLayoutConfig& conf)
 {
     if (!layout()) return -1;
 
@@ -180,27 +177,29 @@ int HGLayoutStyle::insertItem(QGraphicsLayoutItem* item, const HLayoutConf& conf
     case HEnums::kVBox:
     case HEnums::kHBox: {
         QGraphicsLinearLayout* l = static_cast<QGraphicsLinearLayout*>(layout());
-        l->insertItem(conf.pos(),item);
+        l->insertItem(conf.index(),item);
         l->setAlignment(item,alignment());
         break;
     }
     case HEnums::kGrid: {
         QGraphicsGridLayout* l = static_cast<QGraphicsGridLayout*>(layout());
-        l->addItem(item,conf.pos(),conf.column(),alignment());
+        l->addItem(item,conf.row(),conf.column(),alignment());
         break;
     }
     case HEnums::kAnchor: {
         //anchor layout can't add item here, add item in setAnchor
+        QGraphicsAnchorLayout* l = static_cast<QGraphicsAnchorLayout*>(layout());
+        Q_UNUSED(l);
 
         return -1;
     }
     default:
         return -1;
     }
-    return conf.pos();
+    return 0;
 }
 
-bool HGLayoutStyle::removeItem(QGraphicsLayoutItem *item)
+bool HGLayout::removeItem(QGraphicsLayoutItem *item)
 {
     if (!layout()) return false;
 
@@ -217,6 +216,9 @@ bool HGLayoutStyle::removeItem(QGraphicsLayoutItem *item)
         break;
     }
     case HEnums::kAnchor: {//"anchor layout can't remove item now!"
+        QGraphicsAnchorLayout* l = static_cast<QGraphicsAnchorLayout*>(layout());
+        Q_UNUSED(l);
+
         return false;
     }
     default:
@@ -225,42 +227,42 @@ bool HGLayoutStyle::removeItem(QGraphicsLayoutItem *item)
     return true;
 }
 
-int HGLayoutStyle::addGWidget(QGraphicsWidget* widget)
+int HGLayout::addGWidget(QGraphicsWidget* widget)
 {
-    return insertGWidget(widget,HLayoutConf());
+    return insertGWidget(widget,HLayoutConfig());
 }
 
-int HGLayoutStyle::insertGWidget(QGraphicsWidget* widget, const HLayoutConf& index)
+int HGLayout::insertGWidget(QGraphicsWidget* widget, const HLayoutConfig& index)
 {
     return insertItem(widget,index);
 }
 
-bool HGLayoutStyle::removeGWidget(QGraphicsWidget* widget)
+bool HGLayout::removeGWidget(QGraphicsWidget* widget)
 {
     return removeItem(widget);
 }
 
-bool HGLayoutStyle::addChildGWidget(QGraphicsWidget* widget ,const HLayoutConf& conf)
+bool HGLayout::addChildGWidget(QGraphicsWidget* widget ,const HLayoutConfig& conf)
 {
-    if (!conf.mConf.use || !widget)
+    if (!widget)
         return false;
 
     if (-1 == mChilds.at(widget))
-        mChilds.add(widget,conf.toMargins());
+        mChilds.add(widget,conf.margins());
 
     return true;
 }
 
-void HGLayoutStyle::removeChildGWidget(QGraphicsWidget* widget)
+void HGLayout::removeChildGWidget(QGraphicsWidget* widget)
 {
     mChilds.remove(widget);
 }
 
-void HGLayoutStyle::resizeEvent(const QSize& s)
+void HGLayout::resizeEvent(const QSize& s)
 {
     for (int i = 0; i < mChilds.count();i++) {
 
-        const HChildWidget<QGraphicsWidget>* iter = &mChilds.at(i);
+        const HItemWidget<QGraphicsWidget>* iter = &mChilds.at(i);
 
         QRectF rc(QPoint(0,0),s);
 
@@ -286,14 +288,6 @@ void HGLayoutStyle::resizeEvent(const QSize& s)
 
         iter->widget->setGeometry(rc);
     }
-}
-
-HBaseStyle* HGLayoutStyle::clone()
-{
-    HGLayoutStyle* style = new HGLayoutStyle(HObjectInfo(styleId(),""),parent());
-    copyTo(style);
-
-    return style;
 }
 
 

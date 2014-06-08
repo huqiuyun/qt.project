@@ -95,91 +95,61 @@ struct IHNonDelegatingUnknown
     virtual ulong   NonDelegatingRelease() = 0;
 };
 
-class HUnknown : public IHNonDelegatingUnknown
+class H_API HUnknown : public IHNonDelegatingUnknown
 {
 private:
 	/* Owner of this object */
     IHUnknown* mUnk;
 
 protected:
-	/// 引用计数
     volatile long mRef;
 
 public:
 	/// Constructor
-    HUnknown (IHUnknown* pUnk)
-	{
-        mRef = 0;
-        mUnk = (pUnk != 0 ? pUnk : reinterpret_cast<IHUnknown*>(static_cast<IHNonDelegatingUnknown*>(this)));
-	}
-    virtual ~HUnknown () {}
+    HUnknown (IHUnknown* pUnk);
+    virtual ~HUnknown ();
+
+    IHUnknown* owner(void);
 public:
-    IHUnknown* GetOwner(void)
-	{
-        return mUnk;
-	}
-
-    virtual long NonDelegatingQueryInterface(const HGuid& guid, void** ppv)
-	{
-        if  (!ppv)
-		{
-            return qy::kHPointer;
-        }
-
-        if (compareHGuid(&guid ,&IID_IUnknown))
-		{
-            IHUnknown* pUnk = (IHUnknown*)((IHNonDelegatingUnknown*)this);
-            pUnk->addRef();
-            *ppv = pUnk;
-            return qy::kHOk;
-		}
-        *ppv = 0;
-        return qy::kHNoInterface;
-	}
-
-    virtual ulong NonDelegatingAddRef()
-	{
-#ifdef WIN32
-        InterlockedIncrement(&mRef);
-#else
-        mRef ++;
-#endif //WIN32
-        return mRef;
-	}
-
-    virtual ulong NonDelegatingRelease(void)
-	{
-#ifdef WIN32
-        if (0 == InterlockedDecrement(&mRef))
-		{
-			delete this;
-			return( 0 );
-		}
-#else
-        mRef --;
-        if (mRef <= 0)
-		{
-			delete this;
-			return 0;
-		}
-#endif //WIN32
-        return mRef;
-	}
+    virtual long  NonDelegatingQueryInterface(const HGuid& guid, void** ppv);
+    virtual ulong NonDelegatingAddRef();
+    virtual ulong NonDelegatingRelease(void);
 };
 
-//声明 IHUnknown 接口函数
-#define DECLARE_IHUNKNOWN()                                   \
-    virtual long queryInterface(QY_REFID riid, void** ppv)  { \
-    return GetOwner()->queryInterface(riid,ppv);}             \
-    virtual ulong addRef() {                                  \
-    return GetOwner()->addRef();}                             \
-    virtual ulong release() {                                 \
-    return GetOwner()->release();}
+#define DECLARE_IHUNKNOWN()                              \
+    virtual long query(const HGuid& guid, void** ppv)  { \
+    return owner()->query(guid,ppv);}                    \
+    virtual ulong addRef() {                             \
+    return owner()->addRef();}                           \
+    virtual ulong release() {                            \
+    return owner()->release();}
 
-#define DECLARE_CLASS_STATIC_CREATE(clsname) static HUnknown* createInstance(IHUnknown* pUnkOuter, long *hr);
-#define IMPLEMENT_CLASS_STATIC_CREATE(clsname) HUnknown* clsname::createInstance(IHUnknown* pUnkOuter, long *hr) {\
-    hr = qy::kHOk;                 \
-    return new clsname(pUnkOuter); \
-    }
+#define DECLARE_IUNK_CREATE(clsname) static HUnknown* createInstance(IHUnknown* unk, long *hr)
+#define IMPLEMENT_IUNK_CREATE(clsname) HUnknown* clsname::createInstance(IHUnknown* unk, long *hr) {\
+    *hr = qy::kHOk;                 \
+    return new clsname(unk); }
+
+class HGlobalUnkPrivate;
+class H_API HGlobalUnk : public HUnknown , public IHGlobalUnk
+{
+public:
+    HGlobalUnk(IHUnknown* unk);
+    ~HGlobalUnk();
+
+    DECLARE_IUNK_CREATE(HGlobalUnk);
+public:
+    long  query(const HGuid& guid, void** ppv);
+    ulong addRef();
+    ulong release();
+
+    void addUnk(const HGuid& guid, IHUnknown* unk);
+    void removeUnk(const HGuid& guid);
+
+    void addUnsafe(const HGuid& guid, void* unk);
+    void removeUnsafe(const HGuid& guid);
+    long queryUnsafe(const HGuid& guid, void** ppv);
+private:
+    HGlobalUnkPrivate* d_ptr;
+};
 
 #endif // HUNKNOWN_H

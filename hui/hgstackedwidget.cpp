@@ -34,18 +34,12 @@ HGStackedWidgetPrivate::~HGStackedWidgetPrivate()
 }
 
 IMPLEMENT_GITEM_STATIC_CREATE(HGStackedWidget,HGStackedWidget)
-HGStackedWidget::HGStackedWidget(QGraphicsItem *parent) :
-    HGWidget(*(new HGStackedWidgetPrivate()), parent)
-{
-    mObjType = USEOBJTYPE(HGStackedWidget);
-    setFlag(QGraphicsItem::ItemHasNoContents, true);
-}
-
 HGStackedWidget::HGStackedWidget(const HObjectInfo &objinfo, QGraphicsItem *parent) :
     HGWidget(*(new HGStackedWidgetPrivate()), objinfo, parent)
 {
     mObjType = USEOBJTYPE(HGStackedWidget);
     setFlag(QGraphicsItem::ItemHasNoContents, true);
+    setFlag(QGraphicsItem::ItemClipsChildrenToShape,true );
 }
 
 HGStackedWidget::~HGStackedWidget()
@@ -55,8 +49,6 @@ HGStackedWidget::~HGStackedWidget()
 void HGStackedWidget::construct()
 {
     HGWidget::construct();
-
-    setFlag( QGraphicsItem::ItemClipsChildrenToShape );
 }
 
 int HGStackedWidget::currentIndex() const
@@ -152,11 +144,11 @@ QGraphicsWidget* HGStackedWidget::widgetAtByName( const QString& objectName ) co
     return NULL;
 }
 
-int HGStackedWidget::insertGWidget(QGraphicsWidget* widget, const HLayoutConf& conf)
+int HGStackedWidget::insertGWidget(QGraphicsWidget* widget, const HLayoutConfig& conf)
 {
     Q_D( HGStackedWidget );
 
-    int idx = conf.pos();
+    int idx = conf.index();
     if (idx == -1) {
         idx = d->m_widgetList.size();
     }
@@ -178,7 +170,7 @@ int HGStackedWidget::insertGWidget(QGraphicsWidget* widget, const HLayoutConf& c
 
 int HGStackedWidget::addGWidget(QGraphicsWidget* widget)
 {
-    return insertGWidget(widget,HLayoutConf(d_func()->m_widgetList.size()));
+    return insertGWidget(widget,HLayoutConfig(d_func()->m_widgetList.size()));
 }
 
 bool HGStackedWidget::removeGWidget(QGraphicsWidget* widget )

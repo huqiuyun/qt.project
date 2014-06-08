@@ -63,8 +63,9 @@ bool HDraw::cacluImageTile(const QImage& img,HImageTile& tile)
     tile.mVertLine = vertLine;
     tile.initX(_x[0],_x[1]);
     tile.initY(_y[0],_y[1]);
-    qDebug("HDraw::cacluImageTile key:%lld",key);
-    tile.debug();
+    //qDebug("HDraw::cacluImageTile key:%lld",key);
+    //tile.debug();
+
     if (HCORE) HRESMGR->addImageTile(key,tile);
     return !(row==0&&col==0);
 }
@@ -72,6 +73,11 @@ bool HDraw::cacluImageTile(const QImage& img,HImageTile& tile)
 void HDraw::paint(QPainter* painter,const QRect& rect,const QColor& color, const QMargins& m)
 {
     painter->fillRect(rect.marginsRemoved(m),color);
+}
+
+void HDraw::paint(QPainter* painter,const QRect& rect,const QBrush& br, const QMargins& m)
+{
+    painter->fillRect(rect.marginsRemoved(m),br);
 }
 
 void HDraw::paint(QPainter* painter,const QRect& rect,const QPixmap& pixmap, const HTile& tile)

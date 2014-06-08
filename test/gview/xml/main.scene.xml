@@ -5,13 +5,21 @@
       add QGraphicsItem to QGraphicsScene
  <!-->
  <scene>
-   <widget class="HGWidget" name="" styleid="gwidgetId">
-      <layout file=":/xml/main.glayout.xml"/>
-      <ltconf margins="0,0,0,0" />
+   <property id="alignment"></property>
+   <property id="sizePolicy">QSizePolicy::Fixed</property>
+
+   <widget class="HGWidget" name="6666" styleid="gwidgetId">
+     <vbox>
+       <property id="alignment">Qt::AlignLeft</property>
+       <property id="margins"></property>
+       <property id="spacing">6</property>
+       <layout file=":/xml/main.glayout.xml"/>
+     </vbox>
+     <ltconfig>
+         <property id="margins">0,0,0,0</property>
+     </ltconfig>
    </widget>
-   <widget class="HGWidget" name="" styleid="gwidgetId">
-      <ltconf margins="10,-160,-10,0" />
-   </widget>
+   <!-->other widget<!-->
  </scene>
 
 </hui>

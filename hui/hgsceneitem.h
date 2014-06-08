@@ -1,7 +1,7 @@
-#ifndef HGSCENESTYLE_H
-#define HGSCENESTYLE_H
+#ifndef HGSCENEITEM_H
+#define HGSCENEITEM_H
 
-#include "hbasestyle.h"
+#include "hbase.h"
 #include <QSizePolicy>
 #include <QBrush>
 
@@ -9,24 +9,25 @@ class QGraphicsView;
 class QGraphicsItem;
 class HGScene;
 class HGWidget;
+class HLayoutConfig;
 
-class HGSceneStylePrivate;
-class H_API HGSceneStyle : public HBaseStyle
+class HGSceneItemPrivate;
+class H_API HGSceneItem : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE( HGSceneStyle )
+    Q_DECLARE_PRIVATE( HGSceneItem )
 
     Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
     Q_PROPERTY( QBrush backgroundBrush READ backgroundBrush WRITE setBackgroundBrush )
     Q_PROPERTY( QBrush foregroundBrush READ foregroundBrush WRITE setForegroundBrush )
     Q_PROPERTY( QSizePolicy::Policy sizePolicy READ sizePolicy WRITE setSizePolicy )
 public:
-    explicit HGSceneStyle(QObject *parent = 0);
-    explicit HGSceneStyle(const HObjectInfo& objinfo, QObject *parent = 0);
-    ~HGSceneStyle();
+    explicit HGSceneItem(QObject *parent = 0);
+    ~HGSceneItem();
 
-    DECLARE_OBJECT_STATIC_CREATE(HGSceneStyle);
 public:
+    void setGView(QGraphicsView* view);
+
     /** set alignment in scene*/
     Qt::Alignment alignment() const;
     void setAlignment(Qt::Alignment align);
@@ -45,24 +46,17 @@ public:
     bool hasScene() const;
     HGScene* scene() const;
 
-    bool addGWidget(HGWidget* widget,const HLayoutConf& conf);
+    bool addGWidget(HGWidget* widget,const HLayoutConfig& conf);
     void removeGWidget(HGWidget* widget);
+    HGWidget* widgetAt(int index);
+    HGWidget* widgetOf(const QString& name);
 
-    bool addItem(QGraphicsItem* item,const HLayoutConf& conf);
+    bool addItem(QGraphicsItem* item,const HLayoutConfig& conf);
     void removeItem(QGraphicsItem* item);
 
-public:
-    void copyTo(HBaseStyle* obj);
-    HBaseStyle* clone();
-
-    void setGView(QGraphicsView* view);
     void reSize(const QRectF& rect);
-
-protected:
-    template<class OBJ> friend OBJ* hDoConstructT(OBJ *);
-    void doConstruct();
 private:
-    HGSceneStylePrivate* d_ptr;
+    HGSceneItemPrivate* d_ptr;
 };
 
-#endif // HGSCENESTYLE_H
+#endif // HGSCENEITEM_H

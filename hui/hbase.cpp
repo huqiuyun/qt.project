@@ -114,7 +114,7 @@ void HImageTile::divY()
 
 void HImageTile::debug() const
 {
-    qDebug("HImageTile width=%d,height=%d,horiLine=%d,vertLine=%d",mWidth,mHeight,mHoriLine,mVertLine);
+    qDebug("HImageTile::debug width=%d,height=%d,horiLine=%d,vertLine=%d",mWidth,mHeight,mHoriLine,mVertLine);
     debugTile(m9Tile.mOne);
     debugTile(m9Tile.mTwo);
     debugTile(m9Tile.mThree);

@@ -1,5 +1,5 @@
-#ifndef HuiCreator_H
-#define HuiCreator_H
+#ifndef HUICREATOR_H
+#define HUICREATOR_H
 
 #include "hbase.h"
 #include "hfactory_i.h"
@@ -7,16 +7,25 @@
 #include "hgview.h"
 #include "hgwidget.h"
 
-#include "hgscenestyle.h"
-#include "hqlayoutstyle.h"
 #include "hgwidgetstyle.h"
-#include "hglayoutstyle.h"
 #include "hframestyle.h"
-#include "hbackgroundstyle.h"
+#include "himagestyle.h"
 #include "hfontstyle.h"
+#include "hcolorstyle.h"
+
 #include "hgstackedwidget.h"
 #include "hqwidget.h"
-#include "hgproxywidget.h"
+#include "hgbutton.h"
+#include "hgroup.h"
+#include "hglable.h"
+#include "hgcombobox.h"
+#include "hgtree.h"
+#include "hgsplitter.h"
+#include "hglistbox.h"
+#include "hganimation.h"
+#include "hgcaption.h"
+#include "hgscrollarea.h"
+
 #include <QWidget>
 #include <QCheckBox>
 #include <QPushButton>
@@ -57,13 +66,12 @@ Q_DECLARE_METATYPE(QMargins)
 const HRegisterObject s_objs[] =
 {
     // style object
-    REG_OBJECT_EX(HBackgroundStyle),
+    REG_OBJECT_EX(HImageStyle),
     REG_OBJECT_EX(HFrameStyle),
-    REG_OBJECT_EX(HGSceneStyle),
     REG_OBJECT_EX(HGWidgetStyle),
-    REG_OBJECT_EX(HGLayoutStyle),
-    REG_OBJECT_EX(HQLayoutStyle),
     REG_OBJECT_EX(HFontStyle),
+    REG_OBJECT_EX(HColorStyle),
+    REG_OBJECT_EX(HGroup),
     {NULL,NULL}
 };
 
@@ -73,11 +81,18 @@ const HRegisterObject s_objs[] =
 #define IMPLEMENT_HCONVERT_QSTRING(TYPE) \
     IMPLEMENT_STATIC_CONVERT_FUNC(HuiCreator,QString,QVariant,QString_##TYPE)
 
+#define DECLARE_HCONVERT(TYPE)  \
+    DECLARE_STATIC_CONVERT_FUNC(TYPE,QString,_##TYPE)
+
 #define DECLARE_HCONVERT_QVARIANT(TYPE)  \
     DECLARE_STATIC_CONVERT_FUNC(QVariant,QString,QVariant_##TYPE)
 
 #define IMPLEMENT_HCONVERT_QVARIANT(TYPE) \
     IMPLEMENT_STATIC_CONVERT_FUNC(HuiCreator,QVariant,QString,QVariant_##TYPE)
+
+#define IMPLEMENT_HCONVERT(TYPE) \
+    IMPLEMENT_STATIC_CONVERT_FUNC(HuiCreator,TYPE,QString,_##TYPE)
+
 
 class HuiCreator
 {
@@ -117,45 +132,71 @@ public:
     //convert function
     DECLARE_HCONVERT_QSTRING(QString);
     DECLARE_HCONVERT_QVARIANT(QString);
+    DECLARE_HCONVERT(QString);
 
     DECLARE_HCONVERT_QSTRING(QMargins);
     DECLARE_HCONVERT_QVARIANT(QMargins);
+    DECLARE_HCONVERT(QMargins);
 
     DECLARE_HCONVERT_QSTRING(QColor);
     DECLARE_HCONVERT_QVARIANT(QColor);
+    DECLARE_HCONVERT(QColor);
 
     DECLARE_HCONVERT_QSTRING(QRectF);
     DECLARE_HCONVERT_QVARIANT(QRectF);
+    DECLARE_HCONVERT(QRectF);
 
     DECLARE_HCONVERT_QSTRING(QRect);
     DECLARE_HCONVERT_QVARIANT(QRect);
+    DECLARE_HCONVERT(QRect);
 
     DECLARE_HCONVERT_QSTRING(QSizeF);
     DECLARE_HCONVERT_QVARIANT(QSizeF);
+    DECLARE_HCONVERT(QSizeF);
 
     DECLARE_HCONVERT_QSTRING(QSize);
     DECLARE_HCONVERT_QVARIANT(QSize);
+    DECLARE_HCONVERT(QSize);
 
     DECLARE_HCONVERT_QSTRING(QPointF);
     DECLARE_HCONVERT_QVARIANT(QPointF);
+    DECLARE_HCONVERT(QPointF);
 
     DECLARE_HCONVERT_QSTRING(QPoint);
     DECLARE_HCONVERT_QVARIANT(QPoint);
+    DECLARE_HCONVERT(QPoint);
 
     DECLARE_HCONVERT_QSTRING(HAnchor);
     DECLARE_HCONVERT_QVARIANT(HAnchor);
+    DECLARE_HCONVERT(HAnchor);
 
     DECLARE_HCONVERT_QSTRING(QBrush);
     DECLARE_HCONVERT_QVARIANT(QBrush);
+    DECLARE_HCONVERT(QBrush);
 
     DECLARE_HCONVERT_QSTRING(QFont);
     DECLARE_HCONVERT_QVARIANT(QFont);
+    DECLARE_HCONVERT(QFont);
 
     DECLARE_HCONVERT_QSTRING(QIcon);
     DECLARE_HCONVERT_QVARIANT(QIcon);
+    DECLARE_HCONVERT(QIcon);
+
+    DECLARE_HCONVERT_QSTRING(bool);
+    DECLARE_HCONVERT_QVARIANT(bool);
+    DECLARE_HCONVERT(bool);
+
+    DECLARE_HCONVERT_QSTRING(int);
+    DECLARE_HCONVERT_QVARIANT(int);
+    DECLARE_HCONVERT(int);
+
+    DECLARE_HCONVERT_QSTRING(int64);
+    DECLARE_HCONVERT_QVARIANT(int64);
+    DECLARE_HCONVERT(int64);
 
     DECLARE_HCONVERT_QSTRING(qreal);
     DECLARE_HCONVERT_QVARIANT(qreal);
+    DECLARE_HCONVERT(qreal);
 };
 
 #define REG_CONVERT_EX(TYPE)   \
@@ -178,6 +219,7 @@ const HRegisterConvert s_converts[] =
     REG_CONVERT_EX(QIcon),
     REG_CONVERT_EX(HAnchor),
     REG_CONVERT_EX(qreal),
+    REG_CONVERT_EX(bool),
     {-1,NULL,NULL}
 };
 
@@ -202,7 +244,15 @@ const HRegisterGWidget s_gwidgets[] =
 {
     REG_GWIDGET(HGWidget, HGWidget),
     REG_GWIDGET(HGStackedWidget, HGStackedWidget),
-    REG_GWIDGET(HGProxyWidget, HGProxyWidget),
+    REG_GWIDGET(HGButton, HGButton),
+    REG_GWIDGET(HGLable, HGLable),
+    REG_GWIDGET(HGComboBox, HGComboBox),
+    REG_GWIDGET(HGTree, HGTree),
+    REG_GWIDGET(HGSplitter, HGSplitter),
+    REG_GWIDGET(HGAnimation, HGAnimation),
+    REG_GWIDGET(HGListBox, HGListBox),
+    REG_GWIDGET(HGCaption,HGCaption),
+    REG_GWIDGET(HGScrollArea,HGScrollArea),
     {NULL,NULL}
 };
 
@@ -237,4 +287,4 @@ const HRegisterQWidget s_qwidgets[] =
     {NULL,NULL}
 };
 
-#endif // HuiCreator_H
+#endif // HUICREATOR_H

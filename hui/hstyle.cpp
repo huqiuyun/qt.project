@@ -9,6 +9,7 @@
 HStyle::HStyle(QObject *parent) :
     QObject(parent)
 {
+    //qDebug("HStyle::HStyle");
     mObjType = USEOBJTYPE(HStyle);
 }
 

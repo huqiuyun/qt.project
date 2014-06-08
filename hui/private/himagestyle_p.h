@@ -1,12 +1,14 @@
-#ifndef HBACKGROUNDSTYLE_P_H
-#define HBACKGROUNDSTYLE_P_H
+#ifndef HIMAGESTYLE_P_H
+#define HIMAGESTYLE_P_H
 
 #include "hbase.h"
-
-class H_API HBackgroundStylePrivate
+#include "himagestyle.h"
+class H_API HImageStylePrivate
 {
 public:
-    HBackgroundStylePrivate()
+    HImageStylePrivate():
+        mIndex(0),
+        mStyles(HImageStyle::ImageOnly)
     {
     }
     void calcuTile();
@@ -14,11 +16,12 @@ public:
     Qt::Alignment mAlignment;
     QMargins      mMargins;
     QColor        mColor;
-    QColor        mColorized;
+    QBrush        mBrush;
     QString       mImagePath;
-    QBrush        mBackgroundBrush;
     QPixmap       mImage;
     HImageTile    mImageTile;
+    int           mIndex;
+    HImageStyle::GImageStyles  mStyles;
 };
 
-#endif // HBACKGROUNDSTYLE_P_H
+#endif // HIMAGESTYLE_P_H

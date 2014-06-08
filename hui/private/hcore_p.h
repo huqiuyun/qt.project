@@ -6,6 +6,8 @@ class HResourceMgr;
 class HStyle;
 class HFactory;
 class HSystem;
+class HBus;
+class HGlobalUnk;
 
 class H_API HCorePrivate
 {
@@ -20,6 +22,8 @@ protected:
     HResourceMgr *mResMgr;
     HFactory *mFactory;
     HSystem *mSystem;
+    HBus* mBus;
+    HGlobalUnk* mGlobalUnk;
 };
 
 #endif // HCORE_P_H

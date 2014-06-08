@@ -1,48 +1,25 @@
 #include "hwidgetstyle.h"
 
 //HWidgetStyle
-IMPLEMENT_OBJECT_STATIC_CREATE(HWidgetStyle)
-
 HWidgetStyle::HWidgetStyle(QObject* parent) :
     HBaseStyle(parent)
 {
-    mObjType = USEOBJTYPE(HWidgetStyle);
 }
 
 HWidgetStyle::HWidgetStyle(const HObjectInfo& objinfo,QObject* parent) :
     HBaseStyle(objinfo,parent)
 {
-    mObjType = USEOBJTYPE(HWidgetStyle);
 }
 
-bool HWidgetStyle::hasBackgroundStyle() const
+QString HWidgetStyle::windowAttribute() const
 {
-    return (mBackgroundStyle.mClsName.size() > 1 && mBackgroundStyle.mStyleId.size()>1);
+    return mWinAttribute;
 }
 
-void HWidgetStyle::setBackgroundStyle(const HClassInfo& cls)
+void HWidgetStyle::setWindowAttribute(const QString& a)
 {
-    mBackgroundStyle = cls;
-}
-
-HClassInfo HWidgetStyle::backgroundStyle() const
-{
-    return mBackgroundStyle;
-}
-
-bool HWidgetStyle::hasLayoutStyle() const
-{
-    return (mLayoutStyle.mClsName.size() > 1 && mLayoutStyle.mStyleId.size()>1);
-}
-
-void HWidgetStyle::setLayoutStyle(const HClassInfo& cls)
-{
-    mLayoutStyle = cls;
-}
-
-HClassInfo HWidgetStyle::layoutStyle() const
-{
-    return mLayoutStyle;
+    mWinAttribute = a;
+    onSetWindowAttribute();
 }
 
 void HWidgetStyle::copyTo(HBaseStyle* obj)
@@ -50,8 +27,7 @@ void HWidgetStyle::copyTo(HBaseStyle* obj)
     HWidgetStyle* style = static_cast<HWidgetStyle*>(obj);
     if (!style) return ;
 
-    style->setBackgroundStyle(mBackgroundStyle);
-    style->setLayoutStyle(mLayoutStyle);
+    style->setWindowAttribute(mWinAttribute);
     HBaseStyle::copyTo(obj);
 }
 

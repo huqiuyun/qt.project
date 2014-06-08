@@ -27,5 +27,8 @@
 
 #define H_D(cls) cls##Private* d = d_ptr
 
+#define H_UNUSED2(v1,v2) Q_UNUSED(v1);Q_UNUSED(v2);
+#define H_UNUSED3(v1,v2,v3) H_UNUSED2(v1,v2);Q_UNUSED(v3);
+#define H_UNUSED4(v1,v2,v3,v4) H_UNUSED3(v1,v2,v3); Q_UNUSED(v4);
 
 #endif // HCONFIG_H

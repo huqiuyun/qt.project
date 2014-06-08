@@ -17,9 +17,9 @@ public:
         HSYSTEM->setAppPath(applicationDirPath());
         //
 
+        qDebug("0----");
         HuiReader uiReader;
         uiReader.createStyle(":/xml/main.style.xml",QString(),HSTYLE);
-
     }
 
     ~HApplication()

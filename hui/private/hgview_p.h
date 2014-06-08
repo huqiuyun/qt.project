@@ -6,9 +6,9 @@
 
 class HGView;
 class HFrameStyle;
-class HBackgroundStyle;
-class HQLayoutStyle;
-class HGSceneStyle;
+class HImageStyle;
+class HQLayout;
+class HGSceneItem;
 class HStyle;
 
 class H_API HGViewPrivate
@@ -22,13 +22,16 @@ private:
     void init();
     bool installStyle(const HStyle* style);
     void initStyle(const HStyle* style);
+    void initFontStyle(const HStyle* style,const char* styleid);
+protected:
+    virtual void onInitStyle(const HStyle*){}
 protected:
     friend class HGView;
-    HGView            *q_ptr;
+    HGView      *q_ptr;
+    HQLayout    *mLayout;
     QSharedPointer<HFrameStyle>      mFrameStyle;
-    QSharedPointer<HGSceneStyle>     mSceneStyle;
-    QSharedPointer<HBackgroundStyle> mBackgroundStyle;
-    QSharedPointer<HQLayoutStyle>    mLayoutStyle;
+    QSharedPointer<HGSceneItem>     mSceneStyle;
+    QSharedPointer<HImageStyle>      mBkgStyle;
 };
 
 #endif // HGView_P_H

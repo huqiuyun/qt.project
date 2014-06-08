@@ -1,217 +1,254 @@
-#include "HBackgroundStyle.h"
+#include "himagestyle.h"
 #include "hresourcemgr.h"
 #include "hstyle.h"
 #include "hcore.h"
 #include "hdraw.h"
-#include "private/hbackgroundstyle_p.h"
+#include "private/himagestyle_p.h"
 #include <QPainter>
 
 
-IMPLEMENT_OBJECT_STATIC_CREATE(HBackgroundStyle)
+IMPLEMENT_OBJECT_STATIC_CREATE(HImageStyle)
 
-void HBackgroundStylePrivate::calcuTile()
+void HImageStylePrivate::calcuTile()
 {
     HDraw::cacluImageTile(mImage,mImageTile);
 }
 
-HBackgroundStyle::HBackgroundStyle(QObject *parent) :
+HImageStyle::HImageStyle(QObject *parent) :
     HBaseStyle(parent),
-    d_ptr(new HBackgroundStylePrivate()),
+    d_ptr(new HImageStylePrivate()),
     mResMgr(HRESMGR)
 {
-    mObjType = USEOBJTYPE(HBackgroundStyle);
+    mObjType = USEOBJTYPE(HImageStyle);
 }
 
-HBackgroundStyle::HBackgroundStyle(const HObjectInfo& objinfo, QObject *parent) :
+HImageStyle::HImageStyle(const HObjectInfo& objinfo, QObject *parent) :
     HBaseStyle(objinfo,parent),
-    d_ptr(new HBackgroundStylePrivate()),
+    d_ptr(new HImageStylePrivate()),
     mResMgr(HRESMGR)
 {   
-    mObjType = USEOBJTYPE(HBackgroundStyle);
+    //qDebug("HImageStyle styleid=%s",objinfo.mStyleId.data());
+    mObjType = USEOBJTYPE(HImageStyle);
 }
 
-HBackgroundStyle::~HBackgroundStyle()
+HImageStyle::~HImageStyle()
 {
     delete d_ptr;
 }
 
-void HBackgroundStyle::setImagePath(const QString& path)
+void HImageStyle::setImagePath(const QString& path)
 {
-    Q_D(HBackgroundStyle);
+    Q_D(HImageStyle);
     d->mImagePath = path;
     setImage(mResMgr->loadPixmap(path));
 }
 
-QString HBackgroundStyle::imagePath() const
+QString HImageStyle::imagePath() const
 {
     return d_func()->mImagePath;
 }
 
-void HBackgroundStyle::setImage(const QPixmap& image)
+void HImageStyle::setImage(const QPixmap& image)
 {
-    Q_D(HBackgroundStyle);
+    Q_D(HImageStyle);
     d->mImage = image;
     //to do calculate tile
     d->calcuTile();
-    emit backgroundChanged(0);
+    emit typeChanged(HEnums::kChgImage);
 }
 
- QPixmap HBackgroundStyle::image() const
- {
-     return d_func()->mImage;
- }
+QPixmap HImageStyle::image() const
+{
+    return d_func()->mImage;
+}
 
-void HBackgroundStyle::setColor(const QColor& rgb)
+QSize HImageStyle::imageSize() const
+{
+    Q_D(const HImageStyle);
+    return d->mImage.isNull()?QSize():QSize(d->mImageTile.mWidth,d->mImageTile.mHeight);
+}
+
+void HImageStyle::setIndex(int index)
+{
+    d_func()->mIndex = index;
+}
+
+int HImageStyle::index() const
+{
+    return d_func()->mIndex;
+}
+
+void HImageStyle::setColor(const QColor& rgb)
 {
     d_func()->mColor = rgb;
-    emit backgroundChanged(1);
+    emit typeChanged(HEnums::kChgColor);
 }
 
-QColor HBackgroundStyle::color() const
+QColor HImageStyle::color() const
 {
     return d_func()->mColor;
 }
 
-void HBackgroundStyle::setColorized(const QColor& rgb)
-{
-    d_func()->mColorized = rgb;
-}
-
-QColor HBackgroundStyle::colorized() const
-{
-    return d_func()->mColorized;
-}
-
-void HBackgroundStyle::setMargins(const QMargins& m)
+void HImageStyle::setMargins(const QMargins& m)
 {
     d_func()->mMargins = m;
 }
 
-QMargins HBackgroundStyle::margins() const
+QMargins HImageStyle::margins() const
 {
     return d_func()->mMargins;
 }
 
-Qt::Alignment HBackgroundStyle::alignment() const
+Qt::Alignment HImageStyle::alignment() const
 {
     return d_func()->mAlignment;
 }
 
-void HBackgroundStyle::setAlignment(Qt::Alignment align)
+void HImageStyle::setAlignment(Qt::Alignment align)
 {
     d_func()->mAlignment = align;
 }
 
-bool HBackgroundStyle::hasBackgroundBrush() const
+bool HImageStyle::hasBrush() const
 {
-    return (d_func()->mBackgroundBrush.style() != Qt::NoBrush);
+    return (d_func()->mBrush.style() != Qt::NoBrush);
 }
-QBrush HBackgroundStyle::backgroundBrush() const
+QBrush HImageStyle::brush() const
 {
-    return d_func()->mBackgroundBrush;
-}
-
-void HBackgroundStyle::setBackgroundBrush(const QBrush& brush)
-{
-    d_func()->mBackgroundBrush = brush;
+    return d_func()->mBrush;
 }
 
+void HImageStyle::setBrush(const QBrush& brush)
+{
+    d_func()->mBrush = brush;
+    emit typeChanged(HEnums::kChgBrush);
+}
 
-bool HBackgroundStyle::sysTile() const
+bool HImageStyle::sysTile() const
 {
     return d_func()->mImageTile.mSys;
 }
 
-void HBackgroundStyle::setSysTile(bool sys)
+void HImageStyle::setSysTile(bool sys)
 {
     d_func()->mImageTile.mSys = sys;
 }
 
-HImageTile HBackgroundStyle::tileImage() const
+HImageStyle::GImageStyles HImageStyle::imageStyle() const
+{
+    return d_func()->mStyles;
+}
+
+void HImageStyle::setImageStyle(const HImageStyle::GImageStyles &style)
+{
+    Q_D(HImageStyle);
+    d->mStyles = style;
+}
+
+HImageTile HImageStyle::tileImage() const
 {
     return d_func()->mImageTile;
 }
 
-void HBackgroundStyle::setImageTile(const HImageTile& t)
+void HImageStyle::setImageTile(const HImageTile& t)
 {
     d_func()->mImageTile = t;
 }
 
-void HBackgroundStyle::copyTo(HBaseStyle* obj)
+void HImageStyle::copyTo(HBaseStyle* obj)
 {
-    Q_D(HBackgroundStyle);
-    HBackgroundStyle* style = static_cast<HBackgroundStyle*>(obj);
+    Q_D(HImageStyle);
+    HImageStyle* style = static_cast<HImageStyle*>(obj);
     if (!style) return ;
 
     style->setImagePath(d->mImagePath);
     style->setMargins(d->mMargins);
     style->setAlignment(d->mAlignment);
     style->setColor(d->mColor);
-    style->setColorized(d->mColorized);
-    style->setBackgroundBrush(d->mBackgroundBrush);
+    style->setBrush(d->mBrush);
     style->setImageTile(d->mImageTile);
+    style->setIndex(d->mIndex);
+    style->setImageStyle(d->mStyles);
 
     HBaseStyle::copyTo(obj);
 }
 
-HBaseStyle* HBackgroundStyle::clone()
+HBaseStyle* HImageStyle::clone()
 {
-    HBackgroundStyle* style = new HBackgroundStyle(HObjectInfo(styleId(),""),parent());
+    HImageStyle* style = new HImageStyle(HObjectInfo(styleId(),""),parent());
     copyTo(style);
 
     return style;
 }
 
-void HBackgroundStyle::draw(QPainter * painter, const QRect &rect, int index)
+void HImageStyle::draw(QPainter * painter, const QRect &rect)
 {
-    drawColor(painter,rect,index);
-    drawImage(painter,rect,index);
-}
+    Q_D(HImageStyle);
 
-void HBackgroundStyle::drawColor(QPainter* painter,const QRect& rect, int index)
-{
-    Q_UNUSED(index);
-    Q_D(HBackgroundStyle);
+    HDraw draw;
+    if (d->mStyles.testFlag(ColorOnly) &&
+            d->mColor.isValid()) {
+        draw.paint(painter, rect, d->mColor, d->mMargins);
+    }
+    else if (d->mStyles.testFlag(BrushOnly) &&
+             d->mBrush.style() != Qt::NoBrush) {
+        draw.paint(painter,rect,d->mBrush,d->mMargins);
+    }
 
-    if (d->mColor.isValid()) {
-        HDraw draw;
-        draw.paint(painter, rect, d->mColorized.isValid()?d->mColorized:d->mColor, d->mMargins);
+    if (d->mStyles.testFlag(ImageOnly) &&
+            !d->mImage.isNull()) {
+        QSize si = imageSize();
+        QRect rc(rect);
+        if (d->mAlignment.testFlag(Qt::AlignRight)) {
+            rc.setLeft(rect.right()-si.width());
+        }
+        else if(d->mAlignment.testFlag(Qt::AlignHCenter)) {
+            rc.setLeft(rc.left()+(rect.width()-si.width())/2);
+        }
+
+        if(d->mAlignment.testFlag(Qt::AlignBottom)) {
+            rc.setTop(rect.bottom()-si.height());
+        }
+        else if(d->mAlignment.testFlag(Qt::AlignVCenter)) {
+            rc.setTop(rc.top()+(rect.height()-si.height())/2);
+        }
+        if (d->mAlignment.testFlag(Qt::AlignJustify)) {
+            rc.setRight(rc.left()+si.width());
+            rc.setBottom(rc.top()+si.height());
+        }
+        draw.paint(painter, rc, d->mImage, d->mMargins, d->mImageTile, d->mIndex);
     }
 }
 
-void HBackgroundStyle::drawImage(QPainter* painter,const QRect& rect, int index)
+void HImageStyle::drawSizeHint(QPainter * painter, const QRect &rect)
 {
-    Q_D(HBackgroundStyle);
-    if (!d->mImage.isNull()) {
-        HDraw draw;
-        draw.paint(painter, rect, d->mImage, d->mMargins, d->mImageTile, index);
+    Q_D(HImageStyle);
+    if (d->mStyles.testFlag(SizeHint)) {
+        QPen old = painter->pen();
+        painter->setPen(d->mColor);
+        painter->drawRect(rect);
+        painter->setPen(old);
     }
 }
 
-void HBackgroundStyle::on_colorChanged(const QColor& rgb)
+void HImageStyle::on_colorChanged(const QColor& rgb)
 {
     colorChanged(rgb);
 }
 
-void HBackgroundStyle::colorChanged(const QColor& rgb)
+void HImageStyle::colorChanged(const QColor& rgb)
 {
     Q_UNUSED(rgb);
-    Q_D(HBackgroundStyle);
+    Q_D(HImageStyle);
 
     int type = 0;
-    if (!d->mImage.isNull()) {
-        if (mResMgr->colorizeWithPixmap(d->mImage)) {
-            type = 1;
-        }
-    }
-    else if (d->mImagePath.size()>1) {
+    if (d->mImagePath.size()>1) {
         d->mImage = mResMgr->loadPixmap(d->mImagePath);
         d->calcuTile();
-        type = 1;
+        type = HEnums::kChgImage;
     }
     if (d->mColor.isValid()) {
-        setColorized(mResMgr->colorizeWithColor(d->mColor));
-        type |= 2;
+        type |= HEnums::kChgColor;
     }
-    emit backgroundChanged(type);
+    emit typeChanged(type);
 }

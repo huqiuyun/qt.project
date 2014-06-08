@@ -33,15 +33,14 @@ public:
     Q_ENUMS(ChildWidgetSizeMode)
 
 public:
-    DECLARE_GITEM_STATIC_CREATE(HGStackedWidget);
-    explicit HGStackedWidget( QGraphicsItem *parent = NULL );
     explicit HGStackedWidget(const HObjectInfo& objinfo, QGraphicsItem *parent = NULL );
     ~HGStackedWidget();
 
+    DECLARE_GITEM_STATIC_CREATE(HGStackedWidget);
 public:
     bool isGLayout() { return true;}
     int  addGWidget(QGraphicsWidget* item);
-    int  insertGWidget(QGraphicsWidget* item, const HLayoutConf& conf);
+    int  insertGWidget(QGraphicsWidget* item, const HLayoutConfig& conf);
     bool removeGWidget(QGraphicsWidget* item);
 
     void removeAt( int index );

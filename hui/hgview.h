@@ -7,12 +7,14 @@
 
 class HGViewPrivate;
 class HFrameStyle;
-class HGSceneStyle;
-class HBackgroundStyle;
-class HQLayoutStyle;
+class HGSceneItem;
+class HImageStyle;
+class HQLayout;
 class HGWidget;
+class QWidget;
 class QGraphicsItem;
 class HStyle;
+class HLayoutConfig;
 
 class H_API HGView : public QGraphicsView, public HObject
 {
@@ -26,30 +28,27 @@ public:
     Q_PROPERTY( QSize resize WRITE resizeEx )
     Q_PROPERTY( bool isHGView READ isHGView)
     Q_PROPERTY( Qt::Alignment alignment READ alignment WRITE setAlignment )
+    Q_PROPERTY( int indexOfBkgImage READ indexOfBkgImage WRITE setIndexOfBkgmage )
 public:
-    explicit HGView(QWidget *parent = 0);
     explicit HGView(const HObjectInfo& objinfo, QWidget *parent = 0);
     ~HGView();
 
     DECLARE_GVIEW_STATIC_CREATE(HGView);
 public:
     Q_INVOKABLE void installStyle(const HStyle* style);
+    Q_INVOKABLE void initFontStyle(const char* styleid,const HStyle* style=NULL);
 
-    bool hasFrameStyle() const;
     void setFrameStyle(QSharedPointer<HFrameStyle> style/*new object*/);
     QSharedPointer<HFrameStyle> frameStyle() const;
 
-    bool hasSceneStyle() const;
-    void setSceneStyle(QSharedPointer<HGSceneStyle> style);
-    QSharedPointer<HGSceneStyle> sceneStyle() const;
+    void setBackgroundStyle(QSharedPointer<HImageStyle> style);
+    QSharedPointer<HImageStyle> backgroundStyle() const;
 
-    bool hasBackgroundStyle() const;
-    void setBackgroundStyle(QSharedPointer<HBackgroundStyle> style);
-    QSharedPointer<HBackgroundStyle> backgroundStyle() const;
+    void setSceneItem(QSharedPointer<HGSceneItem> style);
+    QSharedPointer<HGSceneItem> sceneItem() const;
 
-    bool hasLayoutStyle() const;
-    void setLayoutStyle(QSharedPointer<HQLayoutStyle> style);
-    QSharedPointer<HQLayoutStyle> layoutStyle() const;
+    void setLayout(HQLayout* l);
+    HQLayout* layout() const;
 
     // layout functions
     HEnums::HLayoutType layoutType() const;
@@ -57,12 +56,17 @@ public:
     /** QGraphicsProxyWidget's parent */
     HGWidget* parentGWidget() const;
 
+    /** find HGWidget from scene */
+    HGWidget* rootWidget() const;
+    HGWidget* widgetAt(int index) const;
+    HGWidget* widgetOf(const QString& name) const;
+
     /** add widget to owner layout */
     virtual int  addWidget(QWidget* widget);
-    virtual int  insertWidget(QWidget* widget ,const HLayoutConf& conf);
+    virtual int  insertWidget(QWidget* widget ,const HLayoutConfig& conf);
     virtual bool removeWidget(QWidget* widget) ;
 
-    virtual bool addChildWidget(QWidget* widget ,const HLayoutConf& conf);
+    virtual bool addChildWidget(QWidget* widget ,const HLayoutConfig& conf);
     virtual void removeChildWidget(QWidget* widget);
 
     //property
@@ -76,12 +80,13 @@ public:
     /** the object is alignment in parent layout */
     Qt::Alignment alignment() const;
     void setAlignment(Qt::Alignment align);
+
+    void setIndexOfBkgmage(int index);
+    int indexOfBkgImage() const;
+    virtual QRect rectOfBackgroundImage() const;
     //HObject
 protected:
-    void doConstruct();
-
-protected:
-    virtual void construct(){}
+    virtual void construct();
     virtual void resizeEvent(QResizeEvent *event);
     virtual bool nativeEvent(const QByteArray & eventType, void * message, long * result);
     virtual void drawBackground(QPainter *painter, const QRectF &rect);

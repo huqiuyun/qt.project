@@ -1,10 +1,22 @@
-#ifndef HGLIST_H
-#define HGLIST_H
+#ifndef HGLISTBOX_H
+#define HGLISTBOX_H
 
-class HGList : public HGWidget
+#include "hgitemview.h"
+
+class HGListBoxPrivate;
+class H_API HGListBox : public HGItemView
 {
+    Q_OBJECT
+    Q_DISABLE_COPY( HGListBox )
+    Q_DECLARE_PRIVATE( HGListBox )
 public:
-    HGList();
+    explicit HGListBox(const HObjectInfo& objinfo, QGraphicsItem* parent = NULL);
+    ~HGListBox();
+
+    DECLARE_GITEM_STATIC_CREATE(HGListBox);
+public:
+
 };
 
-#endif // HGLIST_H
+
+#endif // HGLISTBOX_H

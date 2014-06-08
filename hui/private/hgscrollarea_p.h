@@ -1,28 +1,29 @@
-#ifndef HGITEMVIEW_P_H
-#define HGITEMVIEW_P_H
+#ifndef HGSCROLLAREA_P_H
+#define HGSCROLLAREA_P_H
 
 #include "hbase.h"
-#include "hgitemview.h"
+#include "hgscrollarea.h"
 #include "hgwidget_p.h"
 
-class QStandardItemModel;
-
-class H_API HGItemViewPrivate : public HGWidgetPrivate
+class HGScrollBar;
+class H_API HGScrollAreaPrivate : public HGWidgetPrivate
 {
-    Q_DISABLE_COPY(HGItemViewPrivate)
-    Q_DECLARE_PUBLIC( HGItemView )
-public:
-    HGItemViewPrivate():
-        HGWidgetPrivate(),
-        mItemModel(NULL)
-    {
-    }
+    Q_DISABLE_COPY(HGScrollAreaPrivate)
+    Q_DECLARE_PUBLIC(HGScrollArea)
 
-    ~HGItemViewPrivate()
-    {
-    }
+public:
+    HGScrollAreaPrivate();
+
 protected:
-    QStandardItemModel* mItemModel;
+    void onInitStyle(const HStyle * style);
+
+    QGraphicsWidget* mViewport;
+    HGScrollBar* mHorizontalScrollBar;
+    HGScrollBar* mVerticalScrollBar;
+    Qt::ScrollBarPolicy mVerticalScrollBarPolicy;
+    Qt::ScrollBarPolicy mHorizontalScrollBarPolicy;
+    qreal mPrevHorizontalValue;
+    qreal mPrevVerticalValue;
 };
 
-#endif // HGITEMVIEW_P_H
+#endif // HGSCROLLAREA_P_H

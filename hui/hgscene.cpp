@@ -3,12 +3,14 @@
 HGScene::HGScene(QObject *parent) :
     QGraphicsScene(parent)
 {
+    //qDebug("HGScene::HGScene");
     mObjType = USEOBJTYPE(HGScene);
 }
 
 HGScene::HGScene(const QRectF &sceneRect, QObject *parent) :
     QGraphicsScene(sceneRect,parent)
 {
+    //qDebug("HGScene::HGScene");
     mObjType = USEOBJTYPE(HGScene);
 }
 

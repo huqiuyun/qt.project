@@ -5,28 +5,31 @@
 #include "hgview.h"
 #include "hgwidget.h"
 #include "hframestyle.h"
-#include "hbackgroundstyle.h"
-#include "hqlayoutstyle.h"
-#include "hglayoutstyle.h"
+#include "himagestyle.h"
+#include "hqlayout.h"
+#include "hglayout.h"
+#include "hfontstyle.h"
 #include "private/hqwidget_p.h"
 #include <QGraphicsProxyWidget>
 
 HQWidgetPrivate::HQWidgetPrivate() :
-    q_ptr(NULL)
+    q_ptr(NULL),
+    mLayout(NULL)
 {
 }
 
 HQWidgetPrivate::~HQWidgetPrivate()
 {
+    hDelete(mLayout);
 }
 
 void HQWidgetPrivate::init()
 {
-    static int s_index = 0;
-    QString name = "NoQWidget" + QString::number(s_index++);
+    QString name = "hui.qwidget." + QString::number(HObject::objectIndex());
     q_ptr->setObjectName(name);
 
-    installStyle(HSTYLE);
+    if (installStyle(HSTYLE))
+        mFrameStyle->init();
 }
 
 bool HQWidgetPrivate::installStyle(const HStyle* style)
@@ -49,33 +52,36 @@ void HQWidgetPrivate::initStyle(const HStyle* style)
     }
     framestyle->setWindow(q_ptr);
 
-    if (framestyle->hasLayoutStyle()) {
+    HClassInfo backgroundcls = framestyle->childAt(QLatin1String("backgroundStyle"));
+    if (backgroundcls.isValid()) {
         HCreateParam param;
-        HClassInfo cls = framestyle->layoutStyle();
-        HQLayoutStyle* layout = static_cast<HQLayoutStyle*>(HFACTORY->createObject(cls,q_ptr,param));
-        mLayoutStyle = QSharedPointer<HQLayoutStyle>(layout);
-        mLayoutStyle->backup(style);
-        mLayoutStyle->setWindow(q_ptr);
+        HImageStyle* back = static_cast<HImageStyle*>(HFACTORY->createObject(backgroundcls,q_ptr,param));
+        mBkgStyle = QSharedPointer<HImageStyle>(back);
+        mBkgStyle->backup(style);
     }
-    if (framestyle->hasBackgroundStyle()) {
-        HCreateParam param;
-        HClassInfo cls = framestyle->backgroundStyle();
-        HBackgroundStyle* back = static_cast<HBackgroundStyle*>(HFACTORY->createObject(cls,q_ptr,param));
-        mBackgroundStyle = QSharedPointer<HBackgroundStyle>(back);
-        mBackgroundStyle->backup(style);
+
+    // font
+    HClassInfo fontcls = framestyle->childAt(QLatin1String("fontStyle"));
+    if (fontcls.isValid()) {
+        initFontStyle(style,fontcls.mStyleId.data());
     }
+    onInitStyle(style);
+}
+
+void HQWidgetPrivate::initFontStyle(const HStyle* style,const char* styleid)
+{
+    HFontStyle* fontstyle = hStyleSharedCast<HFontStyle>(style->itemAt(styleid));
+    if (fontstyle)
+        q_ptr->setFont(fontstyle->font());
+    else if(style != HSTYLE) {
+        //qDebug("initFontStyle:Not find font style=%s,then to do find from system style",styleid);
+        initFontStyle(HSTYLE,styleid);
+    }
+    else
+       qDebug("initFontStyle:Not find font style=%s in system style",styleid);
 }
 
 IMPLEMENT_QWIDGET_STATIC_CREATE(HQWidget,HQWidget,USEOBJTYPE(HQWidget))
-HQWidget::HQWidget(QWidget* parent) :
-    QWidget(parent),
-    d_ptr(new HQWidgetPrivate())
-{
-    mObjType = USEOBJTYPE(HQWidget);
-    d_ptr->q_ptr = this;
-    d_ptr->init();
-}
-
 HQWidget::HQWidget(const HObjectInfo& objinfo,QWidget* parent):
     QWidget(parent),
     HObject(objinfo.mStyleId),
@@ -85,15 +91,6 @@ HQWidget::HQWidget(const HObjectInfo& objinfo,QWidget* parent):
     d_ptr->q_ptr = this;
     d_ptr->init();
     if (objinfo.mObjName.size()>1) setObjectName(objinfo.objName());
-}
-
-HQWidget::HQWidget(HQWidgetPrivate &dd, QWidget *parent) :
-    QWidget(parent),
-    d_ptr(&dd)
-{
-    mObjType = USEOBJTYPE(HQWidget);
-    d_ptr->q_ptr = this;
-    d_ptr->init();
 }
 
 HQWidget::HQWidget(HQWidgetPrivate& dd,const HObjectInfo& objinfo,QWidget* parent) :
@@ -119,6 +116,12 @@ void HQWidget::installStyle(const HStyle* style)
         d->mFrameStyle->init();
 }
 
+void HQWidget::initFontStyle(const char* styleid,const HStyle* style)
+{
+    Q_D(HQWidget);
+    d->initFontStyle(style?style:HSTYLE,styleid);
+}
+
 void HQWidget::setFrameStyle(QSharedPointer<HFrameStyle> style)
 {
     d_func()->mFrameStyle = style;
@@ -131,61 +134,93 @@ QSharedPointer<HFrameStyle> HQWidget::frameStyle() const
     return d_func()->mFrameStyle;
 }
 
-void HQWidget::setLayoutStyle(QSharedPointer<HQLayoutStyle> style)
+void HQWidget::setLayout(HQLayout* l)
 {
-    d_func()->mLayoutStyle = style;
+    HQLayout* o = d_func()->mLayout;
+    d_func()->mLayout = l;
+    if (l)
+        l->setWindow(this);
+    hDelete(o);
 }
 
-QSharedPointer<HQLayoutStyle> HQWidget::layoutStyle() const
+HQLayout* HQWidget::layout() const
 {
-    return d_func()->mLayoutStyle;
+    return d_func()->mLayout;
 }
 
 HEnums::HLayoutType HQWidget::layoutType() const
 {
     Q_D(const HQWidget);
-    return d->mLayoutStyle?d->mLayoutStyle->layoutType():HEnums::kNone;
+    return d->mLayout?d->mLayout->layoutType():HEnums::kNone;
 }
 
+void HQWidget::setBackgroundStyle(QSharedPointer<HImageStyle> style)
+{
+    Q_D(HQWidget);
+    d->mBkgStyle = style;
+}
+
+QSharedPointer<HImageStyle> HQWidget::backgroundStyle() const
+{
+    return d_func()->mBkgStyle;
+}
+
+void HQWidget::setIndexOfBkgmage(int index)
+{
+    Q_D(HQWidget);
+    if (d->mBkgStyle)
+        d->mBkgStyle->setIndex(index);
+}
+
+int HQWidget::indexOfBkgImage() const
+{
+    Q_D(const HQWidget);
+    return (d->mBkgStyle)?d->mBkgStyle->index():0;
+}
+
+QRect HQWidget::rectOfBackgroundImage() const
+{
+    return rect();
+}
 
 /** add widget to owner layout */
 int HQWidget::addWidget(QWidget* widget)
 {
     Q_D(HQWidget);
-    if (d->mLayoutStyle)
-        return d->mLayoutStyle->addWidget(widget);
+    if (d->mLayout)
+        return d->mLayout->addWidget(widget);
     return -1;
 }
 
-int HQWidget::insertWidget(QWidget* widget ,const HLayoutConf& conf)
+int HQWidget::insertWidget(QWidget* widget ,const HLayoutConfig& conf)
 {
     Q_D(HQWidget);
-    if (d->mLayoutStyle)
-        return d->mLayoutStyle->insertWidget(widget,conf);
+    if (d->mLayout)
+        return d->mLayout->insertWidget(widget,conf);
     return -1;
 }
 
 bool HQWidget::removeWidget(QWidget* widget)
 {
     Q_D(HQWidget);
-    if (d->mLayoutStyle)
-        return d->mLayoutStyle->removeWidget(widget);
+    if (d->mLayout)
+        return d->mLayout->removeWidget(widget);
     return false;
 }
 
-bool HQWidget::addChildWidget(QWidget* widget ,const HLayoutConf& conf)
+bool HQWidget::addChildWidget(QWidget* widget ,const HLayoutConfig& conf)
 {
     Q_D(HQWidget);
-    if (d->mLayoutStyle)
-        return d->mLayoutStyle->addChildWidget(widget,conf);
+    if (d->mLayout)
+        return d->mLayout->addChildWidget(widget,conf);
     return false;
 }
 
 void HQWidget::removeChildWidget(QWidget* widget)
 {
     Q_D(HQWidget);
-    if (d->mLayoutStyle)
-        d->mLayoutStyle->removeChildWidget(widget);
+    if (d->mLayout)
+        d->mLayout->removeChildWidget(widget);
 }
 
 void HQWidget::setFixedSize(const QSize &s)
@@ -223,32 +258,15 @@ void HQWidget::setAlignment(Qt::Alignment align)
         if (!proxy || !(p = proxy->parent()))
             return;
         if (p->property("isHGWidget").toBool())
-            static_cast<HGWidget*>(p)->layoutStyle()->setAlignment(proxy,align);
+            static_cast<HGWidget*>(p)->layout()->setAlignment(proxy,align);
     }
     else {
         QObject* p = parent();
         if (p->property("isHQWidget").toBool()) {
-            static_cast<HQWidget*>(p)->layoutStyle()->setAlignment(this,align);
+            static_cast<HQWidget*>(p)->layout()->setAlignment(this,align);
         }
         else if(p->property("isHGView").toBool()) {
-            static_cast<HGView*>(p)->layoutStyle()->setAlignment(this,align);
-        }
-    }
-}
-
-
-void HQWidget::setWindowAttribute(QWidget* window,const QString& attribute)
-{
-    if (!window) return;
-    QStringList list = attribute.split("|");
-    for(int i=0; i< list.size();i++) {
-        QString attr = list.at(i);
-        QStringList item = attr.split(":");
-        if (item.size()>=2)
-        {
-            int val = item.at(0).toInt();
-            if (val>=0 && val < Qt::WA_AttributeCount)
-                window->setAttribute((Qt::WidgetAttribute)val,(item.at(1)==QLatin1String("true")));
+            static_cast<HGView*>(p)->layout()->setAlignment(this,align);
         }
     }
 }
@@ -265,13 +283,9 @@ HGWidget* HQWidget::parentGWidget() const
     return (p->property("isHGWidget").toBool()) ? static_cast<HGWidget*>(p) : NULL;
 }
 
-void HQWidget::doConstruct()
+void HQWidget::construct()
 {
-    Q_D(HQWidget);
-    if (d->mFrameStyle)
-       d->mFrameStyle->init();
 
-    construct();
 }
 
 void HQWidget::resizeEvent(QResizeEvent *event)
@@ -280,8 +294,8 @@ void HQWidget::resizeEvent(QResizeEvent *event)
     if (d->mFrameStyle) {
         d->mFrameStyle->resizeEvent(event);
     }
-    if (d->mLayoutStyle)
-        d->mLayoutStyle->resizeEvent(event->size());
+    if (d->mLayout)
+        d->mLayout->resizeEvent(event->size());
 
     emit resized();
 }
@@ -289,15 +303,18 @@ void HQWidget::resizeEvent(QResizeEvent *event)
 void HQWidget::paintEvent(QPaintEvent*)
 {
     Q_D(HQWidget);
-    if (d->mBackgroundStyle) {
+    if (d->mBkgStyle) {
         QPainter painter(this);
-        d->mBackgroundStyle->draw(&painter,rect(),HEnums::kStateDefaultTile);
+        d->mBkgStyle->draw(&painter,rectOfBackgroundImage());
     }
 }
 
 bool HQWidget::nativeEvent(const QByteArray & eventType, void * message, long * result)
 {
-    return d_func()->mFrameStyle->nativeEvent(eventType,message,result);
+    Q_D(HQWidget);
+    if (d->mFrameStyle)
+        return d->mFrameStyle->nativeEvent(eventType,message,result);
+    return false;
 }
 
 

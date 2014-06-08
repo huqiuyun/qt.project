@@ -2,7 +2,7 @@
 #define HUITASK_H
 
 #include "hbase.h"
-
+#include "hlayoutconfig.h"
 class HuiReader;
 class QGraphicsItem;
 class QWidget;
@@ -30,9 +30,9 @@ public:
         int isXmlScene:1;
         int isXmlWidget:1;
         //
-        int isObjHQWidget:1;// object is based HQWidget
-        int isObjHGView:1; // object is based HGView
-        int isObjHGWidget:1; // object is based HGWidget
+        int isHQWidget:1;// object is based HQWidget
+        int isHGView:1; // object is based HGView
+        int isHGWidget:1; // object is based HGWidget
 
         Flags(){ memset(this,0,sizeof(*this)); }
     };
@@ -62,7 +62,7 @@ private:
     Flags& flags() { return mFlags; }
 
     inline bool canCreateScene() const {
-        return mFlags.isScene;
+        return isHGView();
     }
 
     inline bool canCreateLayout() const {
@@ -94,16 +94,20 @@ private:
     }
 
     // object type
+    inline bool isQObject() const {
+        return mFlags.isQObject;
+    }
+
     inline bool isQWidget() const {
-        return (USEOBJTYPE(QWidget) <= mObjType && mObjType < USEOBJTYPE(QUseDefine));
+        return (USEOBJTYPE(QWidget) <= mObjType && mObjType < USEOBJTYPE(HQUseDefine));
     }
 
     inline bool isHQWidget() const {
-        return (isQWidget() && mFlags.isObjHQWidget);
+        return (isQWidget() && mFlags.isHQWidget);
     }
 
     inline bool isHGView() const {
-        return (isQWidget() && mFlags.isObjHGView);
+        return (isQWidget() && mFlags.isHGView);
     }
 
     inline bool isGraphicsItem() const {
@@ -113,11 +117,11 @@ private:
 
     inline bool isGWidget() const {
         return (USEOBJTYPE(QGLayoutItem) < mObjType &&
-                mObjType < USEOBJTYPE(HGLayoutItemUseDefine));
+                mObjType < USEOBJTYPE(HGUseDefine));
     }
 
     inline bool isHGWidget() const {
-        return (isGWidget() && mFlags.isObjHGWidget);
+        return (isGWidget() && mFlags.isHGWidget);
     }
 
     QGraphicsItem *gItem();
@@ -126,24 +130,27 @@ private:
     QObject *qObject();
     HStyle *style() const;
     //
-    void generateStyle();
-    void generateChild();
+    void createStyle();
+    void createChild();
     void deleteChild();
 
     void installStyle();
     void deleteStyle();
     void addScene();
-    void addLayout(HPropertyProxy* proxy,bool isUse);
-    void addWidget(HPropertyProxy* proxy,bool isUse);
+    void addLayout(HPropertyProxy* proxy);
+    void addWidget(HPropertyProxy* proxy);
 
     int  findFunc(const char* clsname);
-    bool hasProperty(QObject* object, const char* key);
     void setFlagsWithQWidget(QWidget* parent);
     void setFlagsWithHGWidget(QGraphicsWidget* parent);
     void setFlagsWithHGItem(QGraphicsItem* parent);
 
-    static void execSkipProperty(HuiTask* task,HPropertyProxy* proxy,bool isUse);
-    static bool setProperty(QObject* obj, const QString& id, const QString& attr,bool isUse);
+    //
+    static bool hasProperty(QObject* object, const char* key);
+    static void setProperty(HuiTask* task,HPropertyProxy* proxy);
+    static void setProperty(QObject* obj, const QList<HIdValue>& propertys);
+    static bool setProperty(QObject* obj, const QString& id, const QString& attr);
+    static bool invoke(QObject* obj, const char* method, const QVector<QVariant>& args);
 
     template<class OBJ>
     inline OBJ* objCast() {
@@ -167,8 +174,7 @@ private:
     QList<QWidget*> mWidgets;
     QList<HIdValue> mPropertys;
     // for layout
-    HLayoutConf    mLayoutConf;
-    QList<HIdValue> mLayoutPropertys;
+    HLayoutConfig   mLayoutConfig;
 };
 
 #endif // HUITASK_H

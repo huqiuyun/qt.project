@@ -299,6 +299,7 @@ IMPLEMENT_GITEM_STATIC_CREATE_DEFINED(QGraphicsTextItem,HuiCreator)
 /// convert function
 #define CALL_QVARIANT(TYPE,val,hr) convertQVariant_##TYPE(val,hr)
 #define CALL_QSTRING(TYPE,val,hr)  convertQString_##TYPE(val,hr)
+#define CALL_CONVERT(TYPE,val,hr) convert_##TYPE(val,hr)
 
 IMPLEMENT_HCONVERT_QSTRING(QString)
 {
@@ -308,8 +309,13 @@ IMPLEMENT_HCONVERT_QSTRING(QString)
 
 IMPLEMENT_HCONVERT_QVARIANT(QString)
 {
+    return qVariantFromValue(convert_QString(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QString)
+{
     *hr = 0;
-    return QVariant(val);
+    return val;
 }
 
 //QMargins
@@ -322,15 +328,18 @@ IMPLEMENT_HCONVERT_QSTRING(QMargins)
 
 IMPLEMENT_HCONVERT_QVARIANT(QMargins)
 {
+    return qVariantFromValue(convert_QMargins(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QMargins)
+{
     QStringList s = val.split(",");
     if (s.size() >= 4) {
         *hr = 0;
         QMargins ret(s.at(0).toFloat(), s.at(1).toFloat(), s.at(2).toFloat(), s.at(3).toFloat());
-        return qVariantFromValue(ret);
+        return ret;
     }
-    else {
-        return qVariantFromValue(QMargins());
-    }
+    return QMargins();
 }
 
 //QColor
@@ -342,6 +351,11 @@ IMPLEMENT_HCONVERT_QSTRING(QColor)
 }
 
 IMPLEMENT_HCONVERT_QVARIANT(QColor)
+{
+    return qVariantFromValue(convert_QColor(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QColor)
 {
     QColor ret;
     QStringList s = val.split(",");
@@ -369,6 +383,11 @@ IMPLEMENT_HCONVERT_QSTRING(QRectF)
 
 IMPLEMENT_HCONVERT_QVARIANT(QRectF)
 {
+     return qVariantFromValue(convert_QRectF(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QRectF)
+{
     QRectF ret;
     QStringList s = val.split(",");
     if (s.size() >= 4) {
@@ -390,7 +409,12 @@ IMPLEMENT_HCONVERT_QSTRING(QRect)
 
 IMPLEMENT_HCONVERT_QVARIANT(QRect)
 {
-    return CALL_QVARIANT(QRectF,val,hr).toRect();
+    return qVariantFromValue(convert_QRect(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QRect)
+{
+    return CALL_CONVERT(QRectF,val,hr).toRect();
 }
 
 // QSizeF
@@ -402,6 +426,11 @@ IMPLEMENT_HCONVERT_QSTRING(QSizeF)
 }
 
 IMPLEMENT_HCONVERT_QVARIANT(QSizeF)
+{
+    return qVariantFromValue(convert_QSizeF(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QSizeF)
 {
     QSizeF ret;
     QStringList s = val.split(",");
@@ -422,7 +451,12 @@ IMPLEMENT_HCONVERT_QSTRING(QSize)
 
 IMPLEMENT_HCONVERT_QVARIANT(QSize)
 {
-    return CALL_QVARIANT(QSizeF,val,hr).toSize();
+    return qVariantFromValue(convert_QSize(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QSize)
+{
+    return CALL_CONVERT(QSizeF,val,hr).toSize();
 }
 
 // QPointF
@@ -434,6 +468,11 @@ IMPLEMENT_HCONVERT_QSTRING(QPointF)
 }
 
 IMPLEMENT_HCONVERT_QVARIANT(QPointF)
+{
+    return qVariantFromValue(convert_QPointF(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QPointF)
 {
     QStringList s = val.split(",");
     QPointF ret;
@@ -454,7 +493,12 @@ IMPLEMENT_HCONVERT_QSTRING(QPoint)
 
 IMPLEMENT_HCONVERT_QVARIANT(QPoint)
 {
-    return CALL_QVARIANT(QPointF,val,hr).toPoint();
+    return qVariantFromValue(convert_QPoint(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QPoint)
+{
+    return CALL_CONVERT(QPointF,val,hr).toPoint();
 }
 
 //HAnchor
@@ -467,9 +511,14 @@ IMPLEMENT_HCONVERT_QSTRING(HAnchor)
 
 IMPLEMENT_HCONVERT_QVARIANT(HAnchor)
 {
+    return qVariantFromValue(convert_HAnchor(val,hr));
+}
+
+IMPLEMENT_HCONVERT(HAnchor)
+{
     Q_UNUSED(val);
     Q_UNUSED(hr);
-    return QVariant();
+    return HAnchor();
 }
 
 //QBrush
@@ -482,11 +531,16 @@ IMPLEMENT_HCONVERT_QSTRING(QBrush)
 
 IMPLEMENT_HCONVERT_QVARIANT(QBrush)
 {
+    return qVariantFromValue(convert_QBrush(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QBrush)
+{
     QStringList s = val.split("|");
     if (s.size() >= 2) {
         QString type = s.at(0);
         if (type.startsWith("color")) {
-            return QBrush(CALL_QVARIANT(QColor,s.at(1),hr).value<QColor>());
+            return QBrush(CALL_CONVERT(QColor,s.at(1),hr));
         }
         else if(type.startsWith("image")) {
             *hr = 0;
@@ -506,9 +560,14 @@ IMPLEMENT_HCONVERT_QSTRING(QFont)
 
 IMPLEMENT_HCONVERT_QVARIANT(QFont)
 {
+    return qVariantFromValue(convert_QFont(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QFont)
+{
     Q_UNUSED(val);
     Q_UNUSED(hr);
-    return QVariant();
+    return QFont();
 }
 
 IMPLEMENT_HCONVERT_QSTRING(QIcon)
@@ -519,6 +578,11 @@ IMPLEMENT_HCONVERT_QSTRING(QIcon)
 }
 
 IMPLEMENT_HCONVERT_QVARIANT(QIcon)
+{
+    return qVariantFromValue(convert_QIcon(val,hr));
+}
+
+IMPLEMENT_HCONVERT(QIcon)
 {
     Q_UNUSED(val);
     Q_UNUSED(hr);
@@ -533,7 +597,63 @@ IMPLEMENT_HCONVERT_QSTRING(qreal)
 
 IMPLEMENT_HCONVERT_QVARIANT(qreal)
 {
+    return qVariantFromValue(convert_qreal(val,hr));
+}
+
+IMPLEMENT_HCONVERT(qreal)
+{
     *hr = 0;
     return val.toFloat();
 }
 
+IMPLEMENT_HCONVERT_QSTRING(int)
+{
+    *hr = 0;
+    return QString("%1").arg(val.toInt());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(int)
+{
+    return convert_int(val,hr);
+}
+
+IMPLEMENT_HCONVERT(int)
+{
+    *hr = 0;
+    return val.toInt();
+}
+
+
+IMPLEMENT_HCONVERT_QSTRING(int64)
+{
+    *hr = 0;
+    return QString("%1").arg(val.toLongLong());
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(int64)
+{
+    return convert_int64(val,hr);
+}
+
+IMPLEMENT_HCONVERT(int64)
+{
+    *hr = 0;
+    return val.toLongLong();
+}
+
+IMPLEMENT_HCONVERT_QSTRING(bool)
+{
+    *hr = 0;
+    return val.toBool()?QString("true"):QString("false");
+}
+
+IMPLEMENT_HCONVERT_QVARIANT(bool)
+{
+    return QVariant(convert_bool(val,hr));
+}
+
+IMPLEMENT_HCONVERT(bool)
+{
+    *hr = 0;
+    return val==QLatin1String("true");
+}

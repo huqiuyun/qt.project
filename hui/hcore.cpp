@@ -3,6 +3,8 @@
 #include "hresourcemgr.h"
 #include "hfactory.h"
 #include "hsystem.h"
+#include "hbus.h"
+#include "hunknown.h"
 #include "private/hcore_p.h"
 #include "hcreator.h"
 
@@ -11,7 +13,9 @@ HCorePrivate::HCorePrivate() :
     mStyle(NULL),
     mResMgr(NULL),
     mFactory(NULL),
-    mSystem(NULL)
+    mSystem(NULL),
+    mBus(NULL),
+    mGlobalUnk(NULL)
 {
 }
 
@@ -21,6 +25,8 @@ HCorePrivate::~HCorePrivate()
     hDelete(mResMgr);
     hDelete(mFactory);
     hDelete(mSystem);
+    hDelete(mBus);
+    hRelease(mGlobalUnk);
 }
 
 //HCore
@@ -104,6 +110,25 @@ HSystem* HCore::system()
         d->mSystem = new HSystem();
     }
     return d->mSystem;
+}
+
+HBus* HCore::bus()
+{
+    Q_D(HCore);
+    if (!d->mBus) {
+        d->mBus = new HBus();
+    }
+    return d->mBus;
+}
+
+HGlobalUnk* HCore::globalUnk()
+{
+    Q_D(HCore);
+    if (!d->mGlobalUnk) {
+        d->mGlobalUnk = new HGlobalUnk(NULL);
+        d->mGlobalUnk->addRef();
+    }
+    return d->mGlobalUnk;
 }
 
 HCore* HCore::core()

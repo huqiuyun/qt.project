@@ -10,6 +10,7 @@ class HEnums
 {
     Q_GADGET
     Q_ENUMS(HLayoutType)
+    Q_ENUMS(HWidgetState)
 public:
 
     enum HLayoutType
@@ -31,18 +32,15 @@ public:
     enum HObjectType
     {
         OBJTYPE(Unk) = 0,
-        OBJTYPE(HLayoutConf),
+        OBJTYPE(HLayoutConfig),
         OBJTYPE(QObject),
         OBJTYPE(HStyle),
-        OBJTYPE(HGSceneStyle),
-        OBJTYPE(HBackgroundStyle),
+        OBJTYPE(HImageStyle),
         OBJTYPE(HFrameStyle),
-        OBJTYPE(HWidgetStyle),
         OBJTYPE(HGWidgetStyle),
-        OBJTYPE(HLayoutStyle),
-        OBJTYPE(HGLayoutStyle),
-        OBJTYPE(HQLayoutStyle),
         OBJTYPE(HFontStyle),
+        OBJTYPE(HColorStyle),
+        OBJTYPE(HGroup),
         OBJTYPE(HGScene),
         //
         OBJTYPE(QWidget) = 500,
@@ -69,7 +67,7 @@ public:
 
         OBJTYPE(HQWidget),
         OBJTYPE(HGView),
-        OBJTYPE(QUseDefine) = 1500,
+        OBJTYPE(HQUseDefine) = 1500,
 
         //graphicsitem for scene
         OBJTYPE(QGraphicsItem) = 2500,
@@ -89,31 +87,43 @@ public:
         OBJTYPE(HGProxyWidget),
         OBJTYPE(HGWidget),
         OBJTYPE(HGStackedWidget),
+        OBJTYPE(HGButton),
+        OBJTYPE(HGLable),
+        OBJTYPE(HGComboBox),
+        OBJTYPE(HGTree),
+        OBJTYPE(HGListBox),
+        OBJTYPE(HGCaption),
+        OBJTYPE(HGSplitter),
+        OBJTYPE(HGScrollArea),
+        OBJTYPE(HGScrollBar),
+        OBJTYPE(HGAnimation),
+        OBJTYPE(HGItemView),
 
-        OBJTYPE(HGLayoutItemUseDefine) = 4500,
+        OBJTYPE(HGUseDefine) = 4500,
 
         kOTUsed = 6000
     };
 
-    enum HCssKey
+    enum HChangeType
     {
-        kCssUnk      = 0,
-        kCssMargins  = 1 << 0,
-        kCssColorizePolicy = 1 << 1,
-        kCssData = 1 << 2,
-        kCssComposeMode = 1 << 3, //0x10
-        kCssImagePath = 1 << 4,
-        kCssAlignment = 1 << 5,
-        kCssColor = 1 << 6,
-        kCssWidth = 1 << 7, // 0x100
-        kCssHeight = 1 << 8,
-        kCssFixWidth = 1 << 9,
-        kCssFixHeight = 1 << 10,
-        kCssLayout = 1 << 11, // 0x1000
-        kCssSpacing = 1 << 12,
-        kCssAnchor = 1 << 13,
-        kCssSize = 1 << 14,
-        kCssDragFlag = 1 << 15,
+        kChgUnk      = 0,
+        kChgMargins  = 1 << 0,
+        kChgColorizePolicy = 1 << 1,
+        kChgData = 1 << 2,
+        kChgComposeMode = 1 << 3, //0x10
+        kChgImage = 1 << 4,
+        kChgAlignment = 1 << 5,
+        kChgColor = 1 << 6,
+        kChgWidth = 1 << 7, // 0x100
+        kChgHeight = 1 << 8,
+        kChgFixWidth = 1 << 9,
+        kChgFixHeight = 1 << 10,
+        kChgLayout = 1 << 11, // 0x1000
+        kChgSpacing = 1 << 12,
+        kChgAnchor = 1 << 13,
+        kChgSize = 1 << 14,
+        kChgDragFlag = 1 << 15,
+        kChgBrush = 1<< 16,
         kCssEnd
     };
 
@@ -124,14 +134,12 @@ public:
         kStatePressed       = 0x00000002,
         kStateFoucs         = 0x00000004,
         kStateDisable       = 0x00000008,
-        kStateCheckNormal   = 0x00000010, //check(radio) box
-        kStateCheckOver     = 0x00000020,
-        kStateCheckPressed  = 0x00000040,
-        kStateCheckFocus    = 0x00000080,
-        kStateCheckDisable  = 0x00000100,
-
-        kStateDefaultTile   = 0x00010000
+        kStateChecked       = 0x00000010
     };
+    static bool testState(int state,int flag)
+    {
+        return (state & flag) != 0;
+    }
 }; //end class
 
 #endif // HENUMS_H

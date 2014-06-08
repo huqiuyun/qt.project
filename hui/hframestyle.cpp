@@ -1,20 +1,21 @@
 #include "hframestyle.h"
-#include "hqwidget.h"
+#include "hglobal.h"
 
 IMPLEMENT_OBJECT_STATIC_CREATE(HFrameStyle)
 HFrameStyle::HFrameStyle(QObject *parent) :
     HWidgetStyle(parent),
-    mWindow(NULL)
+    mWindow(NULL),
+    mHandler(NULL)
 {
-    mWinFlags = Qt::Window;
     mObjType = USEOBJTYPE(HFrameStyle);
 }
 
 HFrameStyle::HFrameStyle(const HObjectInfo& objinfo, QObject *parent) :
     HWidgetStyle(objinfo,parent),
-    mWindow(NULL)
+    mWindow(NULL),
+    mHandler(NULL)
 {
-    mWinFlags = Qt::Window;
+    //qDebug("HFrameStyle styleid=%s",objinfo.mStyleId.data());
     mObjType = USEOBJTYPE(HFrameStyle);
 }
 
@@ -27,55 +28,19 @@ void HFrameStyle::setWindow(QWidget* window)
     mWindow = window;
 }
 
-void HFrameStyle::setWindowFlags(Qt::WindowFlags flags)
+QWidget* HFrameStyle::window() const
 {
-    mWinFlags = flags;
+    return mWindow;
 }
 
-Qt::WindowFlags HFrameStyle::windowFlags() const
+void HFrameStyle::setFrameStyleHandler(IHFrameStyleHandler* handler)
 {
-    return mWinFlags;
+    mHandler = handler;
 }
 
-bool HFrameStyle::hasStyleSheet() const
+void HFrameStyle::onSetWindowAttribute()
 {
-    return (mStyleSheet.size() > 1);
-}
-
-void HFrameStyle::setStyleSheet(const QString& sheet)
-{
-    mStyleSheet = sheet;
-}
-
-QString HFrameStyle::styleSheet() const
-{
-    return mStyleSheet;
-}
-
-bool HFrameStyle::hasSceneStyle() const
-{
-    return (mSceneStyle.mClsName.size() > 1 && mSceneStyle.mStyleId.size()>1);
-}
-
-void HFrameStyle::setSceneStyle(const HClassInfo& cls)
-{
-    mSceneStyle = cls;
-}
-
-HClassInfo HFrameStyle::sceneStyle() const
-{
-    return mSceneStyle;
-}
-
-QString HFrameStyle::windowAttribute() const
-{
-    return mWindowAttribute;
-}
-
-void HFrameStyle::setWindowAttribute(const QString& a)
-{
-    mWindowAttribute = a;
-    HQWidget::setWindowAttribute(mWindow,a);
+    HGlobal::setQWidgetAttribute(mWindow,mWinAttribute);
 }
 
 void HFrameStyle::copyTo(HBaseStyle* obj)
@@ -83,10 +48,6 @@ void HFrameStyle::copyTo(HBaseStyle* obj)
     HFrameStyle* style = static_cast<HFrameStyle*>(obj);
     if (!style) return ;
 
-    style->setWindowFlags(mWinFlags);
-    style->setStyleSheet(mStyleSheet);
-    style->setSceneStyle(mSceneStyle);
-    style->setWindowAttribute(mWindowAttribute);
     HWidgetStyle::copyTo(obj);
 }
 
@@ -100,33 +61,19 @@ HBaseStyle* HFrameStyle::clone()
 
 void  HFrameStyle::init()
 {
-    qDebug("HFrameStyle::init");
-    mWindow->setWindowFlags(windowFlags());
-
-    if (hasStyleSheet()) {
-        mWindow->setStyleSheet(styleSheet());
-    }
-    HQWidget::setWindowAttribute(mWindow,mWindowAttribute);
+    onSetWindowAttribute();
 }
 
 void HFrameStyle::resizeEvent(QResizeEvent *event)
 {
-    Q_UNUSED(event);
-}
-
-QRect HFrameStyle::calcClientRect(const QRect &frameRect) const
-{
-    Q_UNUSED(frameRect);
-
-    return frameRect;
+    if (mHandler)
+        mHandler->resizeEvent(this,event);
 }
 
 bool  HFrameStyle::nativeEvent(const QByteArray & eventType, void * message, long * result)
 {
     //Windows	eventType = "windows_generic_MSG"	message = MSG *	 result = LRESULT
-
-    Q_UNUSED(eventType);
-    Q_UNUSED(message);
-    Q_UNUSED(result);
+    if (mHandler)
+        return mHandler->nativeEvent(this,eventType,message,result);
     return false;
 }

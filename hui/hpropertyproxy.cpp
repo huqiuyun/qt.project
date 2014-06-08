@@ -1,5 +1,6 @@
 #include "hpropertyproxy.h"
 #include "hcreator.h"
+#include "hglobal.h"
 #include <QWidget>
 #include <QGraphicsWidget>
 #include <QGraphicsItem>
@@ -17,7 +18,6 @@ bool HPropertyProxy::handlerQWidget(QWidget *obj, int objType, const QString& id
     Q_UNUSED(id);
     Q_UNUSED(val);
     long hr = -1;
-
     if (HPROPERTY_ID_MATCH("fixedWidth")) {// int
         obj->setFixedWidth(val.toInt());
     }
@@ -28,7 +28,7 @@ bool HPropertyProxy::handlerQWidget(QWidget *obj, int objType, const QString& id
         obj->setFixedSize(HuiCreator::convertQVariant_QSize(val,&hr).toSize());
     }
     else if(HPROPERTY_ID_MATCH("windowAttribute")){
-        HQWidget::setWindowAttribute(obj,val);
+        HGlobal::setQWidgetAttribute(obj,val);
     }
     else
         return false;

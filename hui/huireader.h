@@ -11,9 +11,15 @@ class HGWidget;
 class HGView;
 class HQWidget;
 class HStyle;
-class HLayoutStyle;
+class HLayout;
 class HuiTask;
 class HPropertyProxy;
+class HuiArg;
+class HuiReader;
+class HuiNextKey;
+class HGSceneItem;
+typedef void (HuiReader::*fnReaderTask)(QXmlStreamReader* reader,HuiTask *task, long* hr);
+typedef void (HuiReader::*fnReaderObject)(QXmlStreamReader* reader,QObject *obj);
 
 class H_API HuiReader
 {
@@ -43,26 +49,34 @@ private:
     bool startWithXmlReader(HuiTask* HuiTask, QXmlStreamReader* reader);
 
     /** for widget xml */
-    void createWidgetWithXmlReader(HuiTask* HuiTask, QXmlStreamReader* reader, long* hr);
+    void createWidgetWithXmlReader(QXmlStreamReader* reader,HuiTask* HuiTask, long* hr);
     bool createWidget(HuiTask* HuiTask,const HClassInfo& clsinfo, long *hr);
-    void readLayoutConf(QXmlStreamReader* reader,HLayoutConf* conf);
 
     /** for style xml <style></style>*/
-    void styleFileLink(HuiTask* task,QXmlStreamReader* reader);
-    void createStyleWithXmlReader(HuiTask *task, QXmlStreamReader* reader, long* hr);
-    void createObjWithXmlReader(HuiTask* task,QXmlStreamReader* reader, long *hr);
+    void styleFileLink(QXmlStreamReader* reader,HuiTask* task);
+    void readStyleWithXmlReader(QXmlStreamReader* reader,HuiTask* task, long *hr);
+    void createStyleWithXmlReader(QXmlStreamReader* reader,HuiTask *task, long* hr);
+    void readChildStyle(QXmlStreamReader* reader,QObject* obj);
 
-    void createSceneWithXmlReader(HuiTask* HuiTask,QXmlStreamReader* reader, long *hr);
+    QSharedPointer<HGSceneItem> createScene(HuiTask* task);
+    void addWidgetToSceneWithXmlReader(QXmlStreamReader* reader,HuiTask* HuiTask, long *hr);
 
-    void layoutFileLink(HuiTask* task, QXmlStreamReader* reader);
-    void createLayoutWithXmlReader(HuiTask* HuiTask,QXmlStreamReader* reader, long *hr);
+    HLayout* createLayout(HuiTask* task, HEnums::HLayoutType type);
+    void layoutFileLink(QXmlStreamReader* reader,HuiTask* task);
+    void readLayoutWithXmlReader(QXmlStreamReader* reader,HuiTask* HuiTask, long *hr);
+    void addWidgetToLayoutWithXmlReader(QXmlStreamReader* reader,HuiTask* HuiTask, long *hr);
 
+    typedef QMap<QString,HuiNextKey> HuiNextKeyMap;
+    void readKeyWithXmlReader(QXmlStreamReader* reader, QObject* obj, const QLatin1String& endKey, const HuiNextKeyMap& next = HuiNextKeyMap());
     void readProperty(QXmlStreamReader* reader,QObject* obj,QList<HIdValue>& propertys);
 
-    inline bool isUseProperty() const { return mUseProperty;}
+    // invoke
+    void readInvoke(QXmlStreamReader* reader,QObject* obj);
+    void readArg(QXmlStreamReader* reader, QVector<QVariant>& args);
+    void readArg(const QString& type, const QString& argValue, QVector<QVariant>& args);
+
 private:
     HPropertyProxy* mPropertyProxy;
-    bool mUseProperty;
     const QLatin1String kXmlHui;
     const QLatin1String kXmlVersion;
     const QLatin1String kXmlLayout;
@@ -76,9 +90,17 @@ private:
     const QLatin1String kXmlName;
     const QLatin1String kXmlStyleId;
     const QLatin1String kXmlFile;
-    const QLatin1String kXmlLayoutConf;
+    const QLatin1String kXmlLayoutConfig;
+    const QLatin1String kXmlLayoutVBox;
+    const QLatin1String kXmlLayoutHBox;
+    const QLatin1String kXmlLayoutGrid;
+    const QLatin1String kXmlLayoutAnchor;
     const QLatin1String kPrexSkip;
     const QLatin1String kPrexProxy;
+    const QLatin1String kXmlInvoke;
+    const QLatin1String kXmlMethod;
+    const QLatin1String kXmlArg;
+    const QLatin1String kXmlType;
     friend class HStyle;
 };
 

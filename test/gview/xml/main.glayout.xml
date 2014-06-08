@@ -6,125 +6,177 @@
    if parent is HGWidget,then layout items are  based QWidget Or based QGrahicsWidget
  <!-->
  <layout>
-
    <!-- Style is private , belong to all childs.
         If child need to use them , then need to add the key <style/>.
    <!-->
    <style>
-     <obj class="HBackgroundStyle" name="" styleid="backgroundId2">
-       <property id="sysTile">true</property>
+     <obj class="HImageStyle" name="" styleid="backgroundId">
+       <property id="sysTile"></property>
+       <property id="imageStyle">ImageOnly</property>
        <property id="imagePath">:/theme/bg.png</property>
+       <property id="color">255,255,0</property>
      </obj>
 
-     <obj class="HGWidgetStyle" name="" styleid="gwidgetId2">
-       <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
+     <obj class="HImageStyle" name="" styleid="image.buttonId">
+       <property id="imageStyle">ImageOnly</property>
+       <property id="imagePath">:/theme/button.png</property>
+       <property id="color">255,0,0</property>
      </obj>
 
-    <obj class="HGLayoutStyle" name="" styleid="glayoutId3">
-       <property id="layoutType">kHBox</property>
-       <property id="alignment"></property>
-       <property id="margins">0,0,0,0</property>
-       <property id="spacing">6</property>
+     <obj class="HImageStyle" name="" styleid="iconId">
+       <property id="imageStyle">ImageOnly</property>
+       <property id="imagePath">:/theme/icon_notice.png</property>
+       <property id="alignment">AlignCenter|AlignJustify</property>
+     </obj>
+
+     <obj class="HImageStyle" name="" styleid="icon.checkboxId">
+       <property id="imageStyle">ImageOnly</property>
+       <property id="imagePath">:/theme/checkbox.png</property>
+       <property id="alignment">AlignCenter|AlignJustify</property>
+     </obj>
+
+     <obj class="HImageStyle" name="" styleid="icon.radioboxId">
+       <property id="imageStyle">ImageOnly</property>
+       <property id="imagePath">:/theme/radiobox.png</property>
+       <property id="alignment">AlignCenter|AlignJustify</property>
+     </obj>
+
+     <obj class="HGWidgetStyle" name="" styleid="gwidgetId">
+       <obj id="backgroundStyle" class="HImageStyle" name="" styleid="backgroundId"/>
+     </obj>
+
+     <obj class="HGWidgetStyle" name="" styleid="gbuttonId">
+       <obj id="backgroundStyle" class="HImageStyle" name="" styleid="image.buttonId"/>
+       <obj id="iconStyle" class="HImageStyle" name="" styleid="iconId"/>
+       <obj id="fontStyle" class="HFontStyle" name="" styleid="fontId"/>
+     </obj>
+
+     <obj class="HGWidgetStyle" name="" styleid="gcheckboxId">
+       <obj id="iconStyle" class="HImageStyle" name="" styleid="icon.checkboxId"/>
+     </obj>
+
+     <obj class="HGWidgetStyle" name="" styleid="gradioboxId">
+       <obj id="iconStyle" class="HImageStyle" name="" styleid="icon.radioboxId"/>
+       <obj id="fontStyle" class="HFontStyle" name="" styleid="fontId"/>
+     </obj>
+
+     <obj class="HGWidgetStyle" name="" styleid="glableId">
+       <obj id="colorStyle" class="HColorStyle" name="" styleid="colorId"/>
+       <obj id="fontStyle" class="HFontStyle" name="" styleid="fontId"/>
+     </obj>
+
+    <obj class="HImageStyle" name="" styleid="gproxy.backgroundId">
+       <property id="imageStyle">ImageOnly|SizeHint</property>
+       <property id="imagePath">:/theme/button.png</property>
+       <property id="color">0,100,100</property>
     </obj>
 
-     <obj class="HGWidgetStyle" name="" styleid="gwidgetId3">
-       <property id="styleSheet"></property>
-       <obj id="layoutStyle" class="HGLayoutStyle" name="layoutStyle" styleid="glayoutId3"/>
-     </obj>
+    <obj class="HGWidgetStyle" name="" styleid="gproxywidgetId">
+       <property id="windowFrameMargins">-4,-4,-4,-4</property>
+       <obj id="backgroundStyle" class="HImageStyle" name="" styleid="gproxy.backgroundId"/>
+    </obj>
 
-     <obj class="HQLayoutStyle" name="" styleid="qlayoutId3">
-        <property id="layoutType">kHBox</property>
-        <property id="alignment"></property>
-        <property id="margins"></property>
-        <property id="spacing">1</property>
-     </obj>
+    <obj class="HGWidgetStyle" name="" styleid="gcomboboxId">
+       <obj id="backgroundStyle" class="HImageStyle" name="" styleid="gproxy.backgroundId"/>
+    </obj>
 
-     <obj class="HFrameStyle" name="" styleid="gwidgetframeId">
-        <property id="windowFlags">0</property>
-        <property id="styleSheet"></property>
-        <obj id="layoutStyle" class="HQLayoutStyle" name="layoutStyle" styleid="qlayoutId3"/>
-     </obj>
+    <obj class="HGWidgetStyle" name="scrollArea" styleid="gscrollareaId">
+    </obj>
 
    </style>
 
-   <widget class="HGWidget" name="" styleid="gwidgetId3">
+   <!-- for radio group <!-->
+   <widget class="HGroup" name="radiogroup" styleid="undefined"/>
+
+   <widget class="HGWidget" name="" styleid="gwidgetId">
       <style/>
-      <property id="color"></property>
-      <property id="openGraphicsItemFlag">16</property>
-      <layout>
-        <widget class="HQWidget" name="" styleid="gwidgetframeId">
-          <style/>
-          <property id="proxy:noSystemBackground">1</property>
-          <layout file=":xml/main.qlayout.xml" />
-        </widget>
-      </layout>
-      <property id="skip:alignment">Qt::AlignCenter</property>
+      <property id="fixedSize">100,60</property>
    </widget>
 
-   <widget class="HGWidget" name="" styleid="gwidgetId4">
-      <style>
-       <obj class="HGWidgetStyle" name="" styleid="gwidgetId4">
-          <obj id="backgroundStyle" class="HBackgroundStyle" name="backgroundStyle" styleid="backgroundId2"/>
-          <obj id="layoutStyle" class="HGLayoutStyle" name="" styleid="childid"/>
-      </obj>
-      </style>
-      <property id="color">100,40,200</property>
-      <widget class="HGWidget" name="" styleid="gwidgetId2">
-         <style/>
-         <property id="color">140,140,140</property>
-         <ltconf margins="4,10,-4,-10"/>
-      </widget>
-   </widget>
-
-   <widget class="HGWidget" name="" styleid="gwidgetId2">
+   <widget class="HGButton" name="" styleid="gbuttonId">
      <style/>
-     <property id="color">101,101,101</property>
+     <property id="fixedSize">100,60</property>
+     <property id="itemStyle">TextBesideIcon|ImageState</property>
+     <property id="acceptedMouseButtons">LeftButton</property>
+     <property id="textSpacing">6</property>
+     <property id="acceptCursor">true</property>
+     <property id="text">确认</property>
+     <property id="textAlignment">AlignCenter</property>
    </widget>
 
-   <widget class="HGWidget" name="" styleid="gwidgetId3">
+   <widget class="HGButton" name="" styleid="gcheckboxId">
      <style/>
-      <layout>
-        <widget class="HQWidget" name="" styleid="private.framewindowId">
-          <style/>
-          <property id="margins">10,10,10,10</property>
-          <property id="visible">true</property>
-          <layout file=":xml/main.qlayout.xml" />
-          <property id="proxy:noSystemBackground">1</property>
-          <property id="skip:alignment">Qt::AlignLeft</property>
-        </widget>
+     <property id="buttonType">Checkable</property>
+     <property id="itemStyle">TextBesideIcon|IconState|AutoSized</property>
+     <property id="acceptedMouseButtons"></property>
+     <property id="textSpacing">6</property>
+     <property id="text">checkbox</property>
+     <property id="textAlignment">AlignLeft|AlignVCenter</property>
+   </widget>
 
-        <widget class="HQWidget" name="" styleid="private.framewindowId">
-          <style/>
-          <property id="margins">10,10,10,10</property>
-          <layout file=":xml/main.qlayout.xml" />
-          <property id="skip:alignment">Qt::AlignLeft</property>
-        </widget>
+   <widget class="HGButton" name="" styleid="gradioboxId">
+     <style/>
+     <property id="groupId">radiogroup</property>
+     <property id="buttonType">Radioable</property>
+     <property id="itemStyle">TextBesideIcon|IconState|AutoSized|KeyClicked</property>
+     <property id="acceptedMouseButtons"></property>
+     <property id="textSpacing">6</property>
+     <property id="text">radiobox</property>
+     <property id="textAlignment">AlignLeft|AlignVCenter</property>
+     <property id="enabled">true</property>
+   </widget>
 
-        <widget class="HQWidget" name="" styleid="private.framewindowId">
-          <style/>
-          <property id="margins">10,10,10,10</property>
-          <layout file=":xml/main.qlayout.xml" />
-          <property id="skip:alignment">Qt::AlignLeft</property>
-        </widget>
-     </layout>
-  </widget>
-  <widget class="HGStackedWidget" name="" styleid="gwidgetId2">
-    <style/>
-    <property id="color">0,255,0</property>
-    <property id="fixedHeight">60</property>
-    <layout>
-       <widget class="HGWidget" name="" styleid="gwidgetId2">
-          <style/>
-          <property id="color">255,0,0</property>
-       </widget>
-       <widget class="HGWidget" name="" styleid="gwidgetId2">
-          <style/>
-          <property id="color">0,255,0</property>
-       </widget>
-    </layout>
-    <property id="currentIndex">0</property>
-  </widget>
+   <widget class="HGButton" name="" styleid="gradioboxId">
+     <style/>
+     <property id="groupId">radiogroup</property>
+     <property id="buttonType">Radioable</property>
+     <property id="itemStyle">TextBesideIcon|IconState|AutoSized</property>
+     <property id="acceptedMouseButtons"></property>
+     <property id="textSpacing">6</property>
+     <property id="text">radiobox</property>
+     <property id="textAlignment">AlignLeft|AlignVCenter</property>
+     <property id="enabled">true</property>
+   </widget>
 
+   <widget class="HGButton" name="" styleid="gradioboxId">
+     <style/>
+     <property id="groupId">radiogroup</property>
+     <property id="buttonType">Radioable</property>
+     <property id="itemStyle">TextBesideIcon|IconState|AutoSized</property>
+     <property id="acceptedMouseButtons"></property>
+     <property id="textSpacing">6</property>
+     <property id="text">radiobox</property>
+     <property id="textAlignment">AlignLeft|AlignVCenter</property>
+     <property id="enabled">true</property>
+   </widget>
+
+   <widget class="HGLable" name="22" styleid="glableId">
+     <style/>
+     <property id="itemStyle">AutoSized|TextColorState</property>
+     <property id="acceptedMouseButtons">LeftButton</property>
+     <property id="acceptHoverEvents">true</property>
+     <property id="text">QT 5.2 爱你</property>
+     <property id="textAlignment">AlignCenter</property>
+   </widget>
+
+   <widget class="QTextBrowser" name="qlineedit.usrname" styleid="undefined">
+     <property id="frame">false</property>
+     <property id="text">QT 5.2 爱你</property>
+     <property id="alignment">AlignCenter</property>
+     <property id="readOnly">false</property>
+     <ltconfig>
+       <obj id="proxyWidget" styleid="gproxywidgetId"/>
+     </ltconfig>
+   </widget>
+<!--
+   <widget class="HGScrollArea" name="scrollArea" styleid="gscrollareaId">
+      <style/>
+   </widget>
+
+   <widget class="HGWidget" name="" styleid="gwidgetId">
+     <property id="fixedHeight">20</property>
+   </widget>
+<!-->
 </layout>
 
 </hui>

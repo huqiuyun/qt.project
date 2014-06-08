@@ -33,12 +33,8 @@ SOURCES += hcore.cpp \
     hgview.cpp \
     hgstackedwidget.cpp \
     hresourcehandler.cpp \
-    hbackgroundstyle.cpp \
-    hlayoutstyle.cpp \
-    hgscenestyle.cpp \
+    himagestyle.cpp \
     hbasestyle.cpp \
-    hqlayoutstyle.cpp \
-    hglayoutstyle.cpp \
     hgwidgetstyle.cpp \
     hstyle.cpp \
     hqwidget.cpp \
@@ -48,7 +44,27 @@ SOURCES += hcore.cpp \
     huitask.cpp \
     hpropertyproxy.cpp \
     hfontstyle.cpp \
-    hdraw.cpp
+    hdraw.cpp \
+    hgbutton.cpp \
+    hgroup.cpp \
+    hglable.cpp \
+    hcolorstyle.cpp \
+    hgcombobox.cpp \
+    hlayoutconfig.cpp \
+    hglobal.cpp \
+    hgtree.cpp \
+    hgsplitter.cpp \
+    hgcaption.cpp \
+    hbus.cpp \
+    hgscrollbar.cpp \
+    hgscrollarea.cpp \
+    hganimation.cpp \
+    hgitemview.cpp \
+    hglistbox.cpp \
+    hlayout.cpp \
+    hglayout.cpp \
+    hqlayout.cpp \
+    hgsceneitem.cpp
 
 HEADERS  += hconfig.h \
     hcore.h \
@@ -73,24 +89,42 @@ HEADERS  += hconfig.h \
     hgstackedwidget.h \
     hresourcehandler.h \
     henums.h \
-    hbackgroundstyle.h \
-    hlayoutstyle.h \
-    hgscenestyle.h \
-    private/hbackgroundstyle_p.h \
+    himagestyle.h \
+    private/himagestyle_p.h \
     hbasestyle.h \
-    hqlayoutstyle.h \
-    hglayoutstyle.h \
     hgwidgetstyle.h \
     hstyle.h \
     hqwidget.h \
     hwidgetstyle.h \
     private/hqwidget_p.h \
     hgscene.h \
-    hattributeproxy.h \
     hgproxywidget.h \
+    private/hgproxywidget_p.h \
     huitask.h \
     hpropertyproxy.h \
     hfontstyle.h \
-    hdraw.h
+    hdraw.h \
+    hgbutton.h \
+    hgroup.h \
+    hglable.h \
+    hcolorstyle.h \
+    hgcombobox.h \
+    hlayoutconfig.h \
+    hglobal.h \
+    hgtree.h \
+    hgsplitter.h \
+    hgcaption.h \
+    hbus.h \
+    hgscrollbar.h \
+    hgscrollarea.h \
+    hganimation.h \
+    hgitemview.h \
+    private/hgitemview_p.h \
+    private/hgscrollarea_p.h \
+    hglistbox.h \
+    hglayout.h \
+    hlayout.h \
+    hqlayout.h \
+    hgsceneitem.h
 
 OTHER_FILES +=

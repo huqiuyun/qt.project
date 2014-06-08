@@ -9,15 +9,15 @@ public:
         int bit = s.size();
         if (major) {
             switch(bit) {
-            case 1:  return (s[0].toUInt() << 16);
-            case 2:  return ((s[0].toUInt() << 16) + s[1].toUInt());
+            case 1:  return ( (quint32)s[0].toUShort() << 16 );
+            case 2:  return ( ((quint32)s[0].toUShort() << 16) + s[1].toUShort() );
             default: break;
             }
         }
         else if(bit>=2) {
             switch(bit) {
-            case 3:  return (s[2].toUInt() << 16);
-            case 4:  return (s[2].toUInt() << 16 + s[3].toUInt());
+            case 3:  return ( (quint32)s[2].toUShort() << 16 );
+            case 4:  return ( ((quint32)s[2].toUShort() << 16) + s[3].toUShort() );
             default: break;
             }
         }

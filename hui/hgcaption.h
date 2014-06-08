@@ -1,10 +1,20 @@
 #ifndef HGCAPTION_H
 #define HGCAPTION_H
 
-class HGCaption : public HGWidget
+#include "hgwidget.h"
+
+class HGCaptionPrivate;
+class H_API HGCaption : public HGWidget
 {
+    Q_OBJECT
+    Q_DISABLE_COPY( HGCaption )
+    Q_DECLARE_PRIVATE( HGCaption )
 public:
-    HGCaption();
+    explicit HGCaption(const HObjectInfo& objinfo, QGraphicsItem* parent = NULL);
+    ~HGCaption();
+
+    DECLARE_GITEM_STATIC_CREATE(HGCaption);
 };
+
 
 #endif // HGCAPTION_H

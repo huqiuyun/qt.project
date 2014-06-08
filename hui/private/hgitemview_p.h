@@ -1,39 +1,28 @@
-#ifndef HGWIDGET_P_H
-#define HGWIDGET_P_H
+#ifndef HGITEMVIEW_P_H
+#define HGITEMVIEW_P_H
 
 #include "hbase.h"
-#include "himagestyle.h"
-#include "hglayoutstyle.h"
-#include "hgwidgetstyle.h"
-#include "hgwidget.h"
+#include "hgitemview.h"
+#include "hgscrollarea_p.h"
 
-class HStyle;
+class QStandardItemModel;
 
-class H_API HGWidgetPrivate
+class H_API HGItemViewPrivate : public HGScrollAreaPrivate
 {
+    Q_DISABLE_COPY(HGItemViewPrivate)
+    Q_DECLARE_PUBLIC( HGItemView )
 public:
-    explicit HGWidgetPrivate();
-    virtual ~HGWidgetPrivate();
+    HGItemViewPrivate():
+        HGScrollAreaPrivate(),
+        mModel(NULL)
+    {
+    }
 
-private:
-    void init();
-    bool installStyle(const HStyle* style);
-    void initStyle(const HStyle* style);
-
-    void initFontStyle(const HStyle* style,const char* styleid);
-
+    ~HGItemViewPrivate()
+    {
+    }
 protected:
-    virtual void onInitStyle(const HStyle*){}
-    virtual bool stateChanged() { return false;}
-protected:
-    friend class HGWidget;
-    HGWidget* q_ptr;
-    QSharedPointer<HGWidgetStyle>    mWidgetStyle;
-    QSharedPointer<HImageStyle>      mBkgStyle;
-    QSharedPointer<HGLayoutStyle>    mLayoutStyle;
-    HGWidget::GStyles mGStyle;
-    int  mState;       //@see HEnums::HWidgetState
-    QString mStatisticsId;
+    QStandardItemModel* mModel;
 };
 
-#endif // HGWIDGET_P_H
+#endif // HGITEMVIEW_P_H

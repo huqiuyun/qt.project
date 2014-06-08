@@ -1,34 +1,38 @@
 #include "hgview.h"
 #include "hgwidget.h"
 #include "hframestyle.h"
-#include "hbackgroundStyle.h"
-#include "hqlayoutstyle.h"
-#include "hglayoutstyle.h"
-#include "hgscenestyle.h"
+#include "himagestyle.h"
+#include "hfontstyle.h"
+#include "hgsceneitem.h"
 #include "hqwidget.h"
+#include "hglayout.h"
+#include "hqlayout.h"
 #include "hcore.h"
 #include "hstyle.h"
 #include "hfactory.h"
+#include "hlayoutconfig.h"
 #include "private/hgview_p.h"
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 
 HGViewPrivate::HGViewPrivate() :
-    q_ptr(NULL)
+    q_ptr(NULL),
+    mLayout(NULL)
 {
 }
 
 HGViewPrivate::~HGViewPrivate()
 {
+    hDelete(mLayout);
 }
 
 void HGViewPrivate::init()
 {
-    static int s_index = 0;
-    QString name = "NoGView" + QString::number(s_index++);
+    QString name = "hui.gview." + QString::number(HObject::objectIndex());
     q_ptr->setObjectName(name);
 
-    installStyle(HSTYLE);
+    if (installStyle(HSTYLE))
+        mFrameStyle->init();
 }
 
 bool HGViewPrivate::installStyle(const HStyle* style)
@@ -50,43 +54,35 @@ void HGViewPrivate::initStyle(const HStyle* style)
         return;
     framestyle->setWindow(q_ptr);
 
-    if (framestyle->hasBackgroundStyle()) {
+    HClassInfo backgroundcls = framestyle->childAt(QLatin1String("backgroundStyle"));
+    if (backgroundcls.isValid()) {
         HCreateParam param;
-        HClassInfo cls = framestyle->backgroundStyle();
-        HBackgroundStyle* back = static_cast<HBackgroundStyle*>(HFACTORY->createObject(cls,q_ptr,param));
-        mBackgroundStyle = QSharedPointer<HBackgroundStyle>(back);
-        mBackgroundStyle->backup(style);
+        HImageStyle* back = static_cast<HImageStyle*>(HFACTORY->createObject(backgroundcls,q_ptr,param));
+        mBkgStyle = QSharedPointer<HImageStyle>(back);
+        mBkgStyle->backup(style);
     }
 
-    if (framestyle->hasLayoutStyle()) {
-        HCreateParam param;
-        HClassInfo cls = framestyle->layoutStyle();
-        HQLayoutStyle* layout = static_cast<HQLayoutStyle*>(HFACTORY->createObject(cls,q_ptr,param));
-        mLayoutStyle = QSharedPointer<HQLayoutStyle>(layout);
-        mLayoutStyle->backup(style);
-        mLayoutStyle->setWindow(q_ptr);
+    // font
+    HClassInfo fontcls = framestyle->childAt(QLatin1String("fontStyle"));
+    if (fontcls.isValid()) {
+        initFontStyle(style,fontcls.mStyleId.data());
     }
+    onInitStyle(style);
+}
 
-    if (framestyle->hasSceneStyle()) {
-        HCreateParam param;
-        HClassInfo cls = framestyle->sceneStyle();
-        HGSceneStyle* scene = static_cast<HGSceneStyle*>(HFACTORY->createObject(cls,q_ptr,param));
-        mSceneStyle = QSharedPointer<HGSceneStyle>(scene);
-        mSceneStyle->backup(style);
-        mSceneStyle->setGView(q_ptr);
+void HGViewPrivate::initFontStyle(const HStyle* style,const char* styleid)
+{
+    HFontStyle* fontstyle = hStyleSharedCast<HFontStyle>(style->itemAt(styleid));
+    if (fontstyle)
+        q_ptr->setFont(fontstyle->font());
+    else if(style != HSTYLE) {
+        initFontStyle(HSTYLE,styleid);
     }
+    else
+        qDebug("initFontStyle:Not find font style=%s in system style",styleid);
 }
 
 IMPLEMENT_GVIEW_STATIC_CREATE(HGView,USEOBJTYPE(HGView))
-HGView::HGView(QWidget *parent) :
-    QGraphicsView(parent),
-    d_ptr(new HGViewPrivate())
-{
-    mObjType = USEOBJTYPE(HGView);
-    d_ptr->q_ptr = this;
-    d_ptr->init();
-}
-
 HGView::HGView(const HObjectInfo& objinfo, QWidget *parent) :
     QGraphicsView(parent),
     HObject(objinfo.mStyleId),
@@ -103,13 +99,8 @@ HGView::~HGView()
     delete d_ptr;
 }
 
-void HGView::doConstruct()
+void HGView::construct()
 {
-    Q_D(HGView);
-    if (d->mFrameStyle)
-       d->mFrameStyle->init();
-
-    construct();
 }
 
 void HGView::installStyle(const HStyle *style)
@@ -117,6 +108,12 @@ void HGView::installStyle(const HStyle *style)
     Q_D(HGView);
     if (d->installStyle(style))
         d->mFrameStyle->init();
+}
+
+void HGView::initFontStyle(const char* styleid,const HStyle* style)
+{
+    Q_D(HGView);
+    d->initFontStyle(style?style:HSTYLE,styleid);
 }
 
 void HGView::setFixedSize(const QSize &s)
@@ -139,11 +136,6 @@ void HGView::resizeEx(const QSize &s)
     QGraphicsView::resize(s.width(),s.height());
 }
 
-bool HGView::hasFrameStyle() const
-{
-    return d_func()->mFrameStyle != NULL;
-}
-
 void HGView::setFrameStyle(QSharedPointer<HFrameStyle> style)
 {
     Q_D(HGView);
@@ -162,58 +154,67 @@ QSharedPointer<HFrameStyle> HGView::frameStyle() const
     return d_func()->mFrameStyle;
 }
 
-bool HGView::hasSceneStyle() const
-{
-    return d_func()->mSceneStyle != NULL;
-}
-
-void HGView::setSceneStyle(QSharedPointer<HGSceneStyle> style)
+void HGView::setSceneItem(QSharedPointer<HGSceneItem> style)
 {
     Q_D(HGView);
     d->mSceneStyle = style;
+    if (style)
+        style->setGView(this);
 }
 
-QSharedPointer<HGSceneStyle> HGView::sceneStyle() const
+QSharedPointer<HGSceneItem> HGView::sceneItem() const
 {
     return d_func()->mSceneStyle;
 }
 
-bool HGView::hasBackgroundStyle() const
-{
-    return d_func()->mBackgroundStyle != NULL;
-}
-
-void HGView::setBackgroundStyle(QSharedPointer<HBackgroundStyle> style)
+void HGView::setBackgroundStyle(QSharedPointer<HImageStyle> style)
 {
     Q_D(HGView);
-    d->mBackgroundStyle = style;
+    d->mBkgStyle = style;
 }
 
-QSharedPointer<HBackgroundStyle> HGView::backgroundStyle() const
+QSharedPointer<HImageStyle> HGView::backgroundStyle() const
 {
-    return d_func()->mBackgroundStyle;
+    return d_func()->mBkgStyle;
 }
 
-bool HGView::hasLayoutStyle() const
-{
-    return d_func()->mLayoutStyle != NULL;
-}
-
-void HGView::setLayoutStyle(QSharedPointer<HQLayoutStyle> style)
+void HGView::setLayout(HQLayout* l)
 {
     Q_D(HGView);
-    d->mLayoutStyle = style;
+    HQLayout* o = d->mLayout;
+    d->mLayout = l;
+    if (l)
+        l->setWindow(this);
+    hDelete(o);
 }
 
-QSharedPointer<HQLayoutStyle> HGView::layoutStyle() const
+HQLayout* HGView::layout() const
 {
-    return d_func()->mLayoutStyle;
+    return d_func()->mLayout;
 }
 
 HEnums::HLayoutType HGView::layoutType() const
 {
     Q_D(const HGView);
-    return d->mLayoutStyle?d->mLayoutStyle->layoutType():HEnums::kNone;
+    return d->mLayout?d->mLayout->layoutType():HEnums::kNone;
+}
+
+void HGView::setIndexOfBkgmage(int index)
+{
+    Q_D(HGView);
+    if (d->mBkgStyle)
+        d->mBkgStyle->setIndex(index);
+}
+
+int HGView::indexOfBkgImage() const
+{
+    Q_D(const HGView);
+    return (d->mBkgStyle)?d->mBkgStyle->index():0;
+}
+
+QRect HGView::rectOfBackgroundImage() const
+{
+    return rect();
 }
 
 void HGView::resizeEvent(QResizeEvent *event)
@@ -226,54 +227,58 @@ void HGView::resizeEvent(QResizeEvent *event)
     if (d->mSceneStyle)
         d->mSceneStyle->reSize(QRect(QPoint(0, 0), event->size()));
 
-    if (d->mLayoutStyle)
-        d->mLayoutStyle->resizeEvent(event->size());
+    if (d->mLayout)
+        d->mLayout->resizeEvent(event->size());
 
     emit resized();
 }
 
 bool HGView::nativeEvent(const QByteArray & eventType, void * message, long * result)
 {
-    return d_func()->mFrameStyle->nativeEvent(eventType,message,result);
+    Q_D(HGView);
+    if (d->mFrameStyle)
+        return d->mFrameStyle->nativeEvent(eventType,message,result);
+    return false;
 }
 
 void HGView::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    Q_UNUSED(rect);
     Q_D(HGView);
-    if (d->mBackgroundStyle)
-        d->mBackgroundStyle->draw(painter,rect.toRect(),0);
+    if (d->mBkgStyle)
+        d->mBkgStyle->draw(painter,rectOfBackgroundImage());
 }
 
 /** add widget to owner layout */
 int HGView::addWidget(QWidget* widget)
 {
     Q_D(HGView);
-    if (d->mLayoutStyle)
-        return d->mLayoutStyle->addWidget(widget);
+    if (d->mLayout)
+        return d->mLayout->addWidget(widget);
     return -1;
 }
 
-int HGView::insertWidget(QWidget* widget ,const HLayoutConf& conf)
+int HGView::insertWidget(QWidget* widget ,const HLayoutConfig& conf)
 {
     Q_D(HGView);
-    if (d->mLayoutStyle)
-        return d->mLayoutStyle->insertWidget(widget,conf);
+    if (d->mLayout)
+        return d->mLayout->insertWidget(widget,conf);
     return -1;
 }
 
 bool HGView::removeWidget(QWidget* widget)
 {
     Q_D(HGView);
-    if (d->mLayoutStyle)
-        return d->mLayoutStyle->removeWidget(widget);
+    if (d->mLayout)
+        return d->mLayout->removeWidget(widget);
     return false;
 }
 
-bool HGView::addChildWidget(QWidget* widget ,const HLayoutConf& conf)
+bool HGView::addChildWidget(QWidget* widget ,const HLayoutConfig& conf)
 {
     Q_D(HGView);
-    if (d->mLayoutStyle)
-        return d->mLayoutStyle->addChildWidget(widget,conf);
+    if (d->mLayout)
+        return d->mLayout->addChildWidget(widget,conf);
 
     return false;
 }
@@ -281,8 +286,8 @@ bool HGView::addChildWidget(QWidget* widget ,const HLayoutConf& conf)
 void HGView::removeChildWidget(QWidget* widget)
 {
     Q_D(HGView);
-    if (d->mLayoutStyle)
-        d->mLayoutStyle->removeChildWidget(widget);
+    if (d->mLayout)
+        d->mLayout->removeChildWidget(widget);
 }
 
 /** the object is alignment in parent layout */
@@ -300,15 +305,15 @@ void HGView::setAlignment(Qt::Alignment align)
         if (!proxy || !(p = proxy->parent()))
             return;
         if (p->property("isHGWidget").toBool())
-            static_cast<HGWidget*>(p)->layoutStyle()->setAlignment(proxy,align);
+            static_cast<HGWidget*>(p)->layout()->setAlignment(proxy,align);
     }
     else {
         QObject* p = parent();
         if (p->property("isHQWidget").toBool()) {
-            static_cast<HQWidget*>(p)->layoutStyle()->setAlignment(this,align);
+            static_cast<HQWidget*>(p)->layout()->setAlignment(this,align);
         }
         else if(p->property("isHGView").toBool()) {
-            static_cast<HGView*>(p)->layoutStyle()->setAlignment(this,align);
+            static_cast<HGView*>(p)->layout()->setAlignment(this,align);
         }
     }
 }
@@ -323,4 +328,21 @@ HGWidget* HGView::parentGWidget() const
         return NULL;
     p = proxy->parent();
     return (p->property("isHGWidget").toBool()) ? static_cast<HGWidget*>(p) : NULL;
+}
+
+HGWidget* HGView::rootWidget() const
+{
+    return widgetAt(0);
+}
+
+HGWidget* HGView::widgetAt(int index) const
+{
+    Q_D(const HGView);
+    return d->mSceneStyle?d->mSceneStyle->widgetAt(index):NULL;
+}
+
+HGWidget* HGView::widgetOf(const QString& name) const
+{
+    Q_D(const HGView);
+    return d->mSceneStyle?d->mSceneStyle->widgetOf(name):NULL;
 }

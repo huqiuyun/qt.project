@@ -8,6 +8,8 @@ class HResourceMgr;
 class HStyle;
 class HFactory;
 class HSystem;
+class HBus;
+class HGlobalUnk;
 class HCorePrivate;
 
 class H_API HCore : public QObject
@@ -29,6 +31,8 @@ public:
     virtual HFactory*  factory();
     virtual HResourceMgr* resMgr();
     virtual HSystem* system();
+    virtual HBus* bus();
+    virtual HGlobalUnk* globalUnk();
 
 protected:
     HCore(HCorePrivate& dd,QObject* parent = 0);
@@ -43,5 +47,6 @@ private:
 #define HSTYLE      HCore::core()->style()
 #define HRESMGR     HCore::core()->resMgr()
 #define HSYSTEM     HCore::core()->system()
+#define HBUS        HCore::core()->bus()
 
 #endif // HCORE_H

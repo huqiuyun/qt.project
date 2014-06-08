@@ -1,27 +1,17 @@
-#include "HQLayoutStyle.h"
+#include "hqlayout.h"
 #include <QWidget>
 #include <QBoxLayout>
 #include <QStackedLayout>
 #include <QGridLayout>
 
-//HQLayoutStyle
-IMPLEMENT_OBJECT_STATIC_CREATE(HQLayoutStyle)
-
-HQLayoutStyle::HQLayoutStyle(QObject* parent) :
-    HLayoutStyle(parent),
+//HQLayout
+HQLayout::HQLayout(QObject* parent) :
+    HLayout(parent),
     mWindow(NULL)
 {
-    mObjType = USEOBJTYPE(HQLayoutStyle);
 }
 
-HQLayoutStyle::HQLayoutStyle(const HObjectInfo& objinfo,QObject* parent) :
-    HLayoutStyle(objinfo,parent),
-    mWindow(NULL)
-{
-    mObjType = USEOBJTYPE(HQLayoutStyle);
-}
-
-void HQLayoutStyle::setWindow(QWidget* window)
+void HQLayout::setWindow(QWidget* window)
 {
     mWindow = window;
     //to do create layout
@@ -30,19 +20,19 @@ void HQLayoutStyle::setWindow(QWidget* window)
     setSpacing(mSpacing);
 }
 
-QLayout* HQLayoutStyle::layout() const
+QLayout* HQLayout::layout() const
 {
     return mWindow?mWindow->layout():NULL;
 }
 
-int HQLayoutStyle::spacing() const
+int HQLayout::spacing() const
 {
-    return HLayoutStyle::spacing();
+    return HLayout::spacing();
 }
 
-void HQLayoutStyle::setSpacing(int s)
+void HQLayout::setSpacing(int s)
 {
-    HLayoutStyle::setSpacing(s);
+    HLayout::setSpacing(s);
 
     QLayout* l = static_cast<QLayout*>(layout());
     if (!l) return ;
@@ -70,7 +60,7 @@ void HQLayoutStyle::setSpacing(int s)
     }
 }
 
-QMargins HQLayoutStyle::margins() const
+QMargins HQLayout::margins() const
 {
     if (layout()) {
         int left = 0;
@@ -80,25 +70,25 @@ QMargins HQLayoutStyle::margins() const
         layout()->getContentsMargins(&left, &top, &right, &bottom);
         return QMargins(left, top, right, bottom);
     }
-    return HLayoutStyle::margins();
+    return HLayout::margins();
 }
 
-void HQLayoutStyle::setMargins(const QMargins& m)
+void HQLayout::setMargins(const QMargins& m)
 {
     if (layout()) {
         layout()->setContentsMargins(m.left(), m.top(), m.right(), m.bottom());
     }
-    HLayoutStyle::setMargins(m);
+    HLayout::setMargins(m);
 }
 
-Qt::Alignment HQLayoutStyle::alignment() const
+Qt::Alignment HQLayout::alignment() const
 {
-    return HLayoutStyle::alignment();
+    return HLayout::alignment();
 }
 
-void HQLayoutStyle::setAlignment(Qt::Alignment align)
+void HQLayout::setAlignment(Qt::Alignment align)
 {
-    HLayoutStyle::setAlignment(align);
+    HLayout::setAlignment(align);
 
     QLayout *l = layout();
     if (!l) return ;
@@ -106,16 +96,16 @@ void HQLayoutStyle::setAlignment(Qt::Alignment align)
         setAlignment(l->itemAt(i)->widget(),alignment());
 }
 
-void HQLayoutStyle::setAlignment(QWidget* w, Qt::Alignment align)
+void HQLayout::setAlignment(QWidget* w, Qt::Alignment align)
 {
     QLayout *l = layout();
     if (l)
         l->setAlignment(w,align);
 }
 
-void HQLayoutStyle::setLayoutType(HEnums::HLayoutType type)
+void HQLayout::setLayoutType(HEnums::HLayoutType type)
 {
-    HLayoutStyle::setLayoutType(type);
+    HLayout::setLayoutType(type);
 
     if (!mWindow)
         return ;
@@ -149,16 +139,16 @@ void HQLayoutStyle::setLayoutType(HEnums::HLayoutType type)
     default:
         return ;
     }
-    mWindow->setLayout(layout);
+    mWindow->QWidget::setLayout(layout);
 }
 
-int HQLayoutStyle::addWidget(QWidget* widget)
+int HQLayout::addWidget(QWidget* widget)
 {
     Q_UNUSED(widget);
-    return insertWidget(widget,HLayoutConf());
+    return insertWidget(widget,HLayoutConfig());
 }
 
-int HQLayoutStyle::insertWidget(QWidget* widget ,const HLayoutConf& conf)
+int HQLayout::insertWidget(QWidget* widget ,const HLayoutConfig& conf)
 {
     Q_UNUSED(widget);
     Q_UNUSED(conf);
@@ -174,19 +164,19 @@ int HQLayoutStyle::insertWidget(QWidget* widget ,const HLayoutConf& conf)
     case HEnums::kHBoxLeftRight: //=kHBox
     case HEnums::kHBoxRightLeft: {
         QBoxLayout* l = static_cast<QBoxLayout*>(layout());
-        l->insertWidget(conf.pos(),widget,conf.stretch(),conf.alignment());
+        l->insertWidget(conf.index(),widget,conf.stretch(),conf.alignment());
         if (conf.alignment()==0) l->setAlignment(widget,alignment());
         break;
     }
     case HEnums::kGrid: {
         QGridLayout* l = static_cast<QGridLayout*>(layout());
-        l->addWidget(widget,conf.pos(),conf.column(),conf.alignment());
+        l->addWidget(widget,conf.row(),conf.column(),conf.alignment());
         if (conf.alignment()==0) l->setAlignment(widget,alignment());
         break;
     }
     case HEnums::kStacked: {
         QStackedLayout* l = static_cast<QStackedLayout*>(layout());
-        l->insertWidget(conf.pos(),widget);
+        l->insertWidget(conf.index(),widget);
         l->setAlignment(widget, (conf.alignment()==0)?alignment():conf.alignment());
         break;
     }
@@ -198,7 +188,7 @@ int HQLayoutStyle::insertWidget(QWidget* widget ,const HLayoutConf& conf)
     return 0;
 }
 
-bool HQLayoutStyle::removeWidget(QWidget* widget)
+bool HQLayout::removeWidget(QWidget* widget)
 {
     Q_UNUSED(widget);
     if (layout()) {
@@ -207,25 +197,26 @@ bool HQLayoutStyle::removeWidget(QWidget* widget)
     }
     return false;
 }
-bool HQLayoutStyle::addChildWidget(QWidget* widget ,const HLayoutConf& conf)
+
+bool HQLayout::addChildWidget(QWidget* widget ,const HLayoutConfig& conf)
 {
-    if (!conf.mConf.use || !widget)
+    if (!widget)
         return false;
 
     if(-1 == mChilds.at(widget))
-        mChilds.add(widget,conf.toMargins());
+        mChilds.add(widget,conf.margins());
     return true;
 }
 
-void HQLayoutStyle::removeChildWidget(QWidget* widget)
+void HQLayout::removeChildWidget(QWidget* widget)
 {
     mChilds.remove(widget);
 }
 
-void HQLayoutStyle::resizeEvent(const QSize& s)
+void HQLayout::resizeEvent(const QSize& s)
 {
     for (int i = 0; i < mChilds.count(); i++) {
-        const HChildWidget<QWidget>* iter = &mChilds.at(i);
+        const HItemWidget<QWidget>* iter = &mChilds.at(i);
 
         QRect rc(QPoint(0,0),s);
 
@@ -252,14 +243,5 @@ void HQLayoutStyle::resizeEvent(const QSize& s)
         iter->widget->setGeometry(rc);
     }
 }
-
-HBaseStyle* HQLayoutStyle::clone()
-{
-    HQLayoutStyle* style = new HQLayoutStyle(HObjectInfo(styleId(),""),parent());
-    copyTo(style);
-
-    return style;
-}
-
 
 

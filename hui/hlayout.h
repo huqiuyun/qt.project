@@ -1,12 +1,10 @@
-#ifndef HLAYOUTSTYLE_H
-#define HLAYOUTSTYLE_H
+#ifndef HLAYOUT_H
+#define HLAYOUT_H
 
-#include "hbasestyle.h"
+#include "hbase.h"
+#include "henums.h"
 
-class QGraphicsLayoutItem;
-class QWidget;
-
-class H_API HLayoutStyle : public HBaseStyle
+class H_API HLayout : public QObject
 {
     Q_OBJECT
 
@@ -16,8 +14,7 @@ class H_API HLayoutStyle : public HBaseStyle
     Q_PROPERTY( int spacing READ spacing WRITE setSpacing )
 
 public:
-    explicit HLayoutStyle(QObject *parent = 0);
-    explicit HLayoutStyle(const HObjectInfo& objinfo, QObject *parent = 0);
+    explicit HLayout(QObject *parent = 0);
 
 public:
     HEnums::HLayoutType layoutType() const;
@@ -35,11 +32,7 @@ public:
     virtual void setSpacing(int s);
     virtual int spacing() const;
 
-    virtual void doConstruct();
     virtual void resizeEvent(const QSize& ){}
-protected:
-    void copyTo(HBaseStyle* obj);
-
 protected:
     HEnums::HLayoutType mLayoutType;
     QMargins      mMargins;
@@ -47,4 +40,4 @@ protected:
     int           mSpacing;
 };
 
-#endif // HLAYOUTSTYLE_H
+#endif // HLAYOUT_H

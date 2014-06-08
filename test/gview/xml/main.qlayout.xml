@@ -18,27 +18,41 @@
                78=Qt::WA_AcceptDrops
           <!-->
           <property id="proxy:winowAttribute"></property>
-          <ltconf row="0" col="0" alignment="Qt::AlignRight"/>
+          <ltconfig>
+             <property id="row">0</property>
+             <property id="col">0</property>
+             <property id="alignment">Qt::AlignRight</property>
+          </ltconfig>
   </widget>
 
   <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text1</property>
           <property id="icon"></property>
           <property id="proxy:fixedHeight">48</property>
-          <ltconf row="1" col="0" />
+          <ltconfig>
+             <property id="row">1</property>
+             <property id="col">0</property>
+          </ltconfig>
   </widget>
 
   <widget class="QPushButton" name="" styleid="undefined">
           <property id="text">text2</property>
           <property id="icon"></property>
-          <ltconf row="2" col="0" stretch="2"/>
+          <ltconfig>
+             <property id="row">2</property>
+             <property id="col">0</property>
+             <property id="stretch">2</property>
+          </ltconfig>
   </widget>
 
   <widget class="QRadioButton" name="" styleid="undefined">
           <property id="text">text1</property>
           <property id="icon"></property>
           <property id="checked">1</property>
-          <ltconf row="3" col="0" />
+          <ltconfig>
+             <property id="row">3</property>
+             <property id="col">0</property>
+          </ltconfig>
   </widget>
 
   <widget class="QLineEdit" name="" styleid="undefined">
@@ -46,7 +60,10 @@
           <property id="icon"></property>
           <property id="proxy:fixedHeight">32</property>
           <!--property id="echoMode">QLineEdit::Password</property><!-->
-          <ltconf row="4" col="0" />
+          <ltconfig>
+             <property id="row">4</property>
+             <property id="col">0</property>
+          </ltconfig>
   </widget>
 
 </layout>
