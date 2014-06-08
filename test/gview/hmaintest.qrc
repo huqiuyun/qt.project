@@ -14,7 +14,6 @@
         <file>theme/radiobox.png</file>
         <file>theme/icon_notice.png</file>
         <file>theme/icon_voice.png</file>
-        <file>theme/xx.html</file>
         <file>theme/loading.gif</file>
     </qresource>
 </RCC>
